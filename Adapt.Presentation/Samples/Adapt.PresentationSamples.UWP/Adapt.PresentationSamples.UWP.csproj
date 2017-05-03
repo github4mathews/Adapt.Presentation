@@ -7,8 +7,8 @@
     <ProjectGuid>{671A34C5-87E7-422B-B4E2-5AC80F4D88B1}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Adapt.Presentation.UWP</RootNamespace>
-    <AssemblyName>Adapt.Presentation.UWP</AssemblyName>
+    <RootNamespace></RootNamespace>
+    <AssemblyName>Adapt.PresentationSamples.UWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>

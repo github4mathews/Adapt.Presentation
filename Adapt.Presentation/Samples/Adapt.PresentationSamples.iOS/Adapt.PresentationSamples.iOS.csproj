@@ -8,9 +8,9 @@
     <ProjectGuid>{ADE5BE45-7179-4D87-BCCC-9FAE588F371A}</ProjectGuid>
     <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Adapt.Presentation.iOS</RootNamespace>
+    <RootNamespace></RootNamespace>
     <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
-    <AssemblyName>Adapt.Presentation.iOS</AssemblyName>
+    <AssemblyName>Adapt.PresentationSamples.iOS</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
