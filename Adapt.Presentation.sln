@@ -5,11 +5,11 @@ VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Adapt.Presentation.Standard", "Adapt.Presentation\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj", "{DBC98916-4E18-40FF-833D-AF318DA6A1D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.PresentationSamples.Android", "Adapt.Presentation\Samples\Adapt.PresentationSamples.Android\Adapt.Presentation.Android.csproj", "{B048728B-FCEB-4ECD-ADA3-F8BDE87E0771}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.PresentationSamples.Android", "Adapt.Presentation\Samples\Adapt.PresentationSamples.Android\Adapt.PresentationSamples.Android.csproj", "{B048728B-FCEB-4ECD-ADA3-F8BDE87E0771}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.PresentationSamples.iOS", "Adapt.Presentation\Samples\Adapt.PresentationSamples.iOS\Adapt.Presentation.iOS.csproj", "{ADE5BE45-7179-4D87-BCCC-9FAE588F371A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.PresentationSamples.iOS", "Adapt.Presentation\Samples\Adapt.PresentationSamples.iOS\Adapt.PresentationSamples.iOS.csproj", "{ADE5BE45-7179-4D87-BCCC-9FAE588F371A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.PresentationSamples.UWP", "Adapt.Presentation\Samples\Adapt.PresentationSamples.UWP\Adapt.Presentation.UWP.csproj", "{671A34C5-87E7-422B-B4E2-5AC80F4D88B1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.PresentationSamples.UWP", "Adapt.Presentation\Samples\Adapt.PresentationSamples.UWP\Adapt.PresentationSamples.UWP.csproj", "{671A34C5-87E7-422B-B4E2-5AC80F4D88B1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.PresentationSamples.Standard", "Adapt.Presentation\Samples\Adapt.PresentationSamples.Standard\Adapt.PresentationSamples.Standard.csproj", "{9A1ED959-56BE-48DB-BD07-545B00242318}"
 EndProject
