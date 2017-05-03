@@ -115,6 +115,12 @@
   <ItemGroup>
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Adapt.PresentationSamples.Standard\Adapt.PresentationSamples.Standard.csproj">
+      <Project>{9a1ed959-56be-48db-bd07-545b00242318}</Project>
+      <Name>Adapt.PresentationSamples.Standard</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="..\Adapt.Presentation\Adapt.Presentation.projitems" Label="Shared" Condition="Exists('..\Adapt.Presentation\Adapt.Presentation.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <Import Project="..\..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\..\packages\Xamarin.Android.Support.Vector.Drawable.23.3.0\build\Xamarin.Android.Support.Vector.Drawable.targets')" />
