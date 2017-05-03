@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 
-namespace Adapt.Presentation
+namespace Adapt.PresentationSamples
 {
 	public partial class MainPage : ContentPage
 	{

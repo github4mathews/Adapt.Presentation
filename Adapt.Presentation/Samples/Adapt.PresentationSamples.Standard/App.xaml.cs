@@ -5,7 +5,7 @@ using System.Text;
 
 using Xamarin.Forms;
 
-namespace Adapt.Presentation
+namespace Adapt.PresentationSamples
 {
 	public partial class App : Application
 	{
@@ -13,7 +13,7 @@ namespace Adapt.Presentation
 		{
 			InitializeComponent();
 
-			MainPage = new Adapt.Presentation.MainPage();
+			MainPage = new MainPage();
 		}
 
 		protected override void OnStart ()
