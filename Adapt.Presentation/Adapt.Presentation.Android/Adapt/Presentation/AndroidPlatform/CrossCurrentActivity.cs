@@ -27,11 +27,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
         static ICurrentActivity CreateCurrentActivity()
         {
-#if PORTABLE
-        return null;
-#else
             return new CurrentActivityImplementation();
-#endif
         }
 
         internal static Exception NotImplementedInReferenceAssembly()
