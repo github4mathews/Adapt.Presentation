@@ -135,6 +135,10 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
+      <Project>{dbc98916-4e18-40ff-833d-af318da6a1d0}</Project>
+      <Name>Adapt.Presentation.Standard</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Platforms\Adapt.Presentation.iOS\Adapt.Presentation.iOS.csproj">
       <Project>{141d8fbe-dc38-49f8-8cfb-8029d30adb15}</Project>
       <Name>Adapt.Presentation.iOS</Name>
