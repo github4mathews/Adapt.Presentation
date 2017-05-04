@@ -7,7 +7,7 @@ namespace Adapt.Presentation.UWP
         public MainPage()
         {
             InitializeComponent();
-            LoadApplication(new samples.App());
+            LoadApplication(new samples.App(new PresentationFactory()));
         }
     }
 }

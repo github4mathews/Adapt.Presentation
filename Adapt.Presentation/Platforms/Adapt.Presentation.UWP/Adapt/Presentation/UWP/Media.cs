@@ -13,14 +13,14 @@ namespace Adapt.Presentation.UWP
     /// <summary>
     /// Implementation for Media
     /// </summary>
-    public class MediaImplementation : IMedia
+    public class Media : IMedia
     {
         private static readonly IEnumerable<string> SupportedVideoFileTypes = new List<string> { ".mp4", ".wmv", ".avi" };
         private static readonly IEnumerable<string> SupportedImageFileTypes = new List<string> { ".jpeg", ".jpg", ".png", ".gif", ".bmp" };
         /// <summary>
         /// Implementation
         /// </summary>
-        public MediaImplementation()
+        public Media()
         {
             watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
             watcher.Added += OnDeviceAdded;

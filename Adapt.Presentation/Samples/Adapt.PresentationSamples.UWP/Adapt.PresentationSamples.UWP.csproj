@@ -7,12 +7,13 @@
     <ProjectGuid>{671A34C5-87E7-422B-B4E2-5AC80F4D88B1}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <AssemblyName>Adapt.PresentationSamples.UWP</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-    <TargetPlatformVersion>10.0.15063.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.10586.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.10240.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <EnableDotNetNativeCompatibleProfile>true</EnableDotNetNativeCompatibleProfile>
     <FileAlignment>512</FileAlignment>
@@ -148,6 +149,14 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
+      <Project>{dbc98916-4e18-40ff-833d-af318da6a1d0}</Project>
+      <Name>Adapt.Presentation.Standard</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Platforms\Adapt.Presentation.UWP\Adapt.Presentation.UWP.csproj">
+      <Project>{d39e1518-1f39-4685-9e9c-446025d05f93}</Project>
+      <Name>Adapt.Presentation.UWP</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Adapt.PresentationSamples.Standard\Adapt.PresentationSamples.Standard.csproj">
       <Project>{9a1ed959-56be-48db-bd07-545b00242318}</Project>
       <Name>Adapt.PresentationSamples.Standard</Name>

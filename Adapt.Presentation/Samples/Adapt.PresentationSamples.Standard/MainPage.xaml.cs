@@ -37,9 +37,11 @@ namespace Adapt.PresentationSamples
                     var fileTypes = new Dictionary<string, IList<string>>();
                     fileTypes.Add("Jpeg Image", new List<string> { ".jpg" });
 
-                    using (var writeFileStream = await filePicker.PickAndOpenFileForWriting(fileTypes, defaultFileName))
+                    using (var fileData = await filePicker.PickAndOpenFileForWriting(fileTypes, defaultFileName))
                     {
-                        var readBuffer = readFileStream.Length;
+                        var readBuffer = new byte[readFileStream.Length];
+                        await readFileStream.ReadAsync(readBuffer, 0, (int)readFileStream.Length);
+                        fileData.FileStream.Write(readBuffer, 0, readBuffer.Length);
                     }
                 }
             }
