@@ -4,6 +4,7 @@ using Android.Content.PM;
 using Android.OS;
 using samples = Adapt.PresentationSamples;
 using Application;
+using Adapt.Presentation.AndroidPlatform;
 
 namespace Adapt.Presentation.Droid
 {
@@ -18,7 +19,7 @@ namespace Adapt.Presentation.Droid
 			base.OnCreate (bundle);
 
             Xamarin.Forms.Forms.Init (this, bundle);
-			LoadApplication (new samples.App());
+			LoadApplication (new samples.App(new PresentationFactory(ApplicationContext)));
 		}
 	}
 }

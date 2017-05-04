@@ -1,20 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Adapt.Presentation;
 
 using Xamarin.Forms;
 
 namespace Adapt.PresentationSamples
 {
-	public partial class App : Application
+    public partial class App : Application
 	{
-		public App ()
-		{
-			InitializeComponent();
+        public static IPresentationFactory PresentationFactory { get; private set; }
 
+        public App (IPresentationFactory presentationFactory)
+		{
+            PresentationFactory = presentationFactory;
+            InitializeComponent();
 			MainPage = new MainPage();
-		}
+        }
 
 		protected override void OnStart ()
 		{

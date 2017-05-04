@@ -4,8 +4,6 @@
              xmlns:local="clr-namespace:Adapt.Presentation"
              x:Class="Adapt.PresentationSamples.MainPage">
 
-	<Label Text="Welcome to Xamarin Forms!" 
-           VerticalOptions="Center" 
-           HorizontalOptions="Center" />
+    <Button x:Name="TakePhotoButton" Text="Take Photo" />
 
 </ContentPage>
