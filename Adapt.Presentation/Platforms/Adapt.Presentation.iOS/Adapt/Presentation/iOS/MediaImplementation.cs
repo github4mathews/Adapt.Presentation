@@ -163,9 +163,9 @@ namespace Adapt.Presentation.iOS
         private void VerifyOptions(StoreMediaOptions options)
         {
             if (options == null)
-                throw new ArgumentNullException("options");
+                throw new ArgumentNullException(nameof(options));
             if (options.Directory != null && Path.IsPathRooted(options.Directory))
-                throw new ArgumentException("options.Directory must be a relative path", "options");
+                throw new ArgumentException("options.Directory must be a relative path", nameof(options));
         }
 
         private void VerifyCameraOptions(StoreCameraMediaOptions options)
@@ -177,9 +177,11 @@ namespace Adapt.Presentation.iOS
 
         private static MediaPickerController SetupController(MediaPickerDelegate mpDelegate, UIImagePickerControllerSourceType sourceType, string mediaType, StoreCameraMediaOptions options = null)
         {
-            var picker = new MediaPickerController(mpDelegate);
-            picker.MediaTypes = new[] { mediaType };
-            picker.SourceType = sourceType;
+            var picker = new MediaPickerController(mpDelegate)
+            {
+                MediaTypes = new[] {mediaType},
+                SourceType = sourceType
+            };
 
             if (sourceType != UIImagePickerControllerSourceType.Camera)
             {
@@ -243,8 +245,11 @@ namespace Adapt.Presentation.iOS
 
             if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Pad && sourceType == UIImagePickerControllerSourceType.PhotoLibrary)
             {
-                ndelegate.Popover = new UIPopoverController(picker);
-                ndelegate.Popover.Delegate = new MediaPickerPopoverDelegate(ndelegate, picker);
+                ndelegate.Popover = new UIPopoverController(picker)
+                {
+                    Delegate = new MediaPickerPopoverDelegate(ndelegate, picker)
+                };
+
                 ndelegate.DisplayPopover();
             }
             else

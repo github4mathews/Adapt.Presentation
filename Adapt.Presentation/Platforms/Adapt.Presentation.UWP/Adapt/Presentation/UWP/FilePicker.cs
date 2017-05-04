@@ -55,7 +55,7 @@ namespace Adapt.Presentation.UWP
             var picker = new FileOpenPicker
             {
                 ViewMode = PickerViewMode.List,
-                SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+                SuggestedStartLocation = PickerLocationId.DocumentsLibrary
             };
 
             picker.FileTypeFilter.Add("*");

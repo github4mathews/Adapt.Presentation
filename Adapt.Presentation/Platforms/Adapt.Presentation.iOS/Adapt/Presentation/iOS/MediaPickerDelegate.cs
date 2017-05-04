@@ -134,9 +134,9 @@ namespace Adapt.Presentation.iOS
             }
 
             if (hideFirst && Popover.PopoverVisible)
-                Popover.Dismiss(animated: false);
+                Popover.Dismiss(false);
 
-            Popover.PresentFromRect(new CGRect(x, y, width, height), View, 0, animated: true);
+            Popover.PresentFromRect(new CGRect(x, y, width, height), View, 0, true);
         }
 
         private UIDeviceOrientation? orientation;
@@ -159,7 +159,7 @@ namespace Adapt.Presentation.iOS
             {
                 if (Popover != null)
                 {
-                    Popover.Dismiss(animated: true);
+                    Popover.Dismiss(true);
                     Popover.Dispose();
                     Popover = null;
 
@@ -207,7 +207,7 @@ namespace Adapt.Presentation.iOS
             if (co == null)
                 return;
 
-            DisplayPopover(hideFirst: true);
+            DisplayPopover(true);
         }
 
         private bool GetShouldRotate(UIDeviceOrientation orientation)
@@ -275,7 +275,7 @@ namespace Adapt.Presentation.iOS
 
 
             var path = GetOutputPath(MediaImplementation.TypeImage,
-                options.Directory ?? ((IsCaptured) ? string.Empty : "temp"),
+                options.Directory ?? (IsCaptured ? string.Empty : "temp"),
                 options.Name);
 
             var cgImage = image.CGImage;
@@ -302,8 +302,8 @@ namespace Adapt.Presentation.iOS
                     }
 
                     //calculate new size
-                    var width = (image.CGImage.Width * percent);
-                    var height = (image.CGImage.Height * percent);
+                    var width = image.CGImage.Width * percent;
+                    var height = image.CGImage.Height * percent;
 
                     //begin resizing image
                     image = image.ResizeImageWithAspectRatio(width, height);
@@ -316,7 +316,7 @@ namespace Adapt.Presentation.iOS
             }
 
             //iOS quality is 0.0-1.0
-            var quality = (options.CompressionQuality / 100f);
+            var quality = options.CompressionQuality / 100f;
             image.AsJPEG(quality).Save(path, true);
 
             string aPath = null;
@@ -356,7 +356,7 @@ namespace Adapt.Presentation.iOS
             var url = (NSUrl)info[UIImagePickerController.MediaURL];
 
             var path = GetOutputPath(MediaImplementation.TypeMovie,
-                      options.Directory ?? ((IsCaptured) ? string.Empty : "temp"),
+                      options.Directory ?? (IsCaptured ? string.Empty : "temp"),
                       options.Name ?? Path.GetFileName(url.Path));
 
             File.Move(url.Path, path);
@@ -392,10 +392,10 @@ namespace Adapt.Presentation.iOS
 
         private static string GetUniquePath(string type, string path, string name)
         {
-            var isPhoto = (type == MediaImplementation.TypeImage);
+            var isPhoto = type == MediaImplementation.TypeImage;
             var ext = Path.GetExtension(name);
             if (ext == string.Empty)
-                ext = ((isPhoto) ? ".jpg" : ".mp4");
+                ext = isPhoto ? ".jpg" : ".mp4";
 
             name = Path.GetFileNameWithoutExtension(name);
 
@@ -428,17 +428,17 @@ namespace Adapt.Presentation.iOS
 
         private static bool IsValidInterfaceOrientation(UIDeviceOrientation self)
         {
-            return (self != UIDeviceOrientation.FaceUp && self != UIDeviceOrientation.FaceDown && self != UIDeviceOrientation.Unknown);
+            return self != UIDeviceOrientation.FaceUp && self != UIDeviceOrientation.FaceDown && self != UIDeviceOrientation.Unknown;
         }
 
         private static bool IsSameOrientationKind(UIDeviceOrientation o1, UIDeviceOrientation o2)
         {
             if (o1 == UIDeviceOrientation.FaceDown || o1 == UIDeviceOrientation.FaceUp)
-                return (o2 == UIDeviceOrientation.FaceDown || o2 == UIDeviceOrientation.FaceUp);
+                return o2 == UIDeviceOrientation.FaceDown || o2 == UIDeviceOrientation.FaceUp;
             if (o1 == UIDeviceOrientation.LandscapeLeft || o1 == UIDeviceOrientation.LandscapeRight)
-                return (o2 == UIDeviceOrientation.LandscapeLeft || o2 == UIDeviceOrientation.LandscapeRight);
+                return o2 == UIDeviceOrientation.LandscapeLeft || o2 == UIDeviceOrientation.LandscapeRight;
             if (o1 == UIDeviceOrientation.Portrait || o1 == UIDeviceOrientation.PortraitUpsideDown)
-                return (o2 == UIDeviceOrientation.Portrait || o2 == UIDeviceOrientation.PortraitUpsideDown);
+                return o2 == UIDeviceOrientation.Portrait || o2 == UIDeviceOrientation.PortraitUpsideDown;
 
             return false;
         }

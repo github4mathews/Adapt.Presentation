@@ -4,7 +4,7 @@ using Xamarin.Forms;
 
 namespace Adapt.PresentationSamples
 {
-    public partial class App : Application
+    public partial class App
     {
         public static IPresentationFactory PresentationFactory { get; private set; }
         public static IPermissions CurrentPermissions { get; private set; }

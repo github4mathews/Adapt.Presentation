@@ -46,7 +46,7 @@ namespace Adapt.Presentation.UWP
                             devices.Add(device.Id);
                     }
 
-                    isCameraAvailable = (devices.Count > 0);
+                    isCameraAvailable = devices.Count > 0;
                 }
             }
             catch (Exception ex)
@@ -174,10 +174,12 @@ namespace Adapt.Presentation.UWP
         /// <returns>Media file or null if canceled</returns>
         public async Task<MediaFile> PickPhotoAsync(PickMediaOptions options = null)
         {
-            var picker = new FileOpenPicker();
-            picker.SuggestedStartLocation = PickerLocationId.PicturesLibrary;
-            picker.ViewMode = PickerViewMode.Thumbnail;
-           
+            var picker = new FileOpenPicker
+            {
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
+                ViewMode = PickerViewMode.Thumbnail
+            };
+
             foreach (var filter in SupportedImageFileTypes)
                 picker.FileTypeFilter.Add(filter);
 
@@ -265,9 +267,12 @@ namespace Adapt.Presentation.UWP
         /// <returns>Media file of video or null if canceled</returns>
         public async Task<MediaFile> PickVideoAsync()
         {
-            var picker = new FileOpenPicker();
-            picker.SuggestedStartLocation = PickerLocationId.VideosLibrary;
-            picker.ViewMode = PickerViewMode.Thumbnail;
+            var picker = new FileOpenPicker
+            {
+                SuggestedStartLocation = PickerLocationId.VideosLibrary,
+                ViewMode = PickerViewMode.Thumbnail
+            };
+
             foreach (var filter in SupportedVideoFileTypes)
                 picker.FileTypeFilter.Add(filter);
 

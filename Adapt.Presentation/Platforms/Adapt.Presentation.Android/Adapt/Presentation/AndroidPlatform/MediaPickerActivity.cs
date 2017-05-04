@@ -103,9 +103,9 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             base.OnCreate(savedInstanceState);
 
-            var b = (savedInstanceState ?? Intent.Extras);
+            var b = savedInstanceState ?? Intent.Extras;
 
-            var ran = b.GetBoolean("ran", defaultValue: false);
+            var ran = b.GetBoolean("ran", false);
 
             title = b.GetString(MediaStore.MediaColumns.Title);
             description = b.GetString(MediaStore.Images.ImageColumns.Description);
@@ -197,8 +197,7 @@ namespace Adapt.Presentation.AndroidPlatform
             }
             finally
             {
-                if (pickIntent != null)
-                    pickIntent.Dispose();
+                pickIntent?.Dispose();
             }
         }
 
@@ -293,15 +292,16 @@ namespace Adapt.Presentation.AndroidPlatform
                 
                 var resultPath = t.Result.Item1;
                 var aPath = originalPath;
-                if (resultPath != null && File.Exists(t.Result.Item1))
+                if (resultPath == null || !File.Exists(t.Result.Item1))
                 {
-                    var mf = new MediaFile(resultPath, () =>
-                      {
-                          return File.OpenRead(resultPath);
-                      }, albumPath: aPath);
-                    return new MediaPickedEventArgs(requestCode, false, mf);
+                    return new MediaPickedEventArgs(requestCode, new MediaFileNotFoundException(originalPath));
                 }
-                return new MediaPickedEventArgs(requestCode, new MediaFileNotFoundException(originalPath));
+
+                var mf = new MediaFile(resultPath, () =>
+                {
+                    return File.OpenRead(resultPath);
+                }, albumPath: aPath);
+                return new MediaPickedEventArgs(requestCode, false, mf);
             });
         }
 
@@ -327,7 +327,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     //delete empty file
                     DeleteOutputFile();
 
-                    var future = TaskFromResult(new MediaPickedEventArgs(requestCode, isCanceled: true));
+                    var future = TaskFromResult(new MediaPickedEventArgs(requestCode, true));
 
                     Finish();
                     await Task.Delay(50);
@@ -427,7 +427,7 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             var ext = Path.GetExtension(name);
             if (ext == string.Empty)
-                ext = ((isPhoto) ? ".jpg" : ".mp4");
+                ext = isPhoto ? ".jpg" : ".mp4";
 
             name = Path.GetFileNameWithoutExtension(name);
 
@@ -452,7 +452,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     name = "VID_" + timestamp + ".mp4";
             }
 
-            var mediaType = (isPhoto) ? Environment.DirectoryPictures : Environment.DirectoryMovies;
+            var mediaType = isPhoto ? Environment.DirectoryPictures : Environment.DirectoryMovies;
             var directory = saveToAlbum ? Environment.GetExternalStoragePublicDirectory(mediaType) : context.GetExternalFilesDir(mediaType);
             using (var mediaStorageDir = new Java.IO.File(directory, subdir))
             {
@@ -597,7 +597,7 @@ namespace Adapt.Presentation.AndroidPlatform
         public MediaPickedEventArgs(int id, Exception error)
         {
             if (error == null)
-                throw new ArgumentNullException("error");
+                throw new ArgumentNullException(nameof(error));
 
             RequestId = id;
             Error = error;
@@ -608,7 +608,7 @@ namespace Adapt.Presentation.AndroidPlatform
             RequestId = id;
             IsCanceled = isCanceled;
             if (!IsCanceled && media == null)
-                throw new ArgumentNullException("media");
+                throw new ArgumentNullException(nameof(media));
 
             Media = media;
         }

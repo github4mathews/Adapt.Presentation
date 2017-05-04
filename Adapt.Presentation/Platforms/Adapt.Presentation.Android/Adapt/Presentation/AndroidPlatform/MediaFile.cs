@@ -39,13 +39,13 @@ namespace Adapt.Presentation.AndroidPlatform
         public static Task<MediaFile> GetMediaFileExtraAsync(this Intent self, Context context)
         {
             if (self == null)
-                throw new ArgumentNullException("self");
+                throw new ArgumentNullException(nameof(self));
             if (context == null)
-                throw new ArgumentNullException("context");
+                throw new ArgumentNullException(nameof(context));
 
             var action = self.GetStringExtra("action");
             if (action == null)
-                throw new ArgumentException("Intent was not results from MediaPicker", "self");
+                throw new ArgumentException("Intent was not results from MediaPicker", nameof(self));
 
             var uri = (Android.Net.Uri)self.GetParcelableExtra("MediaFile");
             var isPhoto = self.GetBooleanExtra("isPhoto", false);

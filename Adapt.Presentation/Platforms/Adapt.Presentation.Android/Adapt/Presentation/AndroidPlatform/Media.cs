@@ -70,7 +70,7 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <returns>Media file or null if canceled</returns>
         public async Task<MediaFile> PickPhotoAsync(PickMediaOptions options = null)
         {
-            if (!(await RequestStoragePermission()))
+            if (!await RequestStoragePermission())
             {
                 return null;
             }
@@ -108,7 +108,7 @@ namespace Adapt.Presentation.AndroidPlatform
             if (!IsCameraAvailable)
                 throw new NotSupportedException();
 
-            if (!(await RequestStoragePermission()))
+            if (!await RequestStoragePermission())
             {
                 return null;
             }
@@ -190,7 +190,7 @@ namespace Adapt.Presentation.AndroidPlatform
         public async Task<MediaFile> PickVideoAsync()
         {
 
-            if (!(await RequestStoragePermission()))
+            if (!await RequestStoragePermission())
             {
                 return null;
             }
@@ -208,7 +208,7 @@ namespace Adapt.Presentation.AndroidPlatform
             if (!IsCameraAvailable)
                 throw new NotSupportedException();
 
-            if (!(await RequestStoragePermission()))
+            if (!await RequestStoragePermission())
             {
                 return null;
             }
@@ -237,14 +237,13 @@ namespace Adapt.Presentation.AndroidPlatform
 
             Console.WriteLine("Does not have storage permission granted, requesting.");
             var results = await CurrentPermissions.RequestPermissionsAsync(Permission.Storage);
-            if (results.ContainsKey(Permission.Storage) &&
-                results[Permission.Storage] != PermissionStatus.Granted)
+            if (!results.ContainsKey(Permission.Storage) || results[Permission.Storage] == PermissionStatus.Granted)
             {
-                Console.WriteLine("Storage permission Denied.");
-                return false;
+                return true;
             }
 
-            return true;
+            Console.WriteLine("Storage permission Denied.");
+            return false;
         }
 
 
@@ -252,9 +251,9 @@ namespace Adapt.Presentation.AndroidPlatform
         private void VerifyOptions(StoreMediaOptions options)
         {
             if (options == null)
-                throw new ArgumentNullException("options");
+                throw new ArgumentNullException(nameof(options));
             if (System.IO.Path.IsPathRooted(options.Directory))
-                throw new ArgumentException("options.Directory must be a relative path", "options");
+                throw new ArgumentException("options.Directory must be a relative path", nameof(options));
 
             if(!string.IsNullOrWhiteSpace(options.Name))
                 options.Name = Regex.Replace(options.Name, IllegalCharacters, string.Empty).Replace(@"\", string.Empty);
@@ -277,7 +276,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 pickerIntent.PutExtra(MediaPickerActivity.ExtraPath, options.Directory);
                 pickerIntent.PutExtra(MediaStore.Images.ImageColumns.Title, options.Name);
 
-                var cameraOptions = (options as StoreCameraMediaOptions);
+                var cameraOptions = options as StoreCameraMediaOptions;
                 if (cameraOptions != null)
                 {
                     if (cameraOptions.DefaultCamera == CameraDevice.Front)
@@ -286,7 +285,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     }
                     pickerIntent.PutExtra(MediaPickerActivity.ExtraSaveToAlbum, cameraOptions.SaveToAlbum);
                 }
-                var vidOptions = (options as StoreVideoOptions);
+                var vidOptions = options as StoreVideoOptions;
                 if (vidOptions != null)
                 {
                     if (vidOptions.DefaultCamera == CameraDevice.Front)

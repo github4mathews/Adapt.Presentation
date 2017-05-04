@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace Adapt.PresentationSamples
 {
-    public partial class MainPage : ContentPage
+    public partial class MainPage
     {
         public MainPage()
         {
@@ -34,8 +34,7 @@ namespace Adapt.PresentationSamples
             {
                 using (var readFileStream = mediaFile.GetStream())
                 {
-                    var fileTypes = new Dictionary<string, IList<string>>();
-                    fileTypes.Add("Jpeg Image", new List<string> { ".jpg" });
+                    var fileTypes = new Dictionary<string, IList<string>> {{"Jpeg Image", new List<string> {".jpg"}}};
 
                     using (var fileData = await filePicker.PickAndOpenFileForWriting(fileTypes, defaultFileName))
                     {
