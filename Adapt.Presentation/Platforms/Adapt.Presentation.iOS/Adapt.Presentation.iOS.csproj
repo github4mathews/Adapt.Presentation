@@ -47,7 +47,7 @@
     <Compile Include="Adapt\Presentation\iOS\MediaPickerDelegate.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerPopoverDelegate.cs" />
     <Compile Include="Adapt\Presentation\iOS\NSDataStream.cs" />
-    <Compile Include="Adapt\Presentation\iOS\PermissionsImplementation.cs" />
+    <Compile Include="Adapt\Presentation\iOS\Permissions.cs" />
     <Compile Include="Adapt\Presentation\iOS\PresentationFactory.cs" />
     <Compile Include="Adapt\Presentation\iOS\UIImageExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
