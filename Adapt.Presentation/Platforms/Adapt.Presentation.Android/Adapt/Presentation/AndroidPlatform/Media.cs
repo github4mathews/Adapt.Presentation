@@ -40,7 +40,7 @@ namespace Adapt.Presentation.AndroidPlatform
         public Media(IPermissions currentPermissions) : base(currentPermissions)
         {
 
-            this.context = Android.App.Application.Context;
+            context = Android.App.Application.Context;
             IsCameraAvailable = context.PackageManager.HasSystemFeature(PackageManager.FeatureCamera);
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Gingerbread)
@@ -138,7 +138,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                     try
                     {
-                        Android.Media.MediaScannerConnection.ScanFile(context, new[] { f.AbsolutePath }, null, context as MediaPickerActivity);
+                        MediaScannerConnection.ScanFile(context, new[] { f.AbsolutePath }, null, context as MediaPickerActivity);
 
                         var values = new ContentValues();
                         values.Put(MediaStore.Images.Media.InterfaceConsts.Title, System.IO.Path.GetFileNameWithoutExtension(f.AbsolutePath));
@@ -262,7 +262,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
         private Intent CreateMediaIntent(int id, string type, string action, StoreMediaOptions options, bool tasked = true)
         {
-            var pickerIntent = new Intent(this.context, typeof(MediaPickerActivity));
+            var pickerIntent = new Intent(context, typeof(MediaPickerActivity));
             pickerIntent.PutExtra(MediaPickerActivity.ExtraId, id);
             pickerIntent.PutExtra(MediaPickerActivity.ExtraType, type);
             pickerIntent.PutExtra(MediaPickerActivity.ExtraAction, action);
@@ -300,11 +300,11 @@ namespace Adapt.Presentation.AndroidPlatform
 
         private int GetRequestId()
         {
-            var id = this.requestId;
-            if (this.requestId == Int32.MaxValue)
-                this.requestId = 0;
+            var id = requestId;
+            if (requestId == Int32.MaxValue)
+                requestId = 0;
             else
-                this.requestId++;
+                requestId++;
 
             return id;
         }
@@ -314,15 +314,15 @@ namespace Adapt.Presentation.AndroidPlatform
             var id = GetRequestId();
 
             var ntcs = new TaskCompletionSource<MediaFile>(id);
-            if (Interlocked.CompareExchange(ref this.completionSource, ntcs, null) != null)
+            if (Interlocked.CompareExchange(ref completionSource, ntcs, null) != null)
                 throw new InvalidOperationException("Only one operation can be active at a time");
 
-            this.context.StartActivity(CreateMediaIntent(id, type, action, options));
+            context.StartActivity(CreateMediaIntent(id, type, action, options));
 
             EventHandler<MediaPickedEventArgs> handler = null;
             handler = (s, e) =>
             {
-                var tcs = Interlocked.Exchange(ref this.completionSource, null);
+                var tcs = Interlocked.Exchange(ref completionSource, null);
 
                 MediaPickerActivity.MediaPicked -= handler;
 

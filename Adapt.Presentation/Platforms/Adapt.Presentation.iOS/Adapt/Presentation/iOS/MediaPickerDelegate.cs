@@ -22,7 +22,7 @@ using CoreGraphics;
 using AssetsLibrary;
 using Foundation;
 using UIKit;
-using NSAction = global::System.Action;
+using NSAction = System.Action;
 using System.Globalization;
 
 namespace Adapt.Presentation.iOS
@@ -33,7 +33,7 @@ namespace Adapt.Presentation.iOS
         internal MediaPickerDelegate(UIViewController viewController, UIImagePickerControllerSourceType sourceType, StoreCameraMediaOptions options)
         {
             this.viewController = viewController;
-            this.source = sourceType;
+            source = sourceType;
             this.options = options ?? new StoreCameraMediaOptions();
 
             if (viewController != null)
@@ -122,10 +122,7 @@ namespace Adapt.Presentation.iOS
 
             if (orientation == null)
             {
-                if (IsValidInterfaceOrientation(UIDevice.CurrentDevice.Orientation))
-                    orientation = UIDevice.CurrentDevice.Orientation;
-                else
-                    orientation = GetDeviceOrientation(this.viewController.InterfaceOrientation);
+                orientation = IsValidInterfaceOrientation(UIDevice.CurrentDevice.Orientation) ? UIDevice.CurrentDevice.Orientation : GetDeviceOrientation(viewController.InterfaceOrientation);
             }
 
             nfloat x, y;
@@ -277,9 +274,7 @@ namespace Adapt.Presentation.iOS
 
         private async Task<MediaFile> GetPictureMediaFile(NSDictionary info)
         {
-            var image = (UIImage)info[UIImagePickerController.EditedImage];
-            if (image == null)
-                image = (UIImage)info[UIImagePickerController.OriginalImage];
+            var image = (UIImage)info[UIImagePickerController.EditedImage] ?? (UIImage)info[UIImagePickerController.OriginalImage];
 
             var meta = info[UIImagePickerController.MediaMetadata] as NSDictionary;
 
@@ -339,7 +334,7 @@ namespace Adapt.Presentation.iOS
             }
             else
             {
-                if (this.options.SaveToAlbum)
+                if (options.SaveToAlbum)
                 {
                     try
                     {
@@ -379,7 +374,7 @@ namespace Adapt.Presentation.iOS
             }
             else
             {
-                if (this.options.SaveToAlbum)
+                if (options.SaveToAlbum)
                 {
                     try
                     {

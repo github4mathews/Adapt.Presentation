@@ -27,7 +27,7 @@ namespace Adapt.Presentation.iOS
 
         public NSDataStream(NSData data)
         {
-            this.theData = data;
+            theData = data;
         }
 
         protected override void Dispose(bool disposing)

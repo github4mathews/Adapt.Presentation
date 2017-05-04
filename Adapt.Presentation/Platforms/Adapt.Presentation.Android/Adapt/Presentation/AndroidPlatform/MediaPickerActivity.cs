@@ -36,7 +36,7 @@ namespace Adapt.Presentation.AndroidPlatform
     /// <summary>
     /// Picker
     /// </summary>
-    [Activity(ConfigurationChanges=Android.Content.PM.ConfigChanges.Orientation | Android.Content.PM.ConfigChanges.ScreenSize)]
+    [Activity(ConfigurationChanges=ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class MediaPickerActivity
         : Activity, Android.Media.MediaScannerConnection.IOnScanCompletedListener
     {
@@ -76,19 +76,19 @@ namespace Adapt.Presentation.AndroidPlatform
         protected override void OnSaveInstanceState(Bundle outState)
         {
             outState.PutBoolean("ran", true);
-            outState.PutString(MediaStore.MediaColumns.Title, this.title);
-            outState.PutString(MediaStore.Images.ImageColumns.Description, this.description);
-            outState.PutInt(ExtraId, this.id);
-            outState.PutString(ExtraType, this.type);
-            outState.PutString(ExtraAction, this.action);
-            outState.PutInt(MediaStore.ExtraDurationLimit, this.seconds);
-            outState.PutInt(MediaStore.ExtraVideoQuality, (int)this.quality);
+            outState.PutString(MediaStore.MediaColumns.Title, title);
+            outState.PutString(MediaStore.Images.ImageColumns.Description, description);
+            outState.PutInt(ExtraId, id);
+            outState.PutString(ExtraType, type);
+            outState.PutString(ExtraAction, action);
+            outState.PutInt(MediaStore.ExtraDurationLimit, seconds);
+            outState.PutInt(MediaStore.ExtraVideoQuality, (int)quality);
             outState.PutBoolean(ExtraSaveToAlbum, saveToAlbum);
-            outState.PutBoolean(ExtraTasked, this.tasked);
-            outState.PutInt(ExtraFront, this.front);
+            outState.PutBoolean(ExtraTasked, tasked);
+            outState.PutInt(ExtraFront, front);
 
-            if (this.path != null)
-                outState.PutString(ExtraPath, this.path.Path);
+            if (path != null)
+                outState.PutString(ExtraPath, path.Path);
 
             base.OnSaveInstanceState(outState);
         }
@@ -107,44 +107,44 @@ namespace Adapt.Presentation.AndroidPlatform
 
             var ran = b.GetBoolean("ran", defaultValue: false);
 
-            this.title = b.GetString(MediaStore.MediaColumns.Title);
-            this.description = b.GetString(MediaStore.Images.ImageColumns.Description);
+            title = b.GetString(MediaStore.MediaColumns.Title);
+            description = b.GetString(MediaStore.Images.ImageColumns.Description);
 
-            this.tasked = b.GetBoolean(ExtraTasked);
-            this.id = b.GetInt(ExtraId, 0);
-            this.type = b.GetString(ExtraType);
-            this.front = b.GetInt(ExtraFront);
-            if (this.type == "image/*")
-                this.isPhoto = true;
+            tasked = b.GetBoolean(ExtraTasked);
+            id = b.GetInt(ExtraId, 0);
+            type = b.GetString(ExtraType);
+            front = b.GetInt(ExtraFront);
+            if (type == "image/*")
+                isPhoto = true;
 
-            this.action = b.GetString(ExtraAction);
+            action = b.GetString(ExtraAction);
             Intent pickIntent = null;
             try
             {
-                pickIntent = new Intent(this.action);
-                if (this.action == Intent.ActionPick)
+                pickIntent = new Intent(action);
+                if (action == Intent.ActionPick)
                     pickIntent.SetType(type);
                 else
                 {
-                    if (!this.isPhoto)
+                    if (!isPhoto)
                     {
-                        this.seconds = b.GetInt(MediaStore.ExtraDurationLimit, 0);
-                        if (this.seconds != 0)
+                        seconds = b.GetInt(MediaStore.ExtraDurationLimit, 0);
+                        if (seconds != 0)
                             pickIntent.PutExtra(MediaStore.ExtraDurationLimit, seconds);
                     }
 
-                    this.saveToAlbum = b.GetBoolean(ExtraSaveToAlbum);
-                    pickIntent.PutExtra(ExtraSaveToAlbum, this.saveToAlbum);
+                    saveToAlbum = b.GetBoolean(ExtraSaveToAlbum);
+                    pickIntent.PutExtra(ExtraSaveToAlbum, saveToAlbum);
 
-                    this.quality = (VideoQuality)b.GetInt(MediaStore.ExtraVideoQuality, (int)VideoQuality.High);
-                    pickIntent.PutExtra(MediaStore.ExtraVideoQuality, GetVideoQuality(this.quality));
+                    quality = (VideoQuality)b.GetInt(MediaStore.ExtraVideoQuality, (int)VideoQuality.High);
+                    pickIntent.PutExtra(MediaStore.ExtraVideoQuality, GetVideoQuality(quality));
 
                     if (front != 0)
                         pickIntent.PutExtra(ExtraFront, (int)Android.Hardware.CameraFacing.Front);
 
                     if (!ran)
                     {
-                        this.path = GetOutputMediaFile(this, b.GetString(ExtraPath), this.title, this.isPhoto, false);
+                        path = GetOutputMediaFile(this, b.GetString(ExtraPath), title, isPhoto, false);
 
                         Touch();
 
@@ -166,32 +166,32 @@ namespace Adapt.Presentation.AndroidPlatform
 							}
 						}
 
-						if (targetsNOrNewer && this.path.Scheme == "file")
+						if (targetsNOrNewer && path.Scheme == "file")
 						{
 							var photoURI = FileProvider.GetUriForFile(this,
 																	  Application.Context.PackageName + ".fileprovider",
-							                                          new Java.IO.File(this.path.Path));
+							                                          new Java.IO.File(path.Path));
 
 							GrantUriPermissionsForIntent(pickIntent, photoURI);
 							pickIntent.PutExtra(MediaStore.ExtraOutput, photoURI);
 						}
 						else
 						{
-							pickIntent.PutExtra(MediaStore.ExtraOutput, this.path);
+							pickIntent.PutExtra(MediaStore.ExtraOutput, path);
 						}
                     }
                     else
-                        this.path = Uri.Parse(b.GetString(ExtraPath));
+                        path = Uri.Parse(b.GetString(ExtraPath));
                 }
 
 
 
                 if (!ran)
-                    StartActivityForResult(pickIntent, this.id);
+                    StartActivityForResult(pickIntent, id);
             }
             catch (Exception ex)
             {
-                OnMediaPicked(new MediaPickedEventArgs(this.id, ex));
+                OnMediaPicked(new MediaPickedEventArgs(id, ex));
                 //must finish here because an exception has occured else blank screen
                 Finish();
             }
@@ -204,10 +204,10 @@ namespace Adapt.Presentation.AndroidPlatform
 
         private void Touch()
         {
-            if (this.path.Scheme != "file")
+            if (path.Scheme != "file")
                 return;
 
-            var newPath = GetLocalPath(this.path);
+            var newPath = GetLocalPath(path);
             try
             {
                 var stream = File.Create(newPath);
@@ -226,10 +226,10 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             try
             {
-                if (this.path?.Scheme != "file")
+                if (path?.Scheme != "file")
                     return;
 
-                var localPath = GetLocalPath(this.path);
+                var localPath = GetLocalPath(path);
 
                 if (File.Exists(localPath))
                 {
@@ -320,7 +320,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
 
 
-            if (this.tasked)
+            if (tasked)
             {
 
                
@@ -340,7 +340,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 else
                 {
                     
-                    var e = await GetMediaFileAsync(this, requestCode, this.action, this.isPhoto, ref this.path, (data != null) ? data.Data : null, false);
+                    var e = await GetMediaFileAsync(this, requestCode, action, isPhoto, ref path, (data != null) ? data.Data : null, false);
                     Finish();
                     await Task.Delay(50);
                     OnMediaPicked(e);
@@ -360,10 +360,10 @@ namespace Adapt.Presentation.AndroidPlatform
                 {
                     var resultData = new Intent();
                     resultData.PutExtra("MediaFile", (data != null) ? data.Data : null);
-                    resultData.PutExtra("path", this.path);
-                    resultData.PutExtra("isPhoto", this.isPhoto);
-                    resultData.PutExtra("action", this.action);
-                    resultData.PutExtra(ExtraSaveToAlbum, this.saveToAlbum);
+                    resultData.PutExtra("path", path);
+                    resultData.PutExtra("isPhoto", isPhoto);
+                    resultData.PutExtra("action", action);
+                    resultData.PutExtra(ExtraSaveToAlbum, saveToAlbum);
                     SetResult(Result.Ok, resultData);
                 }
 
