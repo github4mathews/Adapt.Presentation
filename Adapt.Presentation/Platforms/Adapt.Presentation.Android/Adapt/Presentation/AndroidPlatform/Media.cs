@@ -221,7 +221,7 @@ namespace Adapt.Presentation.AndroidPlatform
         private TaskCompletionSource<MediaFile> completionSource;
 
 
-        async Task<bool> RequestStoragePermission()
+        private async Task<bool> RequestStoragePermission()
         {
             //We always have permission on anything lower than marshmallow.
             if ((int)Build.VERSION.SdkInt < 23)
@@ -244,7 +244,7 @@ namespace Adapt.Presentation.AndroidPlatform
         }
 
 
-        const string IllegalCharacters = "[|\\?*<\":>/']";
+        private const string IllegalCharacters = "[|\\?*<\":>/']";
         private void VerifyOptions(StoreMediaOptions options)
         {
             if (options == null)
@@ -603,7 +603,7 @@ namespace Adapt.Presentation.AndroidPlatform
         }
 
 
-        void SetExifData(string filePath, Orientation orientation)
+        private void SetExifData(string filePath, Orientation orientation)
         {
             try
             {
@@ -622,7 +622,7 @@ namespace Adapt.Presentation.AndroidPlatform
             }
         }
 
-        static int GetRotation(string filePath)
+        private static int GetRotation(string filePath)
         {
             try
             {

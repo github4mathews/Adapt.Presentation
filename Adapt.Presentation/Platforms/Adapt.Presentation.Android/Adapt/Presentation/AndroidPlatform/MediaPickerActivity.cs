@@ -306,7 +306,7 @@ namespace Adapt.Presentation.AndroidPlatform
             });
         }
 
-        bool completed;
+        private bool completed;
         /// <summary>
         /// OnActivity Result
         /// </summary>

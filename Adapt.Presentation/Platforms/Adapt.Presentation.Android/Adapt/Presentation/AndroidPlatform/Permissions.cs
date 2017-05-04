@@ -17,10 +17,11 @@ namespace Adapt.Presentation.AndroidPlatform
     public class Permissions : IPermissions
     {
         #region Fields
-        object locker = new object();
-        TaskCompletionSource<Dictionary<Permission, PermissionStatus>> tcs;
-        Dictionary<Permission, PermissionStatus> results;
-        IList<string> requestedPermissions;
+
+        private readonly object locker = new object();
+        private TaskCompletionSource<Dictionary<Permission, PermissionStatus>> tcs;
+        private Dictionary<Permission, PermissionStatus> results;
+        private IList<string> requestedPermissions;
         #endregion
 
         /// <summary>
@@ -171,7 +172,7 @@ namespace Adapt.Presentation.AndroidPlatform
             return await tcs.Task.ConfigureAwait(false);
         }
 
-        const int PermissionCode = 25;
+        private const int PermissionCode = 25;
         /// <summary>
         /// Callback that must be set when request permissions has finished
         /// </summary>
@@ -209,7 +210,7 @@ namespace Adapt.Presentation.AndroidPlatform
             tcs.SetResult(results);
         }
 
-        static Permission GetPermissionForManifestName(string permission)
+        private static Permission GetPermissionForManifestName(string permission)
         {
             switch (permission)
             {
@@ -251,7 +252,7 @@ namespace Adapt.Presentation.AndroidPlatform
             return Permission.Unknown;
         }
 
-        List<string> GetManifestNames(Permission permission)
+        private List<string> GetManifestNames(Permission permission)
         {
             var permissionNames = new List<string>();
             switch(permission)
@@ -364,7 +365,7 @@ namespace Adapt.Presentation.AndroidPlatform
             return permissionNames;
         }
 
-        bool HasPermissionInManifest(string permission)
+        private bool HasPermissionInManifest(string permission)
         {
             try
             {

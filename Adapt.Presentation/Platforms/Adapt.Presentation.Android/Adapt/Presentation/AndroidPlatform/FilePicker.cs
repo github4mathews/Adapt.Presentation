@@ -20,7 +20,7 @@ namespace Adapt.Presentation.AndroidPlatform
         #region Fields
         private int _requestId;
         private TaskCompletionSource<FileData> _completionSource;
-        private Context _Context;
+        private readonly Context _Context;
         #endregion
 
         #region Constructor

@@ -295,7 +295,7 @@ namespace Adapt.Presentation.iOS
         }
 
 
-        void CheckCameraUsageDescription()
+        private void CheckCameraUsageDescription()
         {
             var info = NSBundle.MainBundle.InfoDictionary;
 
@@ -306,7 +306,7 @@ namespace Adapt.Presentation.iOS
             }
         }
 
-        void CheckPhotoUsageDescription()
+        private void CheckPhotoUsageDescription()
         {
             var info = NSBundle.MainBundle.InfoDictionary;
 

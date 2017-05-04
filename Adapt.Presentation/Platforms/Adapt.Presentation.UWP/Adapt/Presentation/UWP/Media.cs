@@ -29,7 +29,7 @@ namespace Adapt.Presentation.UWP
             watcher.Start();
         }
 
-        bool initialized = false;
+        private bool initialized = false;
         public async Task<bool> Initialize()
         {
             if (initialized)

@@ -13,7 +13,7 @@ namespace Adapt.Presentation.UWP
     /// </summary>
     public class Permissions : IPermissions
     {
-        Guid ActivitySensorClassId = new Guid("9D9E0118-1807-4F2E-96E4-2CE57142E196");
+        private readonly Guid ActivitySensorClassId = new Guid("9D9E0118-1807-4F2E-96E4-2CE57142E196");
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission
         /// Only on Android

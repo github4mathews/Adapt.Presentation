@@ -20,10 +20,10 @@ using System.Runtime.InteropServices;
 
 namespace Adapt.Presentation.iOS
 {
-    class NSDataStream : Stream
+    internal class NSDataStream : Stream
     {
-        NSData theData;
-        uint pos;
+        private NSData theData;
+        private uint pos;
 
         public NSDataStream(NSData data)
         {

@@ -7,7 +7,7 @@ namespace Adapt.Presentation.AndroidPlatform
     /// </summary>
     public class CrossCurrentActivity
     {
-        static Lazy<ICurrentActivity> Implementation = new Lazy<ICurrentActivity>(() => CreateCurrentActivity(), System.Threading.LazyThreadSafetyMode.PublicationOnly);
+        private static readonly Lazy<ICurrentActivity> Implementation = new Lazy<ICurrentActivity>(CreateCurrentActivity, System.Threading.LazyThreadSafetyMode.PublicationOnly);
 
         /// <summary>
         /// Current settings to use
@@ -25,7 +25,7 @@ namespace Adapt.Presentation.AndroidPlatform
             }
         }
 
-        static ICurrentActivity CreateCurrentActivity()
+        private static ICurrentActivity CreateCurrentActivity()
         {
             return new CurrentActivityImplementation();
         }

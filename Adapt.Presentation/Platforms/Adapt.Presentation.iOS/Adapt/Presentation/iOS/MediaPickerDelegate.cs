@@ -147,7 +147,7 @@ namespace Adapt.Presentation.iOS
         }
 
         private UIDeviceOrientation? orientation;
-        private NSObject observer;
+        private readonly NSObject observer;
         private readonly UIViewController viewController;
         private readonly UIImagePickerControllerSourceType source;
         private TaskCompletionSource<MediaFile> tcs = new TaskCompletionSource<MediaFile>();
