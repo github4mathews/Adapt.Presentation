@@ -62,11 +62,11 @@ namespace Adapt.Presentation.iOS
             MediaFile mediaFile;
             switch ((NSString)info[UIImagePickerController.MediaType])
             {
-                case MediaImplementation.TypeImage:
+                case Media.TypeImage:
                     mediaFile = await GetPictureMediaFile(info);
                     break;
 
-                case MediaImplementation.TypeMovie:
+                case Media.TypeMovie:
                     mediaFile = await GetMovieMediaFile(info);
                     break;
 
@@ -76,7 +76,7 @@ namespace Adapt.Presentation.iOS
 
             if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone)
             {
-                UIApplication.SharedApplication.SetStatusBarStyle(MediaImplementation.StatusBarStyle, false);
+                UIApplication.SharedApplication.SetStatusBarStyle(Media.StatusBarStyle, false);
             }
 
             Dismiss(picker, () =>
@@ -93,7 +93,7 @@ namespace Adapt.Presentation.iOS
 
             if (UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone)
             {
-                UIApplication.SharedApplication.SetStatusBarStyle(MediaImplementation.StatusBarStyle, false);
+                UIApplication.SharedApplication.SetStatusBarStyle(Media.StatusBarStyle, false);
             }
 
             Dismiss(picker, () =>
@@ -274,7 +274,7 @@ namespace Adapt.Presentation.iOS
             var meta = info[UIImagePickerController.MediaMetadata] as NSDictionary;
 
 
-            var path = GetOutputPath(MediaImplementation.TypeImage,
+            var path = GetOutputPath(Media.TypeImage,
                 options.Directory ?? (IsCaptured ? string.Empty : "temp"),
                 options.Name);
 
@@ -355,7 +355,7 @@ namespace Adapt.Presentation.iOS
         {
             var url = (NSUrl)info[UIImagePickerController.MediaURL];
 
-            var path = GetOutputPath(MediaImplementation.TypeMovie,
+            var path = GetOutputPath(Media.TypeMovie,
                       options.Directory ?? (IsCaptured ? string.Empty : "temp"),
                       options.Name ?? Path.GetFileName(url.Path));
 
@@ -392,7 +392,7 @@ namespace Adapt.Presentation.iOS
 
         private static string GetUniquePath(string type, string path, string name)
         {
-            var isPhoto = type == MediaImplementation.TypeImage;
+            var isPhoto = type == Media.TypeImage;
             var ext = Path.GetExtension(name);
             if (ext == string.Empty)
                 ext = isPhoto ? ".jpg" : ".mp4";
@@ -418,7 +418,7 @@ namespace Adapt.Presentation.iOS
             }
 
             var timestamp = DateTime.Now.ToString("yyyMMdd_HHmmss", CultureInfo.InvariantCulture);
-            if (type == MediaImplementation.TypeImage)
+            if (type == Media.TypeImage)
                 name = "IMG_" + timestamp + ".jpg";
             else
                 name = "VID_" + timestamp + ".mp4";

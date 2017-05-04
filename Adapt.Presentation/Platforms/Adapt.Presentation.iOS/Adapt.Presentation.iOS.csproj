@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapt\Presentation\iOS\FilePicker.cs" />
-    <Compile Include="Adapt\Presentation\iOS\MediaImplementation.cs" />
+    <Compile Include="Adapt\Presentation\iOS\Media.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerController.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerDelegate.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerPopoverDelegate.cs" />

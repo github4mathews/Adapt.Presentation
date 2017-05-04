@@ -28,7 +28,7 @@ namespace Adapt.Presentation.iOS
     /// <summary>
     /// Implementation for Media
     /// </summary>
-    public class MediaImplementation : IMedia
+    public class Media : IMedia
     {
         /// <summary>
         /// Color of the status bar
@@ -41,7 +41,7 @@ namespace Adapt.Presentation.iOS
         /// <summary>
         /// Implementation
         /// </summary>
-        public MediaImplementation()
+        public Media()
         {
             StatusBarStyle = UIApplication.SharedApplication.StatusBarStyle;
             IsCameraAvailable = UIImagePickerController.IsSourceTypeAvailable(UIImagePickerControllerSourceType.Camera);
