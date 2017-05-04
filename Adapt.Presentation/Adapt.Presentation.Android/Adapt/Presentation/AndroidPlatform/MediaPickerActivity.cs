@@ -27,6 +27,7 @@ using Environment = Android.OS.Environment;
 using Path = System.IO.Path;
 using Uri = Android.Net.Uri;
 using Android.Net;
+using Android.Support.V4.Content;
 using Android.Content.PM;
 using System.Globalization;
 
@@ -167,13 +168,12 @@ namespace Adapt.Presentation.AndroidPlatform
 
 						if (targetsNOrNewer && this.path.Scheme == "file")
 						{
-                            throw new NotImplementedException("Version 4 of Android is not supported");
-							//var photoURI = FileProvider.GetUriForFile(this,
-							//										  Application.Context.PackageName + ".fileprovider",
-							//                                          new Java.IO.File(this.path.Path));
+							var photoURI = FileProvider.GetUriForFile(this,
+																	  Application.Context.PackageName + ".fileprovider",
+							                                          new Java.IO.File(this.path.Path));
 
-							//GrantUriPermissionsForIntent(pickIntent, photoURI);
-							//pickIntent.PutExtra(MediaStore.ExtraOutput, photoURI);
+							GrantUriPermissionsForIntent(pickIntent, photoURI);
+							pickIntent.PutExtra(MediaStore.ExtraOutput, photoURI);
 						}
 						else
 						{
