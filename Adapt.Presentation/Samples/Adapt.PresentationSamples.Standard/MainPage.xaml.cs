@@ -1,5 +1,6 @@
 ﻿using Adapt.Presentation;
 using System;
+using System.Collections.Generic;
 using Xamarin.Forms;
 
 namespace Adapt.PresentationSamples
@@ -14,9 +15,9 @@ namespace Adapt.PresentationSamples
 
         private async void TakePhotoButton_Clicked(object sender, EventArgs e)
         {
-            var defaultFileName = $"New Photo.jpg";
-
+            const string defaultFileName = "New Photo.jpg";
             var media = App.PresentationFactory.CreateMedia();
+            var filePicker = App.PresentationFactory.CreateFilePicker();
 
             if (!media.IsCameraAvailable || !media.IsTakePhotoSupported)
             {
@@ -24,14 +25,23 @@ namespace Adapt.PresentationSamples
                 return;
             }
 
-            using (var file = await media.TakePhotoAsync(new StoreCameraMediaOptions
+            using (var mediaFile = await media.TakePhotoAsync(new StoreCameraMediaOptions
             {
                 PhotoSize = PhotoSize.Medium,
                 Directory = "Adapt Sample App",
                 Name = defaultFileName
             }))
             {
+                using (var readFileStream = mediaFile.GetStream())
+                {
+                    var fileTypes = new Dictionary<string, IList<string>>();
+                    fileTypes.Add("Jpeg Image", new List<string> { ".jpg" });
 
+                    using (var writeFileStream = await filePicker.PickAndOpenFileForWriting(fileTypes, defaultFileName))
+                    {
+                        var readBuffer = readFileStream.Length;
+                    }
+                }
             }
         }
     }
