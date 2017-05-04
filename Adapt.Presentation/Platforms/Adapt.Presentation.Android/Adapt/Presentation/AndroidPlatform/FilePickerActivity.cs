@@ -77,8 +77,8 @@ namespace Adapt.Presentation.AndroidPlatform
         internal static event EventHandler<EventArgs> FilePickCancelled;
         #endregion
 
-        #region Private Methods
-        private string GetFileName(Context ctx, Android.Net.Uri uri)
+        #region Private Static Methods
+        private static string GetFileName(Context ctx, Android.Net.Uri uri)
         {
 
             string[] projection = { MediaStore.MediaColumns.DisplayName };
@@ -87,20 +87,23 @@ namespace Adapt.Presentation.AndroidPlatform
             var name = "";
             var metaCursor = cr.Query(uri, projection, null, null, null);
 
-            if (metaCursor != null)
+            if (metaCursor == null)
             {
-                try
+                return name;
+            }
+
+            try
+            {
+                if (metaCursor.MoveToFirst())
                 {
-                    if (metaCursor.MoveToFirst())
-                    {
-                        name = metaCursor.GetString(0);
-                    }
-                }
-                finally
-                {
-                    metaCursor.Close();
+                    name = metaCursor.GetString(0);
                 }
             }
+            finally
+            {
+                metaCursor.Close();
+            }
+
             return name;
         }
         #endregion

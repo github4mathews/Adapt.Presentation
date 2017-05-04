@@ -54,7 +54,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     }
 
                     var selection = "_id=?";
-                    var selectionArgs = new string [] {
+                    var selectionArgs = new[] {
                         split[1]
                     };
 
