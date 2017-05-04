@@ -75,7 +75,7 @@
     <Compile Include="Adapt\Presentation\AndroidPlatform\Media.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\MediaFile.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\MediaPickerActivity.cs" />
-    <Compile Include="Adapt\Presentation\AndroidPlatform\PermissionsImplementation.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\Permissions.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\PresentationFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -20,7 +20,7 @@ namespace Adapt.Presentation.Droid
             base.OnCreate(bundle);
 
             Xamarin.Forms.Forms.Init(this, bundle);
-            LoadApplication(new samples.App(new PresentationFactory(ApplicationContext), new PermissionsImplementation()));
+            LoadApplication(new samples.App(new PresentationFactory(ApplicationContext), new Permissions()));
         }
     }
 }

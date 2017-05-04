@@ -2,23 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Adapt.Presentation;
-#if WINDOWS_UWP
 using Windows.Devices.Geolocation;
 using Windows.ApplicationModel.Contacts;
 using Windows.Devices.Enumeration;
-#endif
 
 namespace Adapt.Presentation.UWP
 {
     /// <summary>
     /// Implementation for Permissions
     /// </summary>
-    public class PermissionsImplementation : IPermissions
+    public class Permissions : IPermissions
     {
-#if WINDOWS_UWP
         Guid ActivitySensorClassId = new Guid("9D9E0118-1807-4F2E-96E4-2CE57142E196");
-#endif
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission
         /// Only on Android
@@ -61,7 +56,6 @@ namespace Adapt.Presentation.UWP
                     break;
                 case Permission.Sensors:
                     {
-#if WINDOWS_UWP
                         // Determine if the user has allowed access to activity sensors
                         var deviceAccessInfo = DeviceAccessInformation.CreateFromDeviceClassId(ActivitySensorClassId);
                         switch(deviceAccessInfo.CurrentStatus)
@@ -74,7 +68,6 @@ namespace Adapt.Presentation.UWP
                             default:
                                 return Task.FromResult(PermissionStatus.Unknown);
                         }
-#endif
                     }
                  break;
                 case Permission.Sms:
@@ -89,21 +82,19 @@ namespace Adapt.Presentation.UWP
 
         private async Task<PermissionStatus> CheckContactsAsync()
         {
-#if WINDOWS_UWP
             var accessStatus = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
 
             if (accessStatus == null)
                 return PermissionStatus.Denied;
 
             return PermissionStatus.Granted;
-#endif
 
             return PermissionStatus.Granted;
         }
 
         private async Task<PermissionStatus> CheckLocationAsync()
         {
-#if WINDOWS_UWP
+
             var accessStatus = await Geolocator.RequestAccessAsync();
 
             switch(accessStatus)
@@ -116,9 +107,6 @@ namespace Adapt.Presentation.UWP
             }
 
             return PermissionStatus.Denied;
-#endif
-
-            return PermissionStatus.Granted;
         }
 
         /// <summary>

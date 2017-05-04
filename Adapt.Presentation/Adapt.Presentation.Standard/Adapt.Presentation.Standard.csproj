@@ -60,8 +60,8 @@
     <Compile Include="Adapt\Presentation\FilePickerEventArgs.cs" />
     <Compile Include="Adapt\Presentation\IFilePicker.cs" />
     <Compile Include="Adapt\Presentation\IMedia.cs" />
-    <Compile Include="Adapt\Presentation\IMediaFactory.cs" />
     <Compile Include="Adapt\Presentation\IPermissions.cs" />
+    <Compile Include="Adapt\Presentation\IPresentationFactory.cs" />
     <Compile Include="Adapt\Presentation\MediaBase.cs" />
     <Compile Include="Adapt\Presentation\MediaExtensions.cs" />
     <Compile Include="Adapt\Presentation\MediaFile.cs" />

@@ -14,7 +14,7 @@ namespace Adapt.Presentation.AndroidPlatform
     /// <summary>
     /// Implementation for Feature
     /// </summary>
-    public class PermissionsImplementation : IPermissions
+    public class Permissions : IPermissions
     {
         #region Fields
         object locker = new object();

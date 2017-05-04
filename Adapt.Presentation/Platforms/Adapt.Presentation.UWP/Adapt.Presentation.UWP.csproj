@@ -108,7 +108,7 @@
   <ItemGroup>
     <Compile Include="Adapt\Presentation\UWP\FilePicker.cs" />
     <Compile Include="Adapt\Presentation\UWP\Media.cs" />
-    <Compile Include="Adapt\Presentation\UWP\PermissionsImplementation.cs" />
+    <Compile Include="Adapt\Presentation\UWP\Permissions.cs" />
     <Compile Include="Adapt\Presentation\UWP\PresentationFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Adapt.Presentation.UWP.rd.xml" />
