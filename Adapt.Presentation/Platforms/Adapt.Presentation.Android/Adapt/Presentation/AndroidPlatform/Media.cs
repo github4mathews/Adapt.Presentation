@@ -345,10 +345,7 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <summary>
         ///  Rotate an image if required and saves it back to disk.
         /// </summary>
-        /// <param name="filePath">The file image path</param>
-        /// <param name="photoSize">Photo size to go to.</param>
-        /// <returns>True if rotation or compression occured, else false</returns>
-        public Task<bool> FixOrientationAndResizeAsync(string filePath, PhotoSize photoSize, int quality, int customPhotoSize)
+        private Task<bool> FixOrientationAndResizeAsync(string filePath, PhotoSize photoSize, int quality, int customPhotoSize)
         {
             if (string.IsNullOrWhiteSpace(filePath))
                 return Task.FromResult(false);
@@ -507,9 +504,6 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <summary>
         /// Resize Image Async
         /// </summary>
-        /// <param name="filePath">The file image path</param>
-        /// <param name="photoSize">Photo size to go to.</param>
-        /// <returns>True if rotation or compression occured, else false</returns>
         public Task<bool> ResizeAsync(string filePath, PhotoSize photoSize, int quality, int customPhotoSize)
         {
             if (string.IsNullOrWhiteSpace(filePath))

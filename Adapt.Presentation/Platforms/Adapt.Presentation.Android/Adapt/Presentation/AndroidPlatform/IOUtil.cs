@@ -73,8 +73,7 @@ namespace Adapt.Presentation.AndroidPlatform
             return null;
         }
 
-        public static string getDataColumn (Context context, Android.Net.Uri uri, string selection,
-        string [] selectionArgs)
+        private static string getDataColumn (Context context, Android.Net.Uri uri, string selection, string [] selectionArgs)
         {
 
             ICursor cursor = null;
@@ -90,9 +89,9 @@ namespace Adapt.Presentation.AndroidPlatform
                     var column_index = cursor.GetColumnIndexOrThrow (column);
                     return cursor.GetString (column_index);
                 }
-            } finally {
-                if (cursor != null)
-                    cursor.Close ();
+            } finally
+            {
+                cursor?.Close ();
             }
             return null;
         }

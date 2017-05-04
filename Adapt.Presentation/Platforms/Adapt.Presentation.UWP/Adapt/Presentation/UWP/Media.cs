@@ -22,7 +22,7 @@ namespace Adapt.Presentation.UWP
         /// </summary>
         public Media()
         {
-            watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
+            var watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
             watcher.Added += OnDeviceAdded;
             watcher.Updated += OnDeviceUpdated;
             watcher.Removed += OnDeviceRemoved;
@@ -300,7 +300,6 @@ namespace Adapt.Presentation.UWP
         }
 
         private readonly HashSet<string> devices = new HashSet<string>();
-        private readonly DeviceWatcher watcher;
         private bool isCameraAvailable;
 
 
