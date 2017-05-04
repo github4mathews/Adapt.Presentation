@@ -56,14 +56,17 @@
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
+    <Compile Include="Adapt\Presentation\CrossPermissions.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
     <Compile Include="Adapt\Presentation\FilePickerEventArgs.cs" />
     <Compile Include="Adapt\Presentation\IFilePicker.cs" />
     <Compile Include="Adapt\Presentation\IMedia.cs" />
+    <Compile Include="Adapt\Presentation\IPermissions.cs" />
     <Compile Include="Adapt\Presentation\MediaExtensions.cs" />
     <Compile Include="Adapt\Presentation\MediaFile.cs" />
     <Compile Include="Adapt\Presentation\MediaFileNotFoundException.cs" />
     <Compile Include="Adapt\Presentation\MediaStoreOptions.cs" />
+    <Compile Include="Adapt\Presentation\PermissionEnums.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="project.json" />
