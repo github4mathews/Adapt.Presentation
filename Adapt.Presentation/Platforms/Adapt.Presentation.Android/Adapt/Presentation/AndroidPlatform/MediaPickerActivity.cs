@@ -103,9 +103,9 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             base.OnCreate(savedInstanceState);
 
-            Bundle b = (savedInstanceState ?? Intent.Extras);
+            var b = (savedInstanceState ?? Intent.Extras);
 
-            bool ran = b.GetBoolean("ran", defaultValue: false);
+            var ran = b.GetBoolean("ran", defaultValue: false);
 
             this.title = b.GetString(MediaStore.MediaColumns.Title);
             this.description = b.GetString(MediaStore.Images.ImageColumns.Description);
@@ -269,7 +269,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 if (data != null && data.Path != originalPath)
                 {
                     originalPath = data.ToString();
-                    string currentPath = path.Path;
+                    var currentPath = path.Path;
                     pathFuture = TryMoveFileAsync(context, data, path, isPhoto, false).ContinueWith(t =>
                         new Tuple<string, bool>(t.Result ? currentPath : null, false));
                 }
@@ -291,7 +291,7 @@ namespace Adapt.Presentation.AndroidPlatform
             return pathFuture.ContinueWith(t =>
             {
                 
-                string resultPath = t.Result.Item1;
+                var resultPath = t.Result.Item1;
                 var aPath = originalPath;
                 if (resultPath != null && File.Exists(t.Result.Item1))
                 {
@@ -358,7 +358,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 }
                 else
                 {
-                    Intent resultData = new Intent();
+                    var resultData = new Intent();
                     resultData.PutExtra("MediaFile", (data != null) ? data.Data : null);
                     resultData.PutExtra("path", this.path);
                     resultData.PutExtra("isPhoto", this.isPhoto);
@@ -373,7 +373,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
         public static Task<bool> TryMoveFileAsync(Context context, Uri url, Uri path, bool isPhoto, bool saveToAlbum)
         {
-            string moveTo = GetLocalPath(path);
+            var moveTo = GetLocalPath(path);
             return GetFileForUriAsync(context, url, isPhoto, false).ContinueWith(t =>
             {
                 if (t.Result.Item1 == null)
@@ -426,14 +426,14 @@ namespace Adapt.Presentation.AndroidPlatform
 
         private static string GetUniquePath(string folder, string name, bool isPhoto)
         {
-            string ext = Path.GetExtension(name);
+            var ext = Path.GetExtension(name);
             if (ext == String.Empty)
                 ext = ((isPhoto) ? ".jpg" : ".mp4");
 
             name = Path.GetFileNameWithoutExtension(name);
 
-            string nname = name + ext;
-            int i = 1;
+            var nname = name + ext;
+            var i = 1;
             while (File.Exists(Path.Combine(folder, nname)))
                 nname = name + "_" + (i++) + ext;
 
@@ -453,9 +453,9 @@ namespace Adapt.Presentation.AndroidPlatform
                     name = "VID_" + timestamp + ".mp4";
             }
 
-            string mediaType = (isPhoto) ? Environment.DirectoryPictures : Environment.DirectoryMovies;
+            var mediaType = (isPhoto) ? Environment.DirectoryPictures : Environment.DirectoryMovies;
             var directory = saveToAlbum ? Environment.GetExternalStoragePublicDirectory(mediaType) : context.GetExternalFilesDir(mediaType);
-            using (Java.IO.File mediaStorageDir = new Java.IO.File(directory, subdir))
+            using (var mediaStorageDir = new Java.IO.File(directory, subdir))
             {
                 if (!mediaStorageDir.Exists())
                 {
@@ -465,7 +465,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     if (!saveToAlbum)
                     {
                         // Ensure this media doesn't show up in gallery apps
-                        using (Java.IO.File nomedia = new Java.IO.File(mediaStorageDir, ".nomedia"))
+                        using (var nomedia = new Java.IO.File(mediaStorageDir, ".nomedia"))
                             nomedia.CreateNewFile();
                     }
                 }
@@ -496,7 +496,7 @@ namespace Adapt.Presentation.AndroidPlatform
                             tcs.SetResult(new Tuple<string, bool>(null, false));
                         else
                         {
-                            int column = cursor.GetColumnIndex(MediaStore.MediaColumns.Data);
+                            var column = cursor.GetColumnIndex(MediaStore.MediaColumns.Data);
                             string contentPath = null;
 
                             if (column != -1)
@@ -522,7 +522,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
 								try
                                 {
-                                    using (Stream input = context.ContentResolver.OpenInputStream(uri))
+                                    using (var input = context.ContentResolver.OpenInputStream(uri))
                                         using (Stream output = File.Create(outputPath.Path))
                                             input.CopyTo(output);
 

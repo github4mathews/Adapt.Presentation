@@ -13,14 +13,14 @@ namespace Adapt.Presentation.AndroidPlatform
 
         public static string getPath (Context context, Android.Net.Uri uri)
         {
-            bool isKitKat = Build.VERSION.SdkInt >= BuildVersionCodes.Kitkat;
+            var isKitKat = Build.VERSION.SdkInt >= BuildVersionCodes.Kitkat;
 
             // DocumentProvider
             if (isKitKat && DocumentsContract.IsDocumentUri (context, uri)) {
                 // ExternalStorageProvider
                 if (isExternalStorageDocument (uri)) {
                     var docId = DocumentsContract.GetDocumentId (uri);
-                    string [] split = docId.Split (':');
+                    var split = docId.Split (':');
                     var type = split [0];
 
                     if ("primary".Equals (type, StringComparison.OrdinalIgnoreCase)) {
@@ -32,8 +32,8 @@ namespace Adapt.Presentation.AndroidPlatform
                 // DownloadsProvider
                 else if (isDownloadsDocument (uri)) {
 
-                    string id = DocumentsContract.GetDocumentId (uri);
-                    Android.Net.Uri contentUri = ContentUris.WithAppendedId (
+                    var id = DocumentsContract.GetDocumentId (uri);
+                    var contentUri = ContentUris.WithAppendedId (
                             Android.Net.Uri.Parse ("content://downloads/public_downloads"), long.Parse (id));
 
                     return getDataColumn (context, contentUri, null, null);
@@ -41,7 +41,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 // MediaProvider
                 else if (isMediaDocument (uri)) {
                     var docId = DocumentsContract.GetDocumentId (uri);
-                    string [] split = docId.Split (':');
+                    var split = docId.Split (':');
                     var type = split [0];
 
                     Android.Net.Uri contentUri = null;
@@ -87,7 +87,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 cursor = context.ContentResolver.Query (uri, projection, selection, selectionArgs,
                         null);
                 if (cursor != null && cursor.MoveToFirst ()) {
-                    int column_index = cursor.GetColumnIndexOrThrow (column);
+                    var column_index = cursor.GetColumnIndexOrThrow (column);
                     return cursor.GetString (column_index);
                 }
             } finally {
@@ -141,13 +141,13 @@ namespace Adapt.Presentation.AndroidPlatform
 
             try {
                 // Get and check length
-                long longlength = f.Length ();
+                var longlength = f.Length ();
                 var length = (int)longlength;
 
                 if (length != longlength)
                     throw new IOException ("Filesize exceeds allowed size");
                 // Read file and return data
-                byte [] data = new byte [length];
+                var data = new byte [length];
                 f.ReadFully (data);
                 return data;
             } catch (Exception ex) {

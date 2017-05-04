@@ -51,7 +51,7 @@ namespace Adapt.Presentation
         /// <returns></returns>
         public static string GetFilePath(this StoreMediaOptions self, string rootPath)
         {
-            bool isPhoto = !(self is StoreVideoOptions);
+            var isPhoto = !(self is StoreVideoOptions);
 
             string name = (self != null) ? self.Name : null;
             if (String.IsNullOrWhiteSpace(name))
@@ -63,13 +63,13 @@ namespace Adapt.Presentation
                     name = "VID_" + timestamp + ".mp4";
             }
 
-            string ext = Path.GetExtension(name);
+            var ext = Path.GetExtension(name);
             if (ext == String.Empty)
                 ext = ((isPhoto) ? ".jpg" : ".mp4");
 
             name = Path.GetFileNameWithoutExtension(name);
 
-            string folder = Path.Combine(rootPath ?? String.Empty,
+            var folder = Path.Combine(rootPath ?? String.Empty,
               (self != null && self.Directory != null) ? self.Directory : String.Empty);
 
             return Path.Combine(folder, name + ext);
@@ -84,12 +84,12 @@ namespace Adapt.Presentation
         public static string GetUniqueFilepath(this StoreMediaOptions self, string rootPath, Func<string, bool> checkExists)
         {
             string path = self.GetFilePath(rootPath);
-            string folder = Path.GetDirectoryName(path);
-            string ext = Path.GetExtension(path);
-            string name = Path.GetFileNameWithoutExtension(path);
+            var folder = Path.GetDirectoryName(path);
+            var ext = Path.GetExtension(path);
+            var name = Path.GetFileNameWithoutExtension(path);
 
-            string nname = name + ext;
-            int i = 1;
+            var nname = name + ext;
+            var i = 1;
             while (checkExists(Path.Combine(folder, nname)))
                 nname = name + "_" + (i++) + ext;
 

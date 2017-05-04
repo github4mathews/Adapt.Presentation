@@ -49,7 +49,7 @@ namespace Adapt.Presentation.iOS
             var availableCameraMedia = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.Camera) ?? new string[0];
             var avaialbleLibraryMedia = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary) ?? new string[0];
 
-            foreach (string type in availableCameraMedia.Concat(avaialbleLibraryMedia))
+            foreach (var type in availableCameraMedia.Concat(avaialbleLibraryMedia))
             {
                 if (type == TypeMovie)
                     IsTakeVideoSupported = IsPickVideoSupported = true;
@@ -214,7 +214,7 @@ namespace Adapt.Presentation.iOS
         private Task<MediaFile> GetMediaAsync(UIImagePickerControllerSourceType sourceType, string mediaType, StoreCameraMediaOptions options = null)
         {
             UIViewController viewController = null;
-            UIWindow window = UIApplication.SharedApplication.KeyWindow;
+            var window = UIApplication.SharedApplication.KeyWindow;
             if (window == null)
                 throw new InvalidOperationException("There's no current active window");
 
@@ -233,7 +233,7 @@ namespace Adapt.Presentation.iOS
             while (viewController.PresentedViewController != null)
                 viewController = viewController.PresentedViewController;
 
-            MediaPickerDelegate ndelegate = new MediaPickerDelegate(viewController, sourceType, options);
+            var ndelegate = new MediaPickerDelegate(viewController, sourceType, options);
             var od = Interlocked.CompareExchange(ref pickerDelegate, ndelegate, null);
             if (od != null)
                 throw new InvalidOperationException("Only one operation can be active at at time");

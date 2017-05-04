@@ -43,14 +43,14 @@ namespace Adapt.Presentation.AndroidPlatform
             if (context == null)
                 throw new ArgumentNullException("context");
 
-            string action = self.GetStringExtra("action");
+            var action = self.GetStringExtra("action");
             if (action == null)
                 throw new ArgumentException("Intent was not results from MediaPicker", "self");
 
             var uri = (Android.Net.Uri)self.GetParcelableExtra("MediaFile");
-            bool isPhoto = self.GetBooleanExtra("isPhoto", false);
+            var isPhoto = self.GetBooleanExtra("isPhoto", false);
             var path = (Android.Net.Uri)self.GetParcelableExtra("path");
-            bool saveToAlbum = false;
+            var saveToAlbum = false;
             try
             {
                 saveToAlbum = (bool)self.GetParcelableExtra("album_save");

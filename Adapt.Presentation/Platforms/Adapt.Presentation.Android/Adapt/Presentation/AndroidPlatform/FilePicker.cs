@@ -33,7 +33,7 @@ namespace Adapt.Presentation.AndroidPlatform
         #region Private Methods
         private int GetRequestId()
         {
-            int id = _requestId;
+            var id = _requestId;
 
             if (_requestId == int.MaxValue)
                 _requestId = 0;

@@ -140,7 +140,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     {
                         Android.Media.MediaScannerConnection.ScanFile(context, new[] { f.AbsolutePath }, null, context as MediaPickerActivity);
 
-                        ContentValues values = new ContentValues();
+                        var values = new ContentValues();
                         values.Put(MediaStore.Images.Media.InterfaceConsts.Title, System.IO.Path.GetFileNameWithoutExtension(f.AbsolutePath));
                         values.Put(MediaStore.Images.Media.InterfaceConsts.Description, string.Empty);
                         values.Put(MediaStore.Images.Media.InterfaceConsts.DateTaken, Java.Lang.JavaSystem.CurrentTimeMillis());
@@ -262,7 +262,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
         private Intent CreateMediaIntent(int id, string type, string action, StoreMediaOptions options, bool tasked = true)
         {
-            Intent pickerIntent = new Intent(this.context, typeof(MediaPickerActivity));
+            var pickerIntent = new Intent(this.context, typeof(MediaPickerActivity));
             pickerIntent.PutExtra(MediaPickerActivity.ExtraId, id);
             pickerIntent.PutExtra(MediaPickerActivity.ExtraType, type);
             pickerIntent.PutExtra(MediaPickerActivity.ExtraAction, action);
@@ -300,7 +300,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
         private int GetRequestId()
         {
-            int id = this.requestId;
+            var id = this.requestId;
             if (this.requestId == Int32.MaxValue)
                 this.requestId = 0;
             else
@@ -311,7 +311,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
         private Task<MediaFile> TakeMediaAsync(string type, string action, StoreMediaOptions options)
         {
-            int id = GetRequestId();
+            var id = GetRequestId();
 
             var ntcs = new TaskCompletionSource<MediaFile>(id);
             if (Interlocked.CompareExchange(ref this.completionSource, ntcs, null) != null)

@@ -195,7 +195,7 @@ namespace Adapt.Presentation.iOS
 
         private void DidRotate(NSNotification notice)
         {
-            UIDevice device = (UIDevice)notice.Object;
+            var device = (UIDevice)notice.Object;
             if (!IsValidInterfaceOrientation(device.Orientation) || Popover == null)
                 return;
             if (orientation.HasValue && IsSameOrientationKind(orientation.Value, device.Orientation))
@@ -209,7 +209,7 @@ namespace Adapt.Presentation.iOS
             else if (!GetShouldRotate(device.Orientation))
                 return;
 
-            UIDeviceOrientation? co = orientation;
+            var co = orientation;
             orientation = device.Orientation;
 
             if (co == null)
@@ -220,7 +220,7 @@ namespace Adapt.Presentation.iOS
 
         private bool GetShouldRotate(UIDeviceOrientation orientation)
         {
-            UIInterfaceOrientation iorientation = UIInterfaceOrientation.Portrait;
+            var iorientation = UIInterfaceOrientation.Portrait;
             switch (orientation)
             {
                 case UIDeviceOrientation.LandscapeLeft:
@@ -250,7 +250,7 @@ namespace Adapt.Presentation.iOS
             if (!viewController.ShouldAutorotate())
                 return false;
 
-            UIInterfaceOrientationMask mask = UIInterfaceOrientationMask.Portrait;
+            var mask = UIInterfaceOrientationMask.Portrait;
             switch (orientation)
             {
                 case UIDeviceOrientation.LandscapeLeft:
@@ -284,7 +284,7 @@ namespace Adapt.Presentation.iOS
             var meta = info[UIImagePickerController.MediaMetadata] as NSDictionary;
 
 
-            string path = GetOutputPath(MediaImplementation.TypeImage,
+            var path = GetOutputPath(MediaImplementation.TypeImage,
                 options.Directory ?? ((IsCaptured) ? String.Empty : "temp"),
                 options.Name);
 
@@ -362,9 +362,9 @@ namespace Adapt.Presentation.iOS
 
         private async Task<MediaFile> GetMovieMediaFile(NSDictionary info)
         {
-            NSUrl url = (NSUrl)info[UIImagePickerController.MediaURL];
+            var url = (NSUrl)info[UIImagePickerController.MediaURL];
 
-            string path = GetOutputPath(MediaImplementation.TypeMovie,
+            var path = GetOutputPath(MediaImplementation.TypeMovie,
                       options.Directory ?? ((IsCaptured) ? String.Empty : "temp"),
                       options.Name ?? Path.GetFileName(url.Path));
 
@@ -399,15 +399,15 @@ namespace Adapt.Presentation.iOS
 
         private static string GetUniquePath(string type, string path, string name)
         {
-            bool isPhoto = (type == MediaImplementation.TypeImage);
-            string ext = Path.GetExtension(name);
+            var isPhoto = (type == MediaImplementation.TypeImage);
+            var ext = Path.GetExtension(name);
             if (ext == String.Empty)
                 ext = ((isPhoto) ? ".jpg" : ".mp4");
 
             name = Path.GetFileNameWithoutExtension(name);
 
-            string nname = name + ext;
-            int i = 1;
+            var nname = name + ext;
+            var i = 1;
             while (File.Exists(Path.Combine(path, nname)))
                 nname = name + "_" + (i++) + ext;
 

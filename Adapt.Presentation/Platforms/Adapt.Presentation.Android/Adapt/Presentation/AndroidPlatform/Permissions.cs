@@ -87,7 +87,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 return Task.FromResult(PermissionStatus.Unknown);
             }
 
-            Context context = CrossCurrentActivity.Current.Activity ?? Application.Context;
+            var context = CrossCurrentActivity.Current.Activity ?? Application.Context;
             if (context == null)
             {
                 Debug.WriteLine("Unable to detect current Activity or App Context. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
@@ -373,7 +373,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     return requestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
 
                 //try to use current activity else application context
-                Context context = CrossCurrentActivity.Current.Activity ?? Application.Context;
+                var context = CrossCurrentActivity.Current.Activity ?? Application.Context;
 
                 if (context == null)
                 {

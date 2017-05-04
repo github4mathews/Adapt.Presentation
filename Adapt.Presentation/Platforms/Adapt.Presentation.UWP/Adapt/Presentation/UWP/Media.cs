@@ -108,7 +108,7 @@ namespace Adapt.Presentation.UWP
             if (result == null)
                 return null;
 
-            StorageFolder folder = ApplicationData.Current.LocalFolder;
+            var folder = ApplicationData.Current.LocalFolder;
 
             string path = options.GetFilePath(folder.Path);
             var directoryFull = Path.GetDirectoryName(path);
@@ -118,14 +118,14 @@ namespace Adapt.Presentation.UWP
 
             folder = await StorageFolder.GetFolderFromPathAsync(directoryFull);
 
-            string filename = Path.GetFileName(path);
+            var filename = Path.GetFileName(path);
 
             string aPath = null;
             if (options?.SaveToAlbum ?? false)
             {
                 try
                 {
-                    string fileNameNoEx = Path.GetFileNameWithoutExtension(path);
+                    var fileNameNoEx = Path.GetFileNameWithoutExtension(path);
                     var copy = await result.CopyAsync(KnownFolders.PicturesLibrary, fileNameNoEx + result.FileType, NameCollisionOption.GenerateUniqueName);
                     aPath = copy.Path;
                 }
@@ -244,7 +244,7 @@ namespace Adapt.Presentation.UWP
             {
                 try
                 {
-                    string fileNameNoEx = Path.GetFileNameWithoutExtension(result.Path);
+                    var fileNameNoEx = Path.GetFileNameWithoutExtension(result.Path);
                     var copy = await result.CopyAsync(KnownFolders.VideosLibrary, fileNameNoEx + result.FileType, NameCollisionOption.GenerateUniqueName);
                     aPath = copy.Path;
                 }

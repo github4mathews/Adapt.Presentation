@@ -49,7 +49,7 @@ namespace Adapt.Presentation.iOS
 
             System.Runtime.InteropServices.Marshal.Copy(data.Bytes, dataBytes, 0, Convert.ToInt32(data.Length));
 
-            string filename = doc.LocalizedName;
+            var filename = doc.LocalizedName;
 
             // iCloud drive can return null for LocalizedName.
             if (filename == null)
