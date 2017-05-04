@@ -2,7 +2,7 @@
 {
     public interface IPresentationFactory
     {
-        IMedia CreateMedia();
+        IMedia CreateMedia(IPermissions currentPermissions);
         IFilePicker CreateFilePicker();
     }
 }

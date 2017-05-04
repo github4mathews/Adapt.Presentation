@@ -8,7 +8,7 @@
             return new FilePicker();
         }
 
-        public IMedia CreateMedia()
+        public IMedia CreateMedia(IPermissions currentPermissions)
         {
             return new Media();
         }

@@ -32,12 +32,12 @@ namespace Adapt.Presentation.AndroidPlatform
     /// Implementation for Feature
     /// </summary>
     [Android.Runtime.Preserve(AllMembers = true)]
-    public class Media : IMedia
+    public class Media : MediaBase, IMedia
     {
         /// <summary>
         /// Implementation
         /// </summary>
-        public Media()
+        public Media(IPermissions currentPermissions) : base(currentPermissions)
         {
 
             this.context = Android.App.Application.Context;
@@ -227,11 +227,11 @@ namespace Adapt.Presentation.AndroidPlatform
             if ((int)Build.VERSION.SdkInt < 23)
                 return true;
 
-            var status = await CrossPermissions.Current.CheckPermissionStatusAsync(Permission.Storage);
+            var status = await CurrentPermissions.CheckPermissionStatusAsync(Permission.Storage);
             if (status != PermissionStatus.Granted)
             {
                 Console.WriteLine("Does not have storage permission granted, requesting.");
-                var results = await CrossPermissions.Current.RequestPermissionsAsync(Permission.Storage);
+                var results = await CurrentPermissions.RequestPermissionsAsync(Permission.Storage);
                 if (results.ContainsKey(Permission.Storage) &&
                     results[Permission.Storage] != PermissionStatus.Granted)
                 {

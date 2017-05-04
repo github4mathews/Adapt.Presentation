@@ -21,9 +21,9 @@ namespace Adapt.Presentation.AndroidPlatform
             return new FilePicker(Context);
         }
 
-        public IMedia CreateMedia()
+        public IMedia CreateMedia(IPermissions currentPermissions)
         {
-            return new Media();
+            return new Media(currentPermissions);
         }
         #endregion
     }

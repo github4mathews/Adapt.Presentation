@@ -16,19 +16,12 @@ namespace Adapt.Presentation.AndroidPlatform
     /// </summary>
     public class PermissionsImplementation : IPermissions
     {
-
+        #region Fields
         object locker = new object();
         TaskCompletionSource<Dictionary<Permission, PermissionStatus>> tcs;
         Dictionary<Permission, PermissionStatus> results;
         IList<string> requestedPermissions;
-
-        /// <summary>
-        /// Current Permissions Implementation
-        /// </summary>
-        public static PermissionsImplementation Current
-        {
-            get {  return (PermissionsImplementation)CrossPermissions.Current; }
-        }
+        #endregion
 
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission

@@ -16,7 +16,7 @@ namespace Adapt.PresentationSamples
         private async void TakePhotoButton_Clicked(object sender, EventArgs e)
         {
             const string defaultFileName = "New Photo.jpg";
-            var media = App.PresentationFactory.CreateMedia();
+            var media = App.PresentationFactory.CreateMedia(App.CurrentPermissions);
             var filePicker = App.PresentationFactory.CreateFilePicker();
 
             if (!media.IsCameraAvailable || !media.IsTakePhotoSupported)
