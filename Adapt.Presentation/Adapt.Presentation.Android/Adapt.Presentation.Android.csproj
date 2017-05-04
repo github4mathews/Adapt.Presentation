@@ -9,7 +9,8 @@
     <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Adapt.Presentation.Android</RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <AssemblyName>Adapt.Presentation.Android</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
@@ -44,14 +45,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\FilePicker.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\FilePickerActivity.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\IOUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\AboutResources.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\Values\Strings.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
