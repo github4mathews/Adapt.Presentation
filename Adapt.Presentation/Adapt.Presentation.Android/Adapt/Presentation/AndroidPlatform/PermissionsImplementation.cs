@@ -1,7 +1,5 @@
 using Android;
 using Android.App;
-using Android.Support.V4.App;
-using Android.Support.V4.Content;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -60,11 +58,12 @@ namespace Adapt.Presentation.AndroidPlatform
                 return Task.FromResult(false);
             }
 
-            foreach(var name in names)
-            {
-                if(ActivityCompat.ShouldShowRequestPermissionRationale(activity, name))
-                    return Task.FromResult(true);
-            }
+            throw new NotImplementedException("Version 4 of Android is not supported");
+            //foreach (var name in names)
+            //{
+            //    if(ActivityCompat.ShouldShowRequestPermissionRationale(activity, name))
+            //        return Task.FromResult(true);
+            //}
 
             return Task.FromResult(false);
 
@@ -102,8 +101,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
             foreach (var name in names)
             {
-                if (ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied)
-                    return Task.FromResult(PermissionStatus.Denied);
+                throw new NotImplementedException("Version 4 of Android is not supported");
+                //if (ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied)
+                //    return Task.FromResult(PermissionStatus.Denied);
             }
             return Task.FromResult(PermissionStatus.Granted);
         }
@@ -173,7 +173,8 @@ namespace Adapt.Presentation.AndroidPlatform
 
             tcs = new TaskCompletionSource<Dictionary<Permission, PermissionStatus>>();
 
-            ActivityCompat.RequestPermissions(activity, permissionsToRequest.ToArray(), PermissionCode);
+            throw new NotImplementedException("Version 4 of Android is not supported");
+            //ActivityCompat.RequestPermissions(activity, permissionsToRequest.ToArray(), PermissionCode);
 
             return await tcs.Task.ConfigureAwait(false);
         }
