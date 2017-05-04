@@ -75,8 +75,8 @@
     <Compile Include="Adapt\Presentation\AndroidPlatform\FilePickerActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\ICurrentActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\IOUtil.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\Media.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\MediaFile.cs" />
-    <Compile Include="Adapt\Presentation\AndroidPlatform\MediaImplementation.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\MediaPickerActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\PermissionsImplementation.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\PresentationFactory.cs" />

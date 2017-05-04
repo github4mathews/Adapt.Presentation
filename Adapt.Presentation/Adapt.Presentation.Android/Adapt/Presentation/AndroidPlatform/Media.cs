@@ -25,7 +25,6 @@ using Android.Provider;
 using Android.Media;
 using Android.Graphics;
 using System.Text.RegularExpressions;
-using Adapt.Presentation;
 
 namespace Adapt.Presentation.AndroidPlatform
 {
@@ -33,12 +32,12 @@ namespace Adapt.Presentation.AndroidPlatform
     /// Implementation for Feature
     /// </summary>
     [Android.Runtime.Preserve(AllMembers = true)]
-    public class MediaImplementation : IMedia
+    public class Media : IMedia
     {
         /// <summary>
         /// Implementation
         /// </summary>
-        public MediaImplementation()
+        public Media()
         {
 
             this.context = Android.App.Application.Context;
