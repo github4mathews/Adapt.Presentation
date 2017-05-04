@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using Adapt.PresentationSamples;
 
 namespace Adapt.Presentation.iOS
 {
@@ -23,7 +24,7 @@ namespace Adapt.Presentation.iOS
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
 			global::Xamarin.Forms.Forms.Init ();
-			LoadApplication (new Adapt.Presentation.App ());
+			LoadApplication (new App ());
 
 			return base.FinishedLaunching (app, options);
 		}
