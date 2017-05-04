@@ -1,11 +1,10 @@
-using Adapt.Presentation;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage.Pickers;
 
-namespace Plugin.FilePicker
+namespace Adapt.Presentation.UWP
 {
     /// <summary>
     /// UWP File Picker

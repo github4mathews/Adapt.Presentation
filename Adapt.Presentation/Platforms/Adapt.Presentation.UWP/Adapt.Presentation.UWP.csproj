@@ -107,6 +107,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Adapt\Presentation\UWP\FilePicker.cs" />
+    <Compile Include="Adapt\Presentation\UWP\MediaImplementation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Adapt.Presentation.UWP.rd.xml" />
   </ItemGroup>
