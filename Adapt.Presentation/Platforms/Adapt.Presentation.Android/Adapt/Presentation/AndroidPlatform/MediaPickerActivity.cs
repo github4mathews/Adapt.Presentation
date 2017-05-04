@@ -301,12 +301,12 @@ namespace Adapt.Presentation.AndroidPlatform
                       }, albumPath: aPath);
                     return new MediaPickedEventArgs(requestCode, false, mf);
                 }
-                else
-                    return new MediaPickedEventArgs(requestCode, new MediaFileNotFoundException(originalPath));
+                return new MediaPickedEventArgs(requestCode, new MediaFileNotFoundException(originalPath));
             });
         }
 
         private bool completed;
+
         /// <summary>
         /// OnActivity Result
         /// </summary>
@@ -322,25 +322,24 @@ namespace Adapt.Presentation.AndroidPlatform
 
             if (tasked)
             {
-
-               
-                Task<MediaPickedEventArgs> future;
-
                 if (resultCode == Result.Canceled)
                 {
                     //delete empty file
                     DeleteOutputFile();
 
-                    future = TaskFromResult(new MediaPickedEventArgs(requestCode, isCanceled: true));
+                    var future = TaskFromResult(new MediaPickedEventArgs(requestCode, isCanceled: true));
 
                     Finish();
                     await Task.Delay(50);
+
+                    //TODO: Await this?
+
                     future.ContinueWith(t => OnMediaPicked(t.Result));
                 }
                 else
                 {
                     
-                    var e = await GetMediaFileAsync(this, requestCode, action, isPhoto, ref path, (data != null) ? data.Data : null, false);
+                    var e = await GetMediaFileAsync(this, requestCode, action, isPhoto, ref path, data?.Data, false);
                     Finish();
                     await Task.Delay(50);
                     OnMediaPicked(e);
@@ -359,7 +358,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 else
                 {
                     var resultData = new Intent();
-                    resultData.PutExtra("MediaFile", (data != null) ? data.Data : null);
+                    resultData.PutExtra("MediaFile", data?.Data);
                     resultData.PutExtra("path", path);
                     resultData.PutExtra("isPhoto", isPhoto);
                     resultData.PutExtra("action", action);
@@ -427,7 +426,7 @@ namespace Adapt.Presentation.AndroidPlatform
         private static string GetUniquePath(string folder, string name, bool isPhoto)
         {
             var ext = Path.GetExtension(name);
-            if (ext == String.Empty)
+            if (ext == string.Empty)
                 ext = ((isPhoto) ? ".jpg" : ".mp4");
 
             name = Path.GetFileNameWithoutExtension(name);
@@ -442,9 +441,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
         public static Uri GetOutputMediaFile(Context context, string subdir, string name, bool isPhoto, bool saveToAlbum)
         {
-            subdir = subdir ?? String.Empty;
+            subdir = subdir ?? string.Empty;
 
-            if (String.IsNullOrWhiteSpace(name))
+            if (string.IsNullOrWhiteSpace(name))
             {
                 var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture);
                 if (isPhoto)
@@ -457,24 +456,28 @@ namespace Adapt.Presentation.AndroidPlatform
             var directory = saveToAlbum ? Environment.GetExternalStoragePublicDirectory(mediaType) : context.GetExternalFilesDir(mediaType);
             using (var mediaStorageDir = new Java.IO.File(directory, subdir))
             {
-                if (!mediaStorageDir.Exists())
+                if (mediaStorageDir.Exists())
                 {
-                    if (!mediaStorageDir.Mkdirs())
-                        throw new IOException("Couldn't create directory, have you added the WRITE_EXTERNAL_STORAGE permission?");
-
-                    if (!saveToAlbum)
-                    {
-                        // Ensure this media doesn't show up in gallery apps
-                        using (var nomedia = new Java.IO.File(mediaStorageDir, ".nomedia"))
-                            nomedia.CreateNewFile();
-                    }
+                    return Uri.FromFile(new Java.IO.File(GetUniquePath(mediaStorageDir.Path, name, isPhoto)));
                 }
+
+                if (!mediaStorageDir.Mkdirs())
+                    throw new IOException("Couldn't create directory, have you added the WRITE_EXTERNAL_STORAGE permission?");
+
+                if (saveToAlbum)
+                {
+                    return Uri.FromFile(new Java.IO.File(GetUniquePath(mediaStorageDir.Path, name, isPhoto)));
+                }
+
+                // Ensure this media doesn't show up in gallery apps
+                using (var nomedia = new Java.IO.File(mediaStorageDir, ".nomedia"))
+                    nomedia.CreateNewFile();
 
                 return Uri.FromFile(new Java.IO.File(GetUniquePath(mediaStorageDir.Path, name, isPhoto)));
             }
         }
 
-        internal static Task<Tuple<string, bool>> GetFileForUriAsync(Context context, Uri uri, bool isPhoto, bool saveToAlbum)
+        private static Task<Tuple<string, bool>> GetFileForUriAsync(Context context, Uri uri, bool isPhoto, bool saveToAlbum)
         {
             var tcs = new TaskCompletionSource<Tuple<string, bool>>();
 

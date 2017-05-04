@@ -181,31 +181,33 @@ namespace Adapt.Presentation.iOS
             picker.MediaTypes = new[] { mediaType };
             picker.SourceType = sourceType;
 
-            if (sourceType == UIImagePickerControllerSourceType.Camera)
+            if (sourceType != UIImagePickerControllerSourceType.Camera)
             {
-                picker.CameraDevice = GetUICameraDevice(options.DefaultCamera);
-                picker.AllowsEditing = options?.AllowCropping ?? false;
+                return picker;
+            }
 
-                if (options.OverlayViewProvider != null)
-                {
-                    var overlay = options.OverlayViewProvider();
-                    if (overlay is UIView)
-                    {
-                        picker.CameraOverlayView = overlay as UIView;
-                    }
-                }
-                if (mediaType == TypeImage)
-                {
-                    picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Photo;
-                }
-                else if (mediaType == TypeMovie)
-                {
-                    StoreVideoOptions voptions = (StoreVideoOptions)options;
+            picker.CameraDevice = GetUICameraDevice(options.DefaultCamera);
+            picker.AllowsEditing = options?.AllowCropping ?? false;
 
-                    picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Video;
-                    picker.VideoQuality = GetQuailty(voptions.Quality);
-                    picker.VideoMaximumDuration = voptions.DesiredLength.TotalSeconds;
+            if (options.OverlayViewProvider != null)
+            {
+                var overlay = options.OverlayViewProvider();
+                if (overlay is UIView)
+                {
+                    picker.CameraOverlayView = overlay as UIView;
                 }
+            }
+            if (mediaType == TypeImage)
+            {
+                picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Photo;
+            }
+            else if (mediaType == TypeMovie)
+            {
+                StoreVideoOptions voptions = (StoreVideoOptions)options;
+
+                picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Video;
+                picker.VideoQuality = GetQuailty(voptions.Quality);
+                picker.VideoMaximumDuration = voptions.DesiredLength.TotalSeconds;
             }
 
             return picker;
@@ -226,8 +228,7 @@ namespace Adapt.Presentation.iOS
                 window = UIApplication.SharedApplication.Windows.OrderByDescending(w => w.WindowLevel).FirstOrDefault(w => w.RootViewController != null && w.WindowLevel == UIWindowLevel.Normal);
                 if (window == null)
                     throw new InvalidOperationException("Could not find current view controller");
-                else
-                    viewController = window.RootViewController;
+                viewController = window.RootViewController;
             }
 
             while (viewController.PresentedViewController != null)
@@ -299,22 +300,26 @@ namespace Adapt.Presentation.iOS
         {
             var info = NSBundle.MainBundle.InfoDictionary;
 
-            if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+            if (!UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
-                if (!info.ContainsKey(new NSString("NSCameraUsageDescription")))
-                    throw new UnauthorizedAccessException("On iOS 10 and higher you must set NSCameraUsageDescription in your Info.plist file to enable Authorization Requests for Camera access!");
+                return;
             }
+
+            if (!info.ContainsKey(new NSString("NSCameraUsageDescription")))
+                throw new UnauthorizedAccessException("On iOS 10 and higher you must set NSCameraUsageDescription in your Info.plist file to enable Authorization Requests for Camera access!");
         }
 
         private void CheckPhotoUsageDescription()
         {
             var info = NSBundle.MainBundle.InfoDictionary;
 
-            if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+            if (!UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
-                if (!info.ContainsKey(new NSString("NSPhotoLibraryUsageDescription")))
-                    throw new UnauthorizedAccessException("On iOS 10 and higher you must set NSPhotoLibraryUsageDescription in your Info.plist file to enable Authorization Requests for Photo Library access!");
+                return;
             }
+
+            if (!info.ContainsKey(new NSString("NSPhotoLibraryUsageDescription")))
+                throw new UnauthorizedAccessException("On iOS 10 and higher you must set NSPhotoLibraryUsageDescription in your Info.plist file to enable Authorization Requests for Photo Library access!");
         }
     }
 }

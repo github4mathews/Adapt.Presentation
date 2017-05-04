@@ -203,11 +203,13 @@ namespace Adapt.Presentation.iOS
 
             var fileName = Path.Combine(documents, fileToOpen);
 
-            if (NSFileManager.DefaultManager.FileExists(fileName))
+            if (!NSFileManager.DefaultManager.FileExists(fileName))
             {
-                var url = new NSUrl(fileName, true);
-                OpenFile(url);
+                return;
             }
+
+            var url = new NSUrl(fileName, true);
+            OpenFile(url);
         }
 
         public async Task<FileData> PickAndOpenFileForWriting(IDictionary<string, IList<string>> fileTypes, string fileName)

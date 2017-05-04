@@ -36,11 +36,13 @@ namespace Adapt.Presentation.iOS
             source = sourceType;
             this.options = options ?? new StoreCameraMediaOptions();
 
-            if (viewController != null)
+            if (viewController == null)
             {
-                UIDevice.CurrentDevice.BeginGeneratingDeviceOrientationNotifications();
-                observer = NSNotificationCenter.DefaultCenter.AddObserver(UIDevice.OrientationDidChangeNotification, DidRotate);
+                return;
             }
+
+            UIDevice.CurrentDevice.BeginGeneratingDeviceOrientationNotifications();
+            observer = NSNotificationCenter.DefaultCenter.AddObserver(UIDevice.OrientationDidChangeNotification, DidRotate);
         }
 
         public UIPopoverController Popover
@@ -49,15 +51,9 @@ namespace Adapt.Presentation.iOS
             set;
         }
 
-        public UIView View
-        {
-            get { return viewController.View; }
-        }
+        public UIView View => viewController.View;
 
-        public Task<MediaFile> Task
-        {
-            get { return tcs.Task; }
-        }
+        public Task<MediaFile> Task => tcs.Task;
 
         public override async void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
         {
@@ -150,10 +146,7 @@ namespace Adapt.Presentation.iOS
         private TaskCompletionSource<MediaFile> tcs = new TaskCompletionSource<MediaFile>();
         private readonly StoreCameraMediaOptions options;
 
-        private bool IsCaptured
-        {
-            get { return source == UIImagePickerControllerSourceType.Camera; }
-        }
+        private bool IsCaptured => source == UIImagePickerControllerSourceType.Camera;
 
         private void Dismiss(UIImagePickerController picker, NSAction onDismiss)
         {
@@ -182,12 +175,14 @@ namespace Adapt.Presentation.iOS
 
         private void RemoveOrientationChangeObserverAndNotifications()
         {
-            if (viewController != null)
+            if (viewController == null)
             {
-                UIDevice.CurrentDevice.EndGeneratingDeviceOrientationNotifications();
-                NSNotificationCenter.DefaultCenter.RemoveObserver(observer);
-                observer.Dispose();
+                return;
             }
+
+            UIDevice.CurrentDevice.EndGeneratingDeviceOrientationNotifications();
+            NSNotificationCenter.DefaultCenter.RemoveObserver(observer);
+            observer.Dispose();
         }
 
         private void DidRotate(NSNotification notice)
@@ -280,7 +275,7 @@ namespace Adapt.Presentation.iOS
 
 
             var path = GetOutputPath(MediaImplementation.TypeImage,
-                options.Directory ?? ((IsCaptured) ? String.Empty : "temp"),
+                options.Directory ?? ((IsCaptured) ? string.Empty : "temp"),
                 options.Name);
 
             var cgImage = image.CGImage;
@@ -334,20 +329,21 @@ namespace Adapt.Presentation.iOS
             }
             else
             {
-                if (options.SaveToAlbum)
+                if (!options.SaveToAlbum)
                 {
-                    try
-                    {
-                        var library = new ALAssetsLibrary();
-                        var albumSave = await library.WriteImageToSavedPhotosAlbumAsync(cgImage, meta);
-                        aPath = albumSave.AbsoluteString;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("unable to save to album:" + ex);
-                    }
+                    return new MediaFile(path, () => File.OpenRead(path), albumPath: aPath);
                 }
 
+                try
+                {
+                    var library = new ALAssetsLibrary();
+                    var albumSave = await library.WriteImageToSavedPhotosAlbumAsync(cgImage, meta);
+                    aPath = albumSave.AbsoluteString;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("unable to save to album:" + ex);
+                }
             }
 
             return new MediaFile(path, () => File.OpenRead(path), albumPath: aPath);
@@ -360,7 +356,7 @@ namespace Adapt.Presentation.iOS
             var url = (NSUrl)info[UIImagePickerController.MediaURL];
 
             var path = GetOutputPath(MediaImplementation.TypeMovie,
-                      options.Directory ?? ((IsCaptured) ? String.Empty : "temp"),
+                      options.Directory ?? ((IsCaptured) ? string.Empty : "temp"),
                       options.Name ?? Path.GetFileName(url.Path));
 
             File.Move(url.Path, path);
@@ -374,18 +370,20 @@ namespace Adapt.Presentation.iOS
             }
             else
             {
-                if (options.SaveToAlbum)
+                if (!options.SaveToAlbum)
                 {
-                    try
-                    {
-                        var library = new ALAssetsLibrary();
-                        var albumSave = await library.WriteVideoToSavedPhotosAlbumAsync(new NSUrl(path));
-                        aPath = albumSave.AbsoluteString;
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("unable to save to album:" + ex);
-                    }
+                    return new MediaFile(path, () => File.OpenRead(path), albumPath: aPath);
+                }
+
+                try
+                {
+                    var library = new ALAssetsLibrary();
+                    var albumSave = await library.WriteVideoToSavedPhotosAlbumAsync(new NSUrl(path));
+                    aPath = albumSave.AbsoluteString;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("unable to save to album:" + ex);
                 }
             }
 
@@ -396,7 +394,7 @@ namespace Adapt.Presentation.iOS
         {
             var isPhoto = (type == MediaImplementation.TypeImage);
             var ext = Path.GetExtension(name);
-            if (ext == String.Empty)
+            if (ext == string.Empty)
                 ext = ((isPhoto) ? ".jpg" : ".mp4");
 
             name = Path.GetFileNameWithoutExtension(name);
@@ -414,14 +412,16 @@ namespace Adapt.Presentation.iOS
             path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), path);
             Directory.CreateDirectory(path);
 
-            if (String.IsNullOrWhiteSpace(name))
+            if (!string.IsNullOrWhiteSpace(name))
             {
-                var timestamp = DateTime.Now.ToString("yyyMMdd_HHmmss", CultureInfo.InvariantCulture);
-                if (type == MediaImplementation.TypeImage)
-                    name = "IMG_" + timestamp + ".jpg";
-                else
-                    name = "VID_" + timestamp + ".mp4";
+                return Path.Combine(path, GetUniquePath(type, path, name));
             }
+
+            var timestamp = DateTime.Now.ToString("yyyMMdd_HHmmss", CultureInfo.InvariantCulture);
+            if (type == MediaImplementation.TypeImage)
+                name = "IMG_" + timestamp + ".jpg";
+            else
+                name = "VID_" + timestamp + ".mp4";
 
             return Path.Combine(path, GetUniquePath(type, path, name));
         }

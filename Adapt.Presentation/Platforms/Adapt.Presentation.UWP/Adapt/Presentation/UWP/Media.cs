@@ -240,18 +240,20 @@ namespace Adapt.Presentation.UWP
                 return null;
 
             string aPath = null;
-            if (options?.SaveToAlbum ?? false)
+            if (!(options?.SaveToAlbum ?? false))
             {
-                try
-                {
-                    var fileNameNoEx = Path.GetFileNameWithoutExtension(result.Path);
-                    var copy = await result.CopyAsync(KnownFolders.VideosLibrary, fileNameNoEx + result.FileType, NameCollisionOption.GenerateUniqueName);
-                    aPath = copy.Path;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("unable to save to album:" + ex);
-                }
+                return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, albumPath: aPath);
+            }
+
+            try
+            {
+                var fileNameNoEx = Path.GetFileNameWithoutExtension(result.Path);
+                var copy = await result.CopyAsync(KnownFolders.VideosLibrary, fileNameNoEx + result.FileType, NameCollisionOption.GenerateUniqueName);
+                aPath = copy.Path;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("unable to save to album:" + ex);
             }
 
             return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, albumPath: aPath);

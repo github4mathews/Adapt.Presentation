@@ -32,11 +32,13 @@ namespace Adapt.Presentation.iOS
 
         protected override void Dispose(bool disposing)
         {
-            if (theData != null)
+            if (theData == null)
             {
-                theData.Dispose();
-                theData = null;
+                return;
             }
+
+            theData.Dispose();
+            theData = null;
         }
 
         public override void Flush()
@@ -49,13 +51,10 @@ namespace Adapt.Presentation.iOS
             {
                 return 0;
             }
-            else
-            {
-				var len = (int)Math.Min (count, (double)(theData.Length - pos));
-                Marshal.Copy(new IntPtr(theData.Bytes.ToInt64() + pos), buffer, offset, len);
-                pos += (uint)len;
-                return len;
-            }
+            var len = (int)Math.Min (count, (double)(theData.Length - pos));
+            Marshal.Copy(new IntPtr(theData.Bytes.ToInt64() + pos), buffer, offset, len);
+            pos += (uint)len;
+            return len;
         }
 
         public override long Seek(long offset, SeekOrigin origin)

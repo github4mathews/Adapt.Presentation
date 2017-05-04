@@ -391,13 +391,13 @@ namespace Adapt.Presentation.AndroidPlatform
 
                 requestedPermissions = info.RequestedPermissions;
 
-                if (requestedPermissions == null)
+                if (requestedPermissions != null)
                 {
-                    Debug.WriteLine("There are no requested permissions, please check to ensure you have marked permissions you want to request.");
-                    return false;
+                    return requestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
                 }
 
-                return requestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
+                Debug.WriteLine("There are no requested permissions, please check to ensure you have marked permissions you want to request.");
+                return false;
             }
             catch(Exception ex)
             {

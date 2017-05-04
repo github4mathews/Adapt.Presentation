@@ -80,16 +80,18 @@ namespace Adapt.Presentation.AndroidPlatform
                 options = new PickMediaOptions();
 
             //check to see if we picked a file, and if so then try to fix orientation and resize
-            if (!string.IsNullOrWhiteSpace(media?.Path))
+            if (string.IsNullOrWhiteSpace(media?.Path))
             {
-                try
-                {
-                    await FixOrientationAndResizeAsync(media.Path, options.PhotoSize, options.CompressionQuality, options.CustomPhotoSize);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Unable to check orientation: " + ex);
-                }
+                return media;
+            }
+
+            try
+            {
+                await FixOrientationAndResizeAsync(media.Path, options.PhotoSize, options.CompressionQuality, options.CustomPhotoSize);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Unable to check orientation: " + ex);
             }
 
             return media;
@@ -228,16 +230,18 @@ namespace Adapt.Presentation.AndroidPlatform
                 return true;
 
             var status = await CurrentPermissions.CheckPermissionStatusAsync(Permission.Storage);
-            if (status != PermissionStatus.Granted)
+            if (status == PermissionStatus.Granted)
             {
-                Console.WriteLine("Does not have storage permission granted, requesting.");
-                var results = await CurrentPermissions.RequestPermissionsAsync(Permission.Storage);
-                if (results.ContainsKey(Permission.Storage) &&
-                    results[Permission.Storage] != PermissionStatus.Granted)
-                {
-                    Console.WriteLine("Storage permission Denied.");
-                    return false;
-                }
+                return true;
+            }
+
+            Console.WriteLine("Does not have storage permission granted, requesting.");
+            var results = await CurrentPermissions.RequestPermissionsAsync(Permission.Storage);
+            if (results.ContainsKey(Permission.Storage) &&
+                results[Permission.Storage] != PermissionStatus.Granted)
+            {
+                Console.WriteLine("Storage permission Denied.");
+                return false;
             }
 
             return true;
@@ -301,7 +305,7 @@ namespace Adapt.Presentation.AndroidPlatform
         private int GetRequestId()
         {
             var id = requestId;
-            if (requestId == Int32.MaxValue)
+            if (requestId == int.MaxValue)
                 requestId = 0;
             else
                 requestId++;
@@ -475,7 +479,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
         }
 
-        public int CalculateInSampleSize(
+        private int CalculateInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight)
         {
             // Raw height and width of image
@@ -483,19 +487,20 @@ namespace Adapt.Presentation.AndroidPlatform
             var width = options.OutWidth;
             var inSampleSize = 1;
 
-            if (height > reqHeight || width > reqWidth)
+            if (height <= reqHeight && width <= reqWidth)
             {
+                return inSampleSize;
+            }
 
-                var halfHeight = height / 2;
-                var halfWidth = width / 2;
+            var halfHeight = height / 2;
+            var halfWidth = width / 2;
 
-                // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-                // height and width larger than the requested height and width.
-                while ((halfHeight / inSampleSize) >= reqHeight
-                        && (halfWidth / inSampleSize) >= reqWidth)
-                {
-                    inSampleSize *= 2;
-                }
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                   && (halfWidth / inSampleSize) >= reqWidth)
+            {
+                inSampleSize *= 2;
             }
 
             return inSampleSize;
