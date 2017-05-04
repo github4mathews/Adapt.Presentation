@@ -6,6 +6,7 @@ using samples = Adapt.PresentationSamples;
 using droid = Xamarin.Forms.Platform.Android;
 using Application;
 using Adapt.Presentation.AndroidPlatform;
+using Xamarin.Forms;
 
 namespace Adapt.Presentation.Droid
 {
@@ -19,7 +20,7 @@ namespace Adapt.Presentation.Droid
 
             base.OnCreate(bundle);
 
-            Xamarin.Forms.Forms.Init(this, bundle);
+            Forms.Init(this, bundle);
             LoadApplication(new samples.App(new PresentationFactory(ApplicationContext), new Permissions()));
         }
     }
