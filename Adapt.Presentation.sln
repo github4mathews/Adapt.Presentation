@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.Presentation.Android"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.Presentation.UWP", "Adapt.Presentation\Platforms\Adapt.Presentation.UWP\Adapt.Presentation.UWP.csproj", "{D39E1518-1F39-4685-9E9C-446025D05F93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.Presentation.iOS", "Adapt.Presentation\Platforms\Adapt.Presentation.iOS\Adapt.Presentation.iOS.csproj", "{141D8FBE-DC38-49F8-8CFB-8029D30ADB15}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.Presentation.iOS", "Adapt.Presentation.iOS\Adapt.Presentation.iOS.csproj", "{141D8FBE-DC38-49F8-8CFB-8029D30ADB15}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{43D1A6EA-6DBF-4930-8D75-AD758A327B27}"
 EndProject
