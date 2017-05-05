@@ -146,7 +146,7 @@
       <Project>{c6cc9c59-775c-4128-9c70-cb9ac1889338}</Project>
       <Name>Adapt.Presentation.Android</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
+    <ProjectReference Include="..\..\..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
       <Project>{dbc98916-4e18-40ff-833d-af318da6a1d0}</Project>
       <Name>Adapt.Presentation.Standard</Name>
     </ProjectReference>
