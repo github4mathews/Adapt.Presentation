@@ -149,7 +149,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
+    <ProjectReference Include="..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
       <Project>{dbc98916-4e18-40ff-833d-af318da6a1d0}</Project>
       <Name>Adapt.Presentation.Standard</Name>
     </ProjectReference>
@@ -157,7 +157,7 @@
       <Project>{d39e1518-1f39-4685-9e9c-446025d05f93}</Project>
       <Name>Adapt.Presentation.UWP</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Adapt.PresentationSamples.Standard\Adapt.PresentationSamples.Standard.csproj">
+    <ProjectReference Include="..\Adapt.PresentationSamples.Standard\Adapt.PresentationSamples.Standard.csproj">
       <Project>{9a1ed959-56be-48db-bd07-545b00242318}</Project>
       <Name>Adapt.PresentationSamples.Standard</Name>
     </ProjectReference>
