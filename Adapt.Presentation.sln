@@ -15,7 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.PresentationSamples.S
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{A403AA34-D008-413E-83F0-D3243B780FA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.Presentation.Android", "Adapt.Presentation\Platforms\Adapt.Presentation.Android\Adapt.Presentation.Android.csproj", "{C6CC9C59-775C-4128-9C70-CB9AC1889338}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.Presentation.Android", "Adapt.Presentation.Android\Adapt.Presentation.Android.csproj", "{C6CC9C59-775C-4128-9C70-CB9AC1889338}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Adapt.Presentation.UWP", "Adapt.Presentation.UWP\Adapt.Presentation.UWP.csproj", "{D39E1518-1F39-4685-9E9C-446025D05F93}"
 EndProject

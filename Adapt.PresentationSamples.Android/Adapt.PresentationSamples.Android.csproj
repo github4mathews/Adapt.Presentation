@@ -142,7 +142,7 @@
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Adapt.Presentation\Platforms\Adapt.Presentation.Android\Adapt.Presentation.Android.csproj">
+    <ProjectReference Include="..\Adapt.Presentation.Android\Adapt.Presentation.Android.csproj">
       <Project>{c6cc9c59-775c-4128-9c70-cb9ac1889338}</Project>
       <Name>Adapt.Presentation.Android</Name>
     </ProjectReference>
