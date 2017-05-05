@@ -135,17 +135,17 @@
     <Reference Include="Xamarin.iOS" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
+    <ProjectReference Include="..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
       <Project>{dbc98916-4e18-40ff-833d-af318da6a1d0}</Project>
       <Name>Adapt.Presentation.Standard</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Adapt.Presentation.iOS\Adapt.Presentation.iOS.csproj">
+    <ProjectReference Include="..\Adapt.Presentation.iOS\Adapt.Presentation.iOS.csproj">
       <Project>{141d8fbe-dc38-49f8-8cfb-8029d30adb15}</Project>
       <Name>Adapt.Presentation.iOS</Name>
       <IsAppExtension>false</IsAppExtension>
       <IsWatchApp>false</IsWatchApp>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Adapt.PresentationSamples.Standard\Adapt.PresentationSamples.Standard.csproj">
+    <ProjectReference Include="..\Adapt.PresentationSamples.Standard\Adapt.PresentationSamples.Standard.csproj">
       <Project>{9a1ed959-56be-48db-bd07-545b00242318}</Project>
       <Name>Adapt.PresentationSamples.Standard</Name>
     </ProjectReference>
