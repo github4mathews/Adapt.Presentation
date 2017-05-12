@@ -42,6 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapt\Presentation\iOS\FilePicker.cs" />
+    <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocationSingleUpdateDelegate.cs" />
+    <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocationUtils.cs" />
+    <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocatorImplementation.cs" />
     <Compile Include="Adapt\Presentation\iOS\Media.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerController.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerDelegate.cs" />
