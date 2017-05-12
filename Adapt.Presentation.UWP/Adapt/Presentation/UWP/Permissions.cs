@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Windows.Devices.Geolocation;
+using wingeo = Windows.Devices.Geolocation;
 using Windows.ApplicationModel.Contacts;
 using Windows.Devices.Enumeration;
 
@@ -95,13 +95,13 @@ namespace Adapt.Presentation.UWP
         private async Task<PermissionStatus> CheckLocationAsync()
         {
 
-            var accessStatus = await Geolocator.RequestAccessAsync();
+            var accessStatus = await wingeo.Geolocator.RequestAccessAsync();
 
             switch(accessStatus)
             {
-                case GeolocationAccessStatus.Allowed:
+                case wingeo.GeolocationAccessStatus.Allowed:
                     return PermissionStatus.Granted;
-                case GeolocationAccessStatus.Unspecified:
+                case wingeo.GeolocationAccessStatus.Unspecified:
                     return PermissionStatus.Unknown;
 
             }
