@@ -19,6 +19,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
+using app = Android.App;
 using Android.Content;
 using Android.Database;
 using Android.OS;
@@ -36,7 +37,7 @@ namespace Adapt.Presentation.AndroidPlatform
     /// <summary>
     /// Picker
     /// </summary>
-    [Activity(ConfigurationChanges=ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+    [Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
     public class MediaPickerActivity
         : Activity, Android.Media.MediaScannerConnection.IOnScanCompletedListener
     {
@@ -93,7 +94,7 @@ namespace Adapt.Presentation.AndroidPlatform
             base.OnSaveInstanceState(outState);
         }
 
-        
+
 
         /// <summary>
         /// OnCreate
@@ -148,37 +149,37 @@ namespace Adapt.Presentation.AndroidPlatform
 
                         Touch();
 
-						var targetsNOrNewer = false;
+                        var targetsNOrNewer = false;
 
-						try
-						{
-							targetsNOrNewer = (int)Application.Context.ApplicationInfo.TargetSdkVersion >= 24;
-						}
-						catch(Exception appInfoEx)
-						{
-							System.Diagnostics.Debug.WriteLine("Unable to get application info for targetSDK, trying to get from package manager: " + appInfoEx);
-							targetsNOrNewer = false;
+                        try
+                        {
+                            targetsNOrNewer = (int)app.Application.Context.ApplicationInfo.TargetSdkVersion >= 24;
+                        }
+                        catch (Exception appInfoEx)
+                        {
+                            System.Diagnostics.Debug.WriteLine("Unable to get application info for targetSDK, trying to get from package manager: " + appInfoEx);
+                            targetsNOrNewer = false;
 
-							var appInfo = PackageManager.GetApplicationInfo(Application.Context.PackageName, 0);
-							if (appInfo != null)
-							{
-								targetsNOrNewer = (int)appInfo.TargetSdkVersion >= 24;
-							}
-						}
+                            var appInfo = PackageManager.GetApplicationInfo(app.Application.Context.PackageName, 0);
+                            if (appInfo != null)
+                            {
+                                targetsNOrNewer = (int)appInfo.TargetSdkVersion >= 24;
+                            }
+                        }
 
-						if (targetsNOrNewer && path.Scheme == "file")
-						{
-							var photoURI = FileProvider.GetUriForFile(this,
-																	  Application.Context.PackageName + ".fileprovider",
-							                                          new Java.IO.File(path.Path));
+                        if (targetsNOrNewer && path.Scheme == "file")
+                        {
+                            var photoURI = FileProvider.GetUriForFile(this,
+                                                                      app.Application.Context.PackageName + ".fileprovider",
+                                                                      new Java.IO.File(path.Path));
 
-							GrantUriPermissionsForIntent(pickIntent, photoURI);
-							pickIntent.PutExtra(MediaStore.ExtraOutput, photoURI);
-						}
-						else
-						{
-							pickIntent.PutExtra(MediaStore.ExtraOutput, path);
-						}
+                            GrantUriPermissionsForIntent(pickIntent, photoURI);
+                            pickIntent.PutExtra(MediaStore.ExtraOutput, photoURI);
+                        }
+                        else
+                        {
+                            pickIntent.PutExtra(MediaStore.ExtraOutput, path);
+                        }
                     }
                     else
                         path = Uri.Parse(b.GetString(ExtraPath));
@@ -214,7 +215,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 stream.Dispose();
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Unable to create path: " + newPath + " " + ex.Message + "This means you have illegal characters");
                 throw ex;
@@ -235,21 +236,21 @@ namespace Adapt.Presentation.AndroidPlatform
                     File.Delete(localPath);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Unable to delete file: " + ex.Message);
             }
         }
 
-		private void GrantUriPermissionsForIntent(Intent intent, Uri uri)
-		{
-			var resInfoList = PackageManager.QueryIntentActivities(intent, PackageInfoFlags.MatchDefaultOnly);
-			foreach (var resolveInfo in resInfoList)
-			{
-				var packageName = resolveInfo.ActivityInfo.PackageName;
-				GrantUriPermission(packageName, uri, ActivityFlags.GrantWriteUriPermission | ActivityFlags.GrantReadUriPermission);
-			}
-		}
+        private void GrantUriPermissionsForIntent(Intent intent, Uri uri)
+        {
+            var resInfoList = PackageManager.QueryIntentActivities(intent, PackageInfoFlags.MatchDefaultOnly);
+            foreach (var resolveInfo in resInfoList)
+            {
+                var packageName = resolveInfo.ActivityInfo.PackageName;
+                GrantUriPermission(packageName, uri, ActivityFlags.GrantWriteUriPermission | ActivityFlags.GrantReadUriPermission);
+            }
+        }
 
         internal static Task<MediaPickedEventArgs> GetMediaFileAsync(Context context, int requestCode, string action, bool isPhoto, ref Uri path, Uri data, bool saveToAlbum)
         {
@@ -275,7 +276,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 else
                 {
                     pathFuture = TaskFromResult(new Tuple<string, bool>(path.Path, false));
-                   
+
                 }
             }
             else if (data != null)
@@ -289,7 +290,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
             return pathFuture.ContinueWith(t =>
             {
-                
+
                 var resultPath = t.Result.Item1;
                 var aPath = originalPath;
                 if (resultPath == null || !File.Exists(t.Result.Item1))
@@ -338,7 +339,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 }
                 else
                 {
-                    
+
                     var e = await GetMediaFileAsync(this, requestCode, action, isPhoto, ref path, data?.Data, false);
                     Finish();
                     await Task.Delay(50);
@@ -383,7 +384,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     if (url.Scheme == "content")
                         context.ContentResolver.Delete(url, null, null);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine("Unable to delete content resolver file: " + ex.Message);
                 }
@@ -508,26 +509,26 @@ namespace Adapt.Presentation.AndroidPlatform
 
 
                             // If they don't follow the "rules", try to copy the file locally
-							if (contentPath == null || !contentPath.StartsWith("file", StringComparison.InvariantCultureIgnoreCase))
+                            if (contentPath == null || !contentPath.StartsWith("file", StringComparison.InvariantCultureIgnoreCase))
                             {
-								string fileName = null;
-								try
-								{
-									fileName = Path.GetFileName(contentPath);
-								}
-								catch(Exception ex)
-								{ 
-									System.Diagnostics.Debug.WriteLine("Unable to get file path name, using new unique " + ex);
-								}
+                                string fileName = null;
+                                try
+                                {
+                                    fileName = Path.GetFileName(contentPath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    System.Diagnostics.Debug.WriteLine("Unable to get file path name, using new unique " + ex);
+                                }
 
 
-								var outputPath = GetOutputMediaFile(context, "temp", fileName, isPhoto, false);
+                                var outputPath = GetOutputMediaFile(context, "temp", fileName, isPhoto, false);
 
-								try
+                                try
                                 {
                                     using (var input = context.ContentResolver.OpenInputStream(uri))
-                                        using (Stream output = File.Create(outputPath.Path))
-                                            input.CopyTo(output);
+                                    using (Stream output = File.Create(outputPath.Path))
+                                        input.CopyTo(output);
 
                                     contentPath = outputPath.Path;
                                 }
@@ -536,7 +537,7 @@ namespace Adapt.Presentation.AndroidPlatform
                                     // If there's no data associated with the uri, we don't know
                                     // how to open this. contentPath will be null which will trigger
                                     // MediaFileNotFoundException.
-									System.Diagnostics.Debug.WriteLine("Unable to save picked file from disk " + fnfEx);
+                                    System.Diagnostics.Debug.WriteLine("Unable to save picked file from disk " + fnfEx);
                                 }
                             }
 
@@ -583,7 +584,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
         protected override void OnDestroy()
         {
-            if(!completed)
+            if (!completed)
             {
                 DeleteOutputFile();
             }
@@ -651,6 +652,6 @@ namespace Adapt.Presentation.AndroidPlatform
             return tcs.Task;
         }
 
-       
+
     }
 }

@@ -58,6 +58,12 @@
   <ItemGroup>
     <Compile Include="Adapt\Presentation\FileData.cs" />
     <Compile Include="Adapt\Presentation\FilePickerEventArgs.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\ActivityType.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\Address.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\IGeolocator.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\ListenerSettings.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\GeolocatorBase.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\Position.cs" />
     <Compile Include="Adapt\Presentation\IFilePicker.cs" />
     <Compile Include="Adapt\Presentation\IMedia.cs" />
     <Compile Include="Adapt\Presentation\IPermissions.cs" />
