@@ -19,7 +19,9 @@ namespace Adapt.PresentationSamples
             var media = App.PresentationFactory.CreateMedia(App.CurrentPermissions);
             var filePicker = App.PresentationFactory.CreateFilePicker();
 
-            if (!media.IsCameraAvailable || !media.IsTakePhotoSupported)
+            var isCameraAvailable = await media.GetIsCameraAvailable();
+
+            if (!isCameraAvailable || !media.IsTakePhotoSupported)
             {
                 await DisplayAlert("No Camera", ":( No camera available.", "OK");
                 return;
