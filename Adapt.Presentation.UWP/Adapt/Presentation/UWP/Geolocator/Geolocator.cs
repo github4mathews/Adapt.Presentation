@@ -14,7 +14,7 @@ namespace Adapt.Presentation.UWP.Geolocator
     /// <summary>
     /// Implementation for Geolocator
     /// </summary>
-    public class GeolocatorImplementation : IGeolocator
+    public class Geolocator : IGeolocator
     {
 
         bool isListening;
@@ -22,7 +22,7 @@ namespace Adapt.Presentation.UWP.Geolocator
         Windows.Devices.Geolocation.Geolocator locator = new Windows.Devices.Geolocation.Geolocator();
 
 
-        public GeolocatorImplementation()
+        public Geolocator()
         {
             DesiredAccuracy = 100;
         }

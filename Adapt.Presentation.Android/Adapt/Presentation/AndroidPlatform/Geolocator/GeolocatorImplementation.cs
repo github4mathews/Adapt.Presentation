@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Android.Locations;
 using System.Threading;
-using Android.App;
+using app = Android.App;
 using Android.OS;
 using System.Linq;
 using Android.Content;
@@ -43,7 +43,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             get
             {
                 if (locationManager == null)
-                    locationManager = (LocationManager)Application.Context.GetSystemService(Context.LocationService);
+                    locationManager = (LocationManager)app.Application.Context.GetSystemService(Context.LocationService);
 
                 return locationManager;
             }
@@ -222,7 +222,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             if (position == null)
                 return null;
 
-            var geocoder = new Geocoder(Application.Context);
+            var geocoder = new Geocoder(app.Application.Context);
             var addressList = await geocoder.GetFromLocationAsync(position.Latitude, position.Longitude, 10);
             return addressList.ToAddresses();
         }
