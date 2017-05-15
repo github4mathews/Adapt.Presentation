@@ -17,6 +17,10 @@ namespace Adapt.Presentation.UWP
     {
         private static readonly IEnumerable<string> SupportedVideoFileTypes = new List<string> { ".mp4", ".wmv", ".avi" };
         private static readonly IEnumerable<string> SupportedImageFileTypes = new List<string> { ".jpeg", ".jpg", ".png", ".gif", ".bmp" };
+
+
+
+
         /// <summary>
         /// Implementation
         /// </summary>
@@ -29,12 +33,8 @@ namespace Adapt.Presentation.UWP
             watcher.Start();
         }
 
-        private bool initialized = false;
-        public async Task<bool> Initialize()
+        public async Task Initialize()
         {
-            if (initialized)
-                return true;
-
             try
             {
                 var info = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture).AsTask().ConfigureAwait(false);
@@ -51,24 +51,13 @@ namespace Adapt.Presentation.UWP
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Unable to detect cameras: " + ex);
+                Debug.WriteLine("Unable to detect cameras: " + ex);
             }
-
-            initialized = true;
-            return true;
         }
 
         /// <inheritdoc/>
-        public bool IsCameraAvailable
-        {
-            get
-            {
-                if (!initialized)
-                    throw new InvalidOperationException("You must call Initialize() before calling any properties.");
+        public bool IsCameraAvailable => isCameraAvailable;
 
-                return isCameraAvailable;
-            }
-        }
         /// <inheritdoc/>
         public bool IsTakePhotoSupported => true;
 
