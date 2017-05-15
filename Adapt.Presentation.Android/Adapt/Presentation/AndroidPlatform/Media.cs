@@ -34,6 +34,15 @@ namespace Adapt.Presentation.AndroidPlatform
     [Android.Runtime.Preserve(AllMembers = true)]
     public class Media : MediaBase, IMedia
     {
+        #region Fields
+        private bool _IsCameraAvailable;
+        private readonly Context context;
+        private int requestId;
+        private TaskCompletionSource<MediaFile> completionSource;
+        private const string IllegalCharacters = "[|\\?*<\":>/']";
+        #endregion
+
+        #region Constructor
         /// <summary>
         /// Implementation
         /// </summary>
@@ -41,17 +50,14 @@ namespace Adapt.Presentation.AndroidPlatform
         {
 
             context = Android.App.Application.Context;
-            IsCameraAvailable = context.PackageManager.HasSystemFeature(PackageManager.FeatureCamera);
+            _IsCameraAvailable = context.PackageManager.HasSystemFeature(PackageManager.FeatureCamera);
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Gingerbread)
-                IsCameraAvailable |= context.PackageManager.HasSystemFeature(PackageManager.FeatureCameraFront);
+                _IsCameraAvailable |= context.PackageManager.HasSystemFeature(PackageManager.FeatureCameraFront);
         }
+        #endregion
 
-        ///<inheritdoc/>
-        public Task<bool> Initialize() => Task.FromResult(true);
-
-        /// <inheritdoc/>
-        public bool IsCameraAvailable { get; }
+        #region Public Properties
         /// <inheritdoc/>
         public bool IsTakePhotoSupported => true;
 
@@ -62,7 +68,17 @@ namespace Adapt.Presentation.AndroidPlatform
         public bool IsTakeVideoSupported => true;
         /// <inheritdoc/>
         public bool IsPickVideoSupported => true;
+        #endregion
 
+        #region Public Methods
+
+        public Task<bool> GetIsCameraAvailable()
+        {
+            return Task.FromResult(_IsCameraAvailable);
+        }
+
+        ///<inheritdoc/>
+        public Task InitializeAsync() => Task.FromResult(true);
 
         /// <summary>
         /// Picks a photo from the default gallery
@@ -105,7 +121,7 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <returns>Media file of photo or null if canceled</returns>
         public async Task<MediaFile> TakePhotoAsync(StoreCameraMediaOptions options)
         {
-            if (!IsCameraAvailable)
+            if (!_IsCameraAvailable)
                 throw new NotSupportedException();
 
             if (!await RequestStoragePermission())
@@ -128,8 +144,8 @@ namespace Adapt.Presentation.AndroidPlatform
                     var fileName = System.IO.Path.GetFileName(media.Path);
                     var publicUri = MediaPickerActivity.GetOutputMediaFile(context, options.Directory ?? "temp", fileName, true, true);
                     using (System.IO.Stream input = File.OpenRead(media.Path))
-                        using (System.IO.Stream output = File.Create(publicUri.Path))
-                            input.CopyTo(output);
+                    using (System.IO.Stream output = File.Create(publicUri.Path))
+                        input.CopyTo(output);
 
                     media.AlbumPath = publicUri.Path;
 
@@ -174,11 +190,11 @@ namespace Adapt.Presentation.AndroidPlatform
             {
                 await FixOrientationAndResizeAsync(media.Path, options.PhotoSize, options.CompressionQuality, options.CustomPhotoSize);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("Unable to check orientation: " + ex);
             }
-            
+
 
             return media;
         }
@@ -205,7 +221,7 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <returns>Media file of new video or null if canceled</returns>
         public async Task<MediaFile> TakeVideoAsync(StoreVideoOptions options)
         {
-            if (!IsCameraAvailable)
+            if (!_IsCameraAvailable)
                 throw new NotSupportedException();
 
             if (!await RequestStoragePermission())
@@ -218,11 +234,105 @@ namespace Adapt.Presentation.AndroidPlatform
             return await TakeMediaAsync("video/*", MediaStore.ActionVideoCapture, options);
         }
 
-        private readonly Context context;
-        private int requestId;
-        private TaskCompletionSource<MediaFile> completionSource;
+        /// <summary>
+        /// Resize Image Async
+        /// </summary>
+        public Task<bool> ResizeAsync(string filePath, PhotoSize photoSize, int quality, int customPhotoSize)
+        {
+            if (string.IsNullOrWhiteSpace(filePath))
+                return Task.FromResult(false);
+
+            try
+            {
+                return Task.Run(() =>
+                {
+                    try
+                    {
 
 
+                        if (photoSize == PhotoSize.Full)
+                            return false;
+
+                        var percent = 1.0f;
+                        switch (photoSize)
+                        {
+                            case PhotoSize.Large:
+                                percent = .75f;
+                                break;
+                            case PhotoSize.Medium:
+                                percent = .5f;
+                                break;
+                            case PhotoSize.Small:
+                                percent = .25f;
+                                break;
+                            case PhotoSize.Custom:
+                                percent = (float)customPhotoSize / 100f;
+                                break;
+                        }
+
+
+                        //First decode to just get dimensions
+                        var options = new BitmapFactory.Options
+                        {
+                            InJustDecodeBounds = true
+                        };
+
+                        //already on background task
+                        BitmapFactory.DecodeFile(filePath, options);
+
+                        var finalWidth = (int)(options.OutWidth * percent);
+                        var finalHeight = (int)(options.OutHeight * percent);
+
+                        //calculate sample size
+                        options.InSampleSize = CalculateInSampleSize(options, finalWidth, finalHeight);
+
+                        //turn off decode
+                        options.InJustDecodeBounds = false;
+
+
+                        //this now will return the requested width/height from file, so no longer need to scale
+                        using (var originalImage = BitmapFactory.DecodeFile(filePath, options))
+                        {
+
+                            //always need to compress to save back to disk
+                            using (var stream = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite))
+                            {
+
+                                originalImage.Compress(Bitmap.CompressFormat.Jpeg, quality, stream);
+                                stream.Close();
+                            }
+
+                            originalImage.Recycle();
+
+                            // Dispose of the Java side bitmap.
+                            GC.Collect();
+                            return true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                        throw ex;
+#else
+                        return false;
+#endif
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                throw ex;
+#else
+                return Task.FromResult(false);
+#endif
+            }
+        }
+
+
+        #endregion
+
+        #region Private Methods
         private async Task<bool> RequestStoragePermission()
         {
             //We always have permission on anything lower than marshmallow.
@@ -246,8 +356,6 @@ namespace Adapt.Presentation.AndroidPlatform
             return false;
         }
 
-
-        private const string IllegalCharacters = "[|\\?*<\":>/']";
         private void VerifyOptions(StoreMediaOptions options)
         {
             if (options == null)
@@ -255,7 +363,7 @@ namespace Adapt.Presentation.AndroidPlatform
             if (System.IO.Path.IsPathRooted(options.Directory))
                 throw new ArgumentException("options.Directory must be a relative path", nameof(options));
 
-            if(!string.IsNullOrWhiteSpace(options.Name))
+            if (!string.IsNullOrWhiteSpace(options.Name))
                 options.Name = Regex.Replace(options.Name, IllegalCharacters, string.Empty).Replace(@"\", string.Empty);
 
 
@@ -331,8 +439,8 @@ namespace Adapt.Presentation.AndroidPlatform
 
                 if (e.RequestId != id)
                     return;
-                
-                if(e.IsCanceled)
+
+                if (e.IsCanceled)
                     tcs.SetResult(null);
                 else if (e.Error != null)
                     tcs.SetException(e.Error);
@@ -370,8 +478,8 @@ namespace Adapt.Presentation.AndroidPlatform
 
                         var rotation = GetRotation(filePath);
 
-						// if we don't need to rotate, aren't resizing, and aren't adjusting quality then simply return
-						if (rotation == 0 && photoSize == PhotoSize.Full && quality == 100)
+                        // if we don't need to rotate, aren't resizing, and aren't adjusting quality then simply return
+                        if (rotation == 0 && photoSize == PhotoSize.Full && quality == 100)
                             return false;
 
                         var percent = 1.0f;
@@ -390,21 +498,21 @@ namespace Adapt.Presentation.AndroidPlatform
                                 percent = (float)customPhotoSize / 100f;
                                 break;
                         }
-                        
+
 
                         var finalWidth = (int)(options.OutWidth * percent);
                         var finalHeight = (int)(options.OutHeight * percent);
 
                         //calculate sample size
                         options.InSampleSize = CalculateInSampleSize(options, finalWidth, finalHeight);
-                        
+
                         //turn off decode
                         options.InJustDecodeBounds = false;
 
 
                         //this now will return the requested width/height from file, so no longer need to scale
                         var originalImage = BitmapFactory.DecodeFile(filePath, options);
-                        
+
                         if (finalWidth != originalImage.Width || finalHeight != originalImage.Height)
                         {
                             originalImage = Bitmap.CreateScaledBitmap(originalImage, finalWidth, finalHeight, true);
@@ -417,7 +525,7 @@ namespace Adapt.Presentation.AndroidPlatform
                             matrix.PostRotate(rotation);
                             using (var rotatedImage = Bitmap.CreateBitmap(originalImage, 0, 0, originalImage.Width, originalImage.Height, matrix, true))
                             {
-                                    
+
                                 //always need to compress to save back to disk
                                 using (var stream = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite))
                                 {
@@ -439,7 +547,7 @@ namespace Adapt.Presentation.AndroidPlatform
                             return true;
                         }
 
-                            
+
 
                         //always need to compress to save back to disk
                         using (var stream = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite))
@@ -447,15 +555,15 @@ namespace Adapt.Presentation.AndroidPlatform
                             originalImage.Compress(Bitmap.CompressFormat.Jpeg, quality, stream);
                             stream.Close();
                         }
-                            
-                            
+
+
 
                         originalImage.Recycle();
                         originalImage.Dispose();
                         // Dispose of the Java side bitmap.
                         GC.Collect();
                         return true;
-                        
+
                     }
                     catch (Exception ex)
                     {
@@ -505,102 +613,6 @@ namespace Adapt.Presentation.AndroidPlatform
             return inSampleSize;
         }
 
-        /// <summary>
-        /// Resize Image Async
-        /// </summary>
-        public Task<bool> ResizeAsync(string filePath, PhotoSize photoSize, int quality, int customPhotoSize)
-        {
-            if (string.IsNullOrWhiteSpace(filePath))
-                return Task.FromResult(false);
-
-            try
-            {
-                return Task.Run(() =>
-                {
-                    try
-                    {
-                        
-
-                        if (photoSize == PhotoSize.Full)
-                            return false;
-
-                        var percent = 1.0f;
-                        switch (photoSize)
-                        {
-                            case PhotoSize.Large:
-                                percent = .75f;
-                                break;
-                            case PhotoSize.Medium:
-                                percent = .5f;
-                                break;
-                            case PhotoSize.Small:
-                                percent = .25f;
-                                break;
-                            case PhotoSize.Custom:
-                                percent = (float)customPhotoSize / 100f;
-                                break;
-                        }
-
-
-                        //First decode to just get dimensions
-                        var options = new BitmapFactory.Options
-                        {
-                            InJustDecodeBounds = true
-                        };
-
-                        //already on background task
-                        BitmapFactory.DecodeFile(filePath, options);
-
-                        var finalWidth = (int)(options.OutWidth * percent);
-                        var finalHeight = (int)(options.OutHeight * percent);
-
-                        //calculate sample size
-                        options.InSampleSize = CalculateInSampleSize(options, finalWidth, finalHeight);
-
-                        //turn off decode
-                        options.InJustDecodeBounds = false;
-
-
-                        //this now will return the requested width/height from file, so no longer need to scale
-                        using (var originalImage = BitmapFactory.DecodeFile(filePath, options))
-                        {
-
-                            //always need to compress to save back to disk
-                            using (var stream = File.Open(filePath, FileMode.Create, FileAccess.ReadWrite))
-                            {
-
-                                originalImage.Compress(Bitmap.CompressFormat.Jpeg, quality, stream);
-                                stream.Close();
-                            }
-                            
-                            originalImage.Recycle();
-
-                            // Dispose of the Java side bitmap.
-                            GC.Collect();
-                            return true;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-#if DEBUG
-                        throw ex;
-#else
-                        return false;
-#endif
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-#if DEBUG
-                throw ex;
-#else
-                return Task.FromResult(false);
-#endif
-            }
-        }
-
-
         private void SetExifData(string filePath, Orientation orientation)
         {
             try
@@ -609,7 +621,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 {
 
                     ei.SetAttribute(ExifInterface.TagOrientation, Java.Lang.Integer.ToString((int)orientation));
-                    ei.SaveAttributes();                    
+                    ei.SaveAttributes();
                 }
             }
             catch (Exception ex)
@@ -651,7 +663,6 @@ namespace Adapt.Presentation.AndroidPlatform
             }
         }
 
+        #endregion
     }
-
-
 }
