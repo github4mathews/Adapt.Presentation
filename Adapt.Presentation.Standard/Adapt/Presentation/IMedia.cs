@@ -12,11 +12,11 @@ namespace Adapt.Presentation
         /// Initialize all camera components
         /// </summary>
         /// <returns></returns>
-        Task<bool> Initialize();
+        Task InitializeAsync();
         /// <summary>
         /// Gets if a camera is available on the device
         /// </summary>
-        bool IsCameraAvailable { get; }
+        Task<bool> GetIsCameraAvailable();
         /// <summary>
         /// Gets if ability to take photos supported on the device
         /// </summary>

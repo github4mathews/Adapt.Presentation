@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using System.Diagnostics;
 
 namespace Adapt.Presentation.UWP
 {
@@ -15,60 +16,19 @@ namespace Adapt.Presentation.UWP
     /// </summary>
     public class Media : IMedia
     {
+        #region Static Fields
         private static readonly IEnumerable<string> SupportedVideoFileTypes = new List<string> { ".mp4", ".wmv", ".avi" };
         private static readonly IEnumerable<string> SupportedImageFileTypes = new List<string> { ".jpeg", ".jpg", ".png", ".gif", ".bmp" };
-        /// <summary>
-        /// Implementation
-        /// </summary>
-        public Media()
-        {
-            var watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
-            watcher.Added += OnDeviceAdded;
-            watcher.Updated += OnDeviceUpdated;
-            watcher.Removed += OnDeviceRemoved;
-            watcher.Start();
-        }
+        #endregion
 
-        private bool initialized = false;
-        public async Task<bool> Initialize()
-        {
-            if (initialized)
-                return true;
+        #region Private Fields
+        private Task InitializeTask;
+        private ConfiguredTaskAwaitable<DeviceInformationCollection> FindAllDevicesTask;
+        private readonly HashSet<string> _Devices = new HashSet<string>();
+        #endregion
 
-            try
-            {
-                var info = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture).AsTask().ConfigureAwait(false);
-                lock (devices)
-                {
-                    foreach (var device in info)
-                    {
-                        if (device.IsEnabled)
-                            devices.Add(device.Id);
-                    }
+        #region Public Properties
 
-                    isCameraAvailable = devices.Count > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine("Unable to detect cameras: " + ex);
-            }
-
-            initialized = true;
-            return true;
-        }
-
-        /// <inheritdoc/>
-        public bool IsCameraAvailable
-        {
-            get
-            {
-                if (!initialized)
-                    throw new InvalidOperationException("You must call Initialize() before calling any properties.");
-
-                return isCameraAvailable;
-            }
-        }
         /// <inheritdoc/>
         public bool IsTakePhotoSupported => true;
 
@@ -80,18 +40,60 @@ namespace Adapt.Presentation.UWP
 
         /// <inheritdoc/>
         public bool IsPickVideoSupported => true;
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        /// Implementation
+        /// </summary>
+        public Media()
+        {
+            InitializeTask = InitializeAsync();
+            FindAllDevicesTask = DeviceInformation.FindAllAsync(DeviceClass.VideoCapture).AsTask().ConfigureAwait(false);
+
+            var watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
+            watcher.Added += OnDeviceAdded;
+            watcher.Updated += OnDeviceUpdated;
+            watcher.Removed += OnDeviceRemoved;
+            watcher.Start();
+        }
+        #endregion
+
+        #region Public Methods
+        public async Task<bool> GetIsCameraAvailable()
+        {
+            await InitializeTask;
+            return _Devices.Count > 0;
+        }
+
+        public async Task InitializeAsync()
+        {
+            try
+            {
+                var info = await FindAllDevicesTask;
+                lock (_Devices)
+                {
+                    foreach (var device in info)
+                    {
+                        if (device.IsEnabled)
+                            _Devices.Add(device.Id);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("Unable to detect cameras: " + ex);
+            }
+        }
 
         /// <summary>
         /// Take a photo async with specified options
         /// </summary>
-        /// <param name="options">Camera Media Options</param>
-        /// <returns>Media file of photo or null if canceled</returns>
         public async Task<MediaFile> TakePhotoAsync(StoreCameraMediaOptions options)
         {
-            if (!initialized)
-                await Initialize();
+            await InitializeTask;
 
-            if (!IsCameraAvailable)
+            if (_Devices.Count == 0)
                 throw new NotSupportedException();
 
             options.VerifyOptions();
@@ -102,7 +104,7 @@ namespace Adapt.Presentation.UWP
             //we can only disable cropping if resolution is set to max
             if (capture.PhotoSettings.MaxResolution == CameraCaptureUIMaxPhotoResolution.HighestAvailable)
                 capture.PhotoSettings.AllowCropping = options?.AllowCropping ?? true;
-            
+
 
             var result = await capture.CaptureFileAsync(CameraCaptureUIMode.Photo);
             if (result == null)
@@ -141,7 +143,7 @@ namespace Adapt.Presentation.UWP
 
         public CameraCaptureUIMaxPhotoResolution GetMaxResolution(PhotoSize photoSize, int customPhotoSize)
         {
-            if(photoSize == PhotoSize.Custom)
+            if (photoSize == PhotoSize.Custom)
             {
                 if (customPhotoSize <= 25)
                     photoSize = PhotoSize.Small;
@@ -152,7 +154,7 @@ namespace Adapt.Presentation.UWP
                 else
                     photoSize = PhotoSize.Large;
             }
-            switch(photoSize)
+            switch (photoSize)
             {
                 case PhotoSize.Full:
                     return CameraCaptureUIMaxPhotoResolution.HighestAvailable;
@@ -162,7 +164,7 @@ namespace Adapt.Presentation.UWP
                     return CameraCaptureUIMaxPhotoResolution.MediumXga;
                 case PhotoSize.Small:
                     return CameraCaptureUIMaxPhotoResolution.SmallVga;
-                
+
             }
 
             return CameraCaptureUIMaxPhotoResolution.HighestAvailable;
@@ -194,7 +196,7 @@ namespace Adapt.Presentation.UWP
             try
             {
                 var fileNameNoEx = Path.GetFileNameWithoutExtension(aPath);
-                copy = await result.CopyAsync(ApplicationData.Current.LocalFolder, 
+                copy = await result.CopyAsync(ApplicationData.Current.LocalFolder,
                     fileNameNoEx + result.FileType, NameCollisionOption.GenerateUniqueName);
 
                 path = copy.Path;
@@ -216,14 +218,11 @@ namespace Adapt.Presentation.UWP
         /// <summary>
         /// Take a video with specified options
         /// </summary>
-        /// <param name="options">Video Media Options</param>
-        /// <returns>Media file of new video or null if canceled</returns>
         public async Task<MediaFile> TakeVideoAsync(StoreVideoOptions options)
         {
-            if (!initialized)
-                await Initialize();
+            await InitializeTask;
 
-            if (!IsCameraAvailable)
+            if (_Devices.Count == 0)
                 throw new NotSupportedException();
 
             options.VerifyOptions();
@@ -232,11 +231,11 @@ namespace Adapt.Presentation.UWP
             capture.VideoSettings.MaxResolution = GetResolutionFromQuality(options.Quality);
             capture.VideoSettings.AllowTrimming = options?.AllowCropping ?? true;
 
-            if(capture.VideoSettings.AllowTrimming)
+            if (capture.VideoSettings.AllowTrimming)
                 capture.VideoSettings.MaxDurationInSeconds = (float)options.DesiredLength.TotalSeconds;
 
             capture.VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
-            
+
             var result = await capture.CaptureFileAsync(CameraCaptureUIMode.Video);
             if (result == null)
                 return null;
@@ -305,11 +304,9 @@ namespace Adapt.Presentation.UWP
                 return result.OpenStreamForReadAsync().Result;
             }, albumPath: aPath);
         }
+        #endregion
 
-        private readonly HashSet<string> devices = new HashSet<string>();
-        private bool isCameraAvailable;
-
-
+        #region Private Methods
         private CameraCaptureUIMaxVideoResolution GetResolutionFromQuality(VideoQuality quality)
         {
             switch (quality)
@@ -331,24 +328,20 @@ namespace Adapt.Presentation.UWP
             if (!update.Properties.TryGetValue("System.Devices.InterfaceEnabled", out value))
                 return;
 
-            lock (devices)
+            lock (_Devices)
             {
                 if ((bool)value)
-                    devices.Add(update.Id);
+                    _Devices.Add(update.Id);
                 else
-                    devices.Remove(update.Id);
-
-                isCameraAvailable = devices.Count > 0;
+                    _Devices.Remove(update.Id);
             }
         }
 
         private void OnDeviceRemoved(DeviceWatcher sender, DeviceInformationUpdate update)
         {
-            lock (devices)
+            lock (_Devices)
             {
-                devices.Remove(update.Id);
-                if (devices.Count == 0)
-                    isCameraAvailable = false;
+                _Devices.Remove(update.Id);
             }
         }
 
@@ -357,11 +350,11 @@ namespace Adapt.Presentation.UWP
             if (!device.IsEnabled)
                 return;
 
-            lock (devices)
+            lock (_Devices)
             {
-                devices.Add(device.Id);
-                isCameraAvailable = true;
+                _Devices.Add(device.Id);
             }
         }
+        #endregion
     }
 }
