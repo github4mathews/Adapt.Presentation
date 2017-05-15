@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Media.Capture;
@@ -22,13 +23,11 @@ namespace Adapt.Presentation.UWP
 
         #region Private Fields
         private Task InitializeTask;
-        private readonly HashSet<string> devices = new HashSet<string>();
-        private bool isCameraAvailable;
+        private ConfiguredTaskAwaitable<DeviceInformationCollection> FindAllDevicesTask;
+        private readonly HashSet<string> _Devices = new HashSet<string>();
         #endregion
 
         #region Public Properties
-        /// <inheritdoc/>
-        public bool IsCameraAvailable => isCameraAvailable;
 
         /// <inheritdoc/>
         public bool IsTakePhotoSupported => true;
@@ -50,6 +49,7 @@ namespace Adapt.Presentation.UWP
         public Media()
         {
             InitializeTask = InitializeAsync();
+            FindAllDevicesTask = DeviceInformation.FindAllAsync(DeviceClass.VideoCapture).AsTask().ConfigureAwait(false);
 
             var watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
             watcher.Added += OnDeviceAdded;
@@ -60,20 +60,24 @@ namespace Adapt.Presentation.UWP
         #endregion
 
         #region Public Methods
+        public async Task<bool> GetIsCameraAvailable()
+        {
+            await InitializeTask;
+            return _Devices.Count > 0;
+        }
+
         public async Task InitializeAsync()
         {
             try
             {
-                var info = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture).AsTask().ConfigureAwait(false);
-                lock (devices)
+                var info = await FindAllDevicesTask;
+                lock (_Devices)
                 {
                     foreach (var device in info)
                     {
                         if (device.IsEnabled)
-                            devices.Add(device.Id);
+                            _Devices.Add(device.Id);
                     }
-
-                    isCameraAvailable = devices.Count > 0;
                 }
             }
             catch (Exception ex)
@@ -89,7 +93,7 @@ namespace Adapt.Presentation.UWP
         {
             await InitializeTask;
 
-            if (!IsCameraAvailable)
+            if (_Devices.Count == 0)
                 throw new NotSupportedException();
 
             options.VerifyOptions();
@@ -218,7 +222,7 @@ namespace Adapt.Presentation.UWP
         {
             await InitializeTask;
 
-            if (!IsCameraAvailable)
+            if (_Devices.Count == 0)
                 throw new NotSupportedException();
 
             options.VerifyOptions();
@@ -324,24 +328,20 @@ namespace Adapt.Presentation.UWP
             if (!update.Properties.TryGetValue("System.Devices.InterfaceEnabled", out value))
                 return;
 
-            lock (devices)
+            lock (_Devices)
             {
                 if ((bool)value)
-                    devices.Add(update.Id);
+                    _Devices.Add(update.Id);
                 else
-                    devices.Remove(update.Id);
-
-                isCameraAvailable = devices.Count > 0;
+                    _Devices.Remove(update.Id);
             }
         }
 
         private void OnDeviceRemoved(DeviceWatcher sender, DeviceInformationUpdate update)
         {
-            lock (devices)
+            lock (_Devices)
             {
-                devices.Remove(update.Id);
-                if (devices.Count == 0)
-                    isCameraAvailable = false;
+                _Devices.Remove(update.Id);
             }
         }
 
@@ -350,10 +350,9 @@ namespace Adapt.Presentation.UWP
             if (!device.IsEnabled)
                 return;
 
-            lock (devices)
+            lock (_Devices)
             {
-                devices.Add(device.Id);
-                isCameraAvailable = true;
+                _Devices.Add(device.Id);
             }
         }
         #endregion
