@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.Media.Capture;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using System.Diagnostics;
 
 namespace Adapt.Presentation.UWP
 {
@@ -15,25 +15,52 @@ namespace Adapt.Presentation.UWP
     /// </summary>
     public class Media : IMedia
     {
+        #region Static Fields
         private static readonly IEnumerable<string> SupportedVideoFileTypes = new List<string> { ".mp4", ".wmv", ".avi" };
         private static readonly IEnumerable<string> SupportedImageFileTypes = new List<string> { ".jpeg", ".jpg", ".png", ".gif", ".bmp" };
+        #endregion
 
+        #region Private Fields
+        private Task InitializeTask;
+        private readonly HashSet<string> devices = new HashSet<string>();
+        private bool isCameraAvailable;
+        #endregion
 
+        #region Public Properties
+        /// <inheritdoc/>
+        public bool IsCameraAvailable => isCameraAvailable;
 
+        /// <inheritdoc/>
+        public bool IsTakePhotoSupported => true;
 
+        /// <inheritdoc/>
+        public bool IsPickPhotoSupported => true;
+
+        /// <inheritdoc/>
+        public bool IsTakeVideoSupported => true;
+
+        /// <inheritdoc/>
+        public bool IsPickVideoSupported => true;
+        #endregion
+
+        #region Constructor
         /// <summary>
         /// Implementation
         /// </summary>
         public Media()
         {
+            InitializeTask = InitializeAsync();
+
             var watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
             watcher.Added += OnDeviceAdded;
             watcher.Updated += OnDeviceUpdated;
             watcher.Removed += OnDeviceRemoved;
             watcher.Start();
         }
+        #endregion
 
-        public async Task Initialize()
+        #region Public Methods
+        public async Task InitializeAsync()
         {
             try
             {
@@ -55,30 +82,12 @@ namespace Adapt.Presentation.UWP
             }
         }
 
-        /// <inheritdoc/>
-        public bool IsCameraAvailable => isCameraAvailable;
-
-        /// <inheritdoc/>
-        public bool IsTakePhotoSupported => true;
-
-        /// <inheritdoc/>
-        public bool IsPickPhotoSupported => true;
-
-        /// <inheritdoc/>
-        public bool IsTakeVideoSupported => true;
-
-        /// <inheritdoc/>
-        public bool IsPickVideoSupported => true;
-
         /// <summary>
         /// Take a photo async with specified options
         /// </summary>
-        /// <param name="options">Camera Media Options</param>
-        /// <returns>Media file of photo or null if canceled</returns>
         public async Task<MediaFile> TakePhotoAsync(StoreCameraMediaOptions options)
         {
-            if (!initialized)
-                await Initialize();
+            await InitializeTask;
 
             if (!IsCameraAvailable)
                 throw new NotSupportedException();
@@ -91,7 +100,7 @@ namespace Adapt.Presentation.UWP
             //we can only disable cropping if resolution is set to max
             if (capture.PhotoSettings.MaxResolution == CameraCaptureUIMaxPhotoResolution.HighestAvailable)
                 capture.PhotoSettings.AllowCropping = options?.AllowCropping ?? true;
-            
+
 
             var result = await capture.CaptureFileAsync(CameraCaptureUIMode.Photo);
             if (result == null)
@@ -130,7 +139,7 @@ namespace Adapt.Presentation.UWP
 
         public CameraCaptureUIMaxPhotoResolution GetMaxResolution(PhotoSize photoSize, int customPhotoSize)
         {
-            if(photoSize == PhotoSize.Custom)
+            if (photoSize == PhotoSize.Custom)
             {
                 if (customPhotoSize <= 25)
                     photoSize = PhotoSize.Small;
@@ -141,7 +150,7 @@ namespace Adapt.Presentation.UWP
                 else
                     photoSize = PhotoSize.Large;
             }
-            switch(photoSize)
+            switch (photoSize)
             {
                 case PhotoSize.Full:
                     return CameraCaptureUIMaxPhotoResolution.HighestAvailable;
@@ -151,7 +160,7 @@ namespace Adapt.Presentation.UWP
                     return CameraCaptureUIMaxPhotoResolution.MediumXga;
                 case PhotoSize.Small:
                     return CameraCaptureUIMaxPhotoResolution.SmallVga;
-                
+
             }
 
             return CameraCaptureUIMaxPhotoResolution.HighestAvailable;
@@ -183,7 +192,7 @@ namespace Adapt.Presentation.UWP
             try
             {
                 var fileNameNoEx = Path.GetFileNameWithoutExtension(aPath);
-                copy = await result.CopyAsync(ApplicationData.Current.LocalFolder, 
+                copy = await result.CopyAsync(ApplicationData.Current.LocalFolder,
                     fileNameNoEx + result.FileType, NameCollisionOption.GenerateUniqueName);
 
                 path = copy.Path;
@@ -205,12 +214,9 @@ namespace Adapt.Presentation.UWP
         /// <summary>
         /// Take a video with specified options
         /// </summary>
-        /// <param name="options">Video Media Options</param>
-        /// <returns>Media file of new video or null if canceled</returns>
         public async Task<MediaFile> TakeVideoAsync(StoreVideoOptions options)
         {
-            if (!initialized)
-                await Initialize();
+            await InitializeTask;
 
             if (!IsCameraAvailable)
                 throw new NotSupportedException();
@@ -221,11 +227,11 @@ namespace Adapt.Presentation.UWP
             capture.VideoSettings.MaxResolution = GetResolutionFromQuality(options.Quality);
             capture.VideoSettings.AllowTrimming = options?.AllowCropping ?? true;
 
-            if(capture.VideoSettings.AllowTrimming)
+            if (capture.VideoSettings.AllowTrimming)
                 capture.VideoSettings.MaxDurationInSeconds = (float)options.DesiredLength.TotalSeconds;
 
             capture.VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
-            
+
             var result = await capture.CaptureFileAsync(CameraCaptureUIMode.Video);
             if (result == null)
                 return null;
@@ -294,11 +300,9 @@ namespace Adapt.Presentation.UWP
                 return result.OpenStreamForReadAsync().Result;
             }, albumPath: aPath);
         }
+        #endregion
 
-        private readonly HashSet<string> devices = new HashSet<string>();
-        private bool isCameraAvailable;
-
-
+        #region Private Methods
         private CameraCaptureUIMaxVideoResolution GetResolutionFromQuality(VideoQuality quality)
         {
             switch (quality)
@@ -352,5 +356,6 @@ namespace Adapt.Presentation.UWP
                 isCameraAvailable = true;
             }
         }
+        #endregion
     }
 }
