@@ -72,9 +72,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
         #region Public Methods
 
-        public Task<bool> GetIsCameraAvailable()
+        public async Task<bool> GetIsCameraAvailable()
         {
-            return Task.FromResult(_IsCameraAvailable);
+            return await Task.FromResult(_IsCameraAvailable);
         }
 
         ///<inheritdoc/>

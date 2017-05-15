@@ -14,14 +14,13 @@
 //    limitations under the License.
 //
 
+using Foundation;
 using System;
-using System.Threading.Tasks;
-using System.Threading;
 using System.IO;
 using System.Linq;
-
+using System.Threading;
+using System.Threading.Tasks;
 using UIKit;
-using Foundation;
 
 namespace Adapt.Presentation.iOS
 {
@@ -30,21 +29,57 @@ namespace Adapt.Presentation.iOS
     /// </summary>
     public class Media : IMedia
     {
+        #region Fields
+        private UIPopoverController popover;
+        private UIImagePickerControllerDelegate pickerDelegate;
+        private bool _IsCameraAvailable;
+        #endregion
+
+        #region Public Consts
+        /// <summary>
+        /// image type
+        /// </summary>
+        public const string TypeImage = "public.image";
+        /// <summary>
+        /// movie type
+        /// </summary>
+        public const string TypeMovie = "public.movie";
+        #endregion
+
+        #region Public Properties
+        /// <inheritdoc/>
+        public bool IsTakePhotoSupported { get; }
+
+        /// <inheritdoc/>
+        public bool IsPickPhotoSupported { get; }
+
+        /// <inheritdoc/>
+        public bool IsTakeVideoSupported { get; }
+
+        /// <inheritdoc/>
+        public bool IsPickVideoSupported { get; }
+        #endregion
+
+        #region Public Static Properties
         /// <summary>
         /// Color of the status bar
         /// </summary>
         public static UIStatusBarStyle StatusBarStyle { get; set; }
+        #endregion
 
+        #region Public Methods
         ///<inheritdoc/>
-        public Task<bool> Initialize() => Task.FromResult(true);
+        public Task InitializeAsync() => Task.FromResult(true);
+        #endregion
 
+        #region Constructor
         /// <summary>
         /// Implementation
         /// </summary>
         public Media()
         {
             StatusBarStyle = UIApplication.SharedApplication.StatusBarStyle;
-            IsCameraAvailable = UIImagePickerController.IsSourceTypeAvailable(UIImagePickerControllerSourceType.Camera);
+            _IsCameraAvailable = UIImagePickerController.IsSourceTypeAvailable(UIImagePickerControllerSourceType.Camera);
 
             var availableCameraMedia = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.Camera) ?? new string[0];
             var avaialbleLibraryMedia = UIImagePickerController.AvailableMediaTypes(UIImagePickerControllerSourceType.PhotoLibrary) ?? new string[0];
@@ -57,22 +92,15 @@ namespace Adapt.Presentation.iOS
                     IsTakePhotoSupported = IsPickPhotoSupported = true;
             }
         }
-        /// <inheritdoc/>
-        public bool IsCameraAvailable { get; }
+        #endregion
 
-        /// <inheritdoc/>
-        public bool IsTakePhotoSupported { get; }
+        #region Public Methods
 
-        /// <inheritdoc/>
-        public bool IsPickPhotoSupported { get; }
+        public async Task<bool> GetIsCameraAvailable()
+        {
+            return await Task.FromResult(_IsCameraAvailable);
+        }
 
-        /// <inheritdoc/>
-        public bool IsTakeVideoSupported { get; }
-
-        /// <inheritdoc/>
-        public bool IsPickVideoSupported { get; }
-
-        
         /// <summary>
         /// Picks a photo from the default gallery
         /// </summary>
@@ -92,7 +120,7 @@ namespace Adapt.Presentation.iOS
 
             return GetMediaAsync(UIImagePickerControllerSourceType.PhotoLibrary, TypeImage, cameraOptions);
         }
- 
+
 
         /// <summary>
         /// Take a photo async with specified options
@@ -103,7 +131,7 @@ namespace Adapt.Presentation.iOS
         {
             if (!IsTakePhotoSupported)
                 throw new NotSupportedException();
-            if (!IsCameraAvailable)
+            if (!_IsCameraAvailable)
                 throw new NotSupportedException();
 
             CheckCameraUsageDescription();
@@ -112,7 +140,7 @@ namespace Adapt.Presentation.iOS
 
             return GetMediaAsync(UIImagePickerControllerSourceType.Camera, TypeImage, options);
         }
-     
+
 
         /// <summary>
         /// Picks a video from the default gallery
@@ -128,7 +156,7 @@ namespace Adapt.Presentation.iOS
 
             return GetMediaAsync(UIImagePickerControllerSourceType.PhotoLibrary, TypeMovie);
         }
-        
+
 
         /// <summary>
         /// Take a video with specified options
@@ -139,7 +167,7 @@ namespace Adapt.Presentation.iOS
         {
             if (!IsTakeVideoSupported)
                 throw new NotSupportedException();
-            if (!IsCameraAvailable)
+            if (!_IsCameraAvailable)
                 throw new NotSupportedException();
 
             CheckCameraUsageDescription();
@@ -148,18 +176,9 @@ namespace Adapt.Presentation.iOS
 
             return GetMediaAsync(UIImagePickerControllerSourceType.Camera, TypeMovie, options);
         }
+        #endregion
 
-        private UIPopoverController popover;
-        private UIImagePickerControllerDelegate pickerDelegate;
-        /// <summary>
-        /// image type
-        /// </summary>
-        public const string TypeImage = "public.image";
-        /// <summary>
-        /// movie type
-        /// </summary>
-        public const string TypeMovie = "public.movie";
-
+        #region Private Methods
         private void VerifyOptions(StoreMediaOptions options)
         {
             if (options == null)
@@ -175,46 +194,6 @@ namespace Adapt.Presentation.iOS
                 throw new ArgumentException("options.Camera is not a member of CameraDevice");
         }
 
-        private static MediaPickerController SetupController(MediaPickerDelegate mpDelegate, UIImagePickerControllerSourceType sourceType, string mediaType, StoreCameraMediaOptions options = null)
-        {
-            var picker = new MediaPickerController(mpDelegate)
-            {
-                MediaTypes = new[] {mediaType},
-                SourceType = sourceType
-            };
-
-            if (sourceType != UIImagePickerControllerSourceType.Camera)
-            {
-                return picker;
-            }
-
-            picker.CameraDevice = GetUICameraDevice(options.DefaultCamera);
-            picker.AllowsEditing = options?.AllowCropping ?? false;
-
-            if (options.OverlayViewProvider != null)
-            {
-                var overlay = options.OverlayViewProvider();
-                if (overlay is UIView)
-                {
-                    picker.CameraOverlayView = overlay as UIView;
-                }
-            }
-            if (mediaType == TypeImage)
-            {
-                picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Photo;
-            }
-            else if (mediaType == TypeMovie)
-            {
-                StoreVideoOptions voptions = (StoreVideoOptions)options;
-
-                picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Video;
-                picker.VideoQuality = GetQuailty(voptions.Quality);
-                picker.VideoMaximumDuration = voptions.DesiredLength.TotalSeconds;
-            }
-
-            return picker;
-        }
-
         private Task<MediaFile> GetMediaAsync(UIImagePickerControllerSourceType sourceType, string mediaType, StoreCameraMediaOptions options = null)
         {
             UIViewController viewController = null;
@@ -222,7 +201,7 @@ namespace Adapt.Presentation.iOS
             if (window == null)
                 throw new InvalidOperationException("There's no current active window");
 
-            if(window.WindowLevel == UIWindowLevel.Normal)
+            if (window.WindowLevel == UIWindowLevel.Normal)
                 viewController = window.RootViewController;
 
             if (viewController == null)
@@ -274,6 +253,75 @@ namespace Adapt.Presentation.iOS
             }).Unwrap();
         }
 
+        private void CheckCameraUsageDescription()
+        {
+            var info = NSBundle.MainBundle.InfoDictionary;
+
+            if (!UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+            {
+                return;
+            }
+
+            if (!info.ContainsKey(new NSString("NSCameraUsageDescription")))
+                throw new UnauthorizedAccessException("On iOS 10 and higher you must set NSCameraUsageDescription in your Info.plist file to enable Authorization Requests for Camera access!");
+        }
+
+        private void CheckPhotoUsageDescription()
+        {
+            var info = NSBundle.MainBundle.InfoDictionary;
+
+            if (!UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+            {
+                return;
+            }
+
+            if (!info.ContainsKey(new NSString("NSPhotoLibraryUsageDescription")))
+                throw new UnauthorizedAccessException("On iOS 10 and higher you must set NSPhotoLibraryUsageDescription in your Info.plist file to enable Authorization Requests for Photo Library access!");
+        }
+
+        #endregion
+
+        #region Private Static Methods
+        private static MediaPickerController SetupController(MediaPickerDelegate mpDelegate, UIImagePickerControllerSourceType sourceType, string mediaType, StoreCameraMediaOptions options = null)
+        {
+            var picker = new MediaPickerController(mpDelegate)
+            {
+                MediaTypes = new[] { mediaType },
+                SourceType = sourceType
+            };
+
+            if (sourceType != UIImagePickerControllerSourceType.Camera)
+            {
+                return picker;
+            }
+
+            picker.CameraDevice = GetUICameraDevice(options.DefaultCamera);
+            picker.AllowsEditing = options?.AllowCropping ?? false;
+
+            if (options.OverlayViewProvider != null)
+            {
+                var overlay = options.OverlayViewProvider();
+                if (overlay is UIView)
+                {
+                    picker.CameraOverlayView = overlay as UIView;
+                }
+            }
+            if (mediaType == TypeImage)
+            {
+                picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Photo;
+            }
+            else if (mediaType == TypeMovie)
+            {
+                StoreVideoOptions voptions = (StoreVideoOptions)options;
+
+                picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Video;
+                picker.VideoQuality = GetQuailty(voptions.Quality);
+                picker.VideoMaximumDuration = voptions.DesiredLength.TotalSeconds;
+            }
+
+            return picker;
+        }
+
         private static UIImagePickerControllerCameraDevice GetUICameraDevice(CameraDevice device)
         {
             switch (device)
@@ -300,31 +348,6 @@ namespace Adapt.Presentation.iOS
             }
         }
 
-
-        private void CheckCameraUsageDescription()
-        {
-            var info = NSBundle.MainBundle.InfoDictionary;
-
-            if (!UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-            {
-                return;
-            }
-
-            if (!info.ContainsKey(new NSString("NSCameraUsageDescription")))
-                throw new UnauthorizedAccessException("On iOS 10 and higher you must set NSCameraUsageDescription in your Info.plist file to enable Authorization Requests for Camera access!");
-        }
-
-        private void CheckPhotoUsageDescription()
-        {
-            var info = NSBundle.MainBundle.InfoDictionary;
-
-            if (!UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-            {
-                return;
-            }
-
-            if (!info.ContainsKey(new NSString("NSPhotoLibraryUsageDescription")))
-                throw new UnauthorizedAccessException("On iOS 10 and higher you must set NSPhotoLibraryUsageDescription in your Info.plist file to enable Authorization Requests for Photo Library access!");
-        }
+        #endregion
     }
 }
