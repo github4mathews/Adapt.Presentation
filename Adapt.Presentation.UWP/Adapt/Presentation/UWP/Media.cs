@@ -23,7 +23,6 @@ namespace Adapt.Presentation.UWP
 
         #region Private Fields
         private Task InitializeTask;
-        private ConfiguredTaskAwaitable<DeviceInformationCollection> FindAllDevicesTask;
         private readonly HashSet<string> _Devices = new HashSet<string>();
         #endregion
 
@@ -49,7 +48,6 @@ namespace Adapt.Presentation.UWP
         public Media()
         {
             InitializeTask = InitializeAsync();
-            FindAllDevicesTask = DeviceInformation.FindAllAsync(DeviceClass.VideoCapture).AsTask().ConfigureAwait(false);
 
             var watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
             watcher.Added += OnDeviceAdded;
@@ -70,7 +68,8 @@ namespace Adapt.Presentation.UWP
         {
             try
             {
-                var info = await FindAllDevicesTask;
+                var info = await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture);
+
                 lock (_Devices)
                 {
                     foreach (var device in info)
