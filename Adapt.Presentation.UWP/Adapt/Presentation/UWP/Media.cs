@@ -140,7 +140,7 @@ namespace Adapt.Presentation.UWP
             return new MediaFile(file.Path, () => file.OpenStreamForReadAsync().Result, albumPath: aPath);
         }
 
-        public CameraCaptureUIMaxPhotoResolution GetMaxResolution(PhotoSize photoSize, int customPhotoSize)
+        public static CameraCaptureUIMaxPhotoResolution GetMaxResolution(PhotoSize photoSize, int customPhotoSize)
         {
             if (photoSize == PhotoSize.Custom)
             {
@@ -306,7 +306,7 @@ namespace Adapt.Presentation.UWP
         #endregion
 
         #region Private Methods
-        private CameraCaptureUIMaxVideoResolution GetResolutionFromQuality(VideoQuality quality)
+        private static CameraCaptureUIMaxVideoResolution GetResolutionFromQuality(VideoQuality quality)
         {
             switch (quality)
             {
