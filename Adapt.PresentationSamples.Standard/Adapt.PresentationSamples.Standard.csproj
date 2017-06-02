@@ -75,11 +75,9 @@
   <ItemGroup>
     <EmbeddedResource Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
 </Project>
