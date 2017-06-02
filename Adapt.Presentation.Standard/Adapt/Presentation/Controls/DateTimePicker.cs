@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls
 {
-    public class DateTimePicker : StackLayout
+    public class DateTimePicker : WrapLayout
     {
         #region Fields
         private readonly DatePicker _Date;
@@ -48,7 +48,6 @@ namespace Adapt.Presentation.Controls
         #region Constructor
         public DateTimePicker()
         {
-            Orientation = StackOrientation.Vertical;
             Padding = 2;
             _Date = new DatePicker { Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern };
             _Time = new TimePicker { Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern };
