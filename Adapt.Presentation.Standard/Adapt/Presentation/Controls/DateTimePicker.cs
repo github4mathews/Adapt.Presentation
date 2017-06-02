@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.Linq;
 using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls
@@ -21,7 +20,7 @@ namespace Adapt.Presentation.Controls
         (
             p => p.Value,
             defaultValue: default(DateTime),
-            defaultBindingMode: BindingMode.OneWay,
+            defaultBindingMode: BindingMode.TwoWay,
             propertyChanging: (bindable, oldValue, newValue) =>
             {
                 ValueChanging(bindable, oldValue, newValue);
@@ -31,12 +30,6 @@ namespace Adapt.Presentation.Controls
         private static void ValueChanging(BindableObject bindable, DateTime oldValue, DateTime newValue)
         {
             var ctrl = (DateTimePicker)bindable;
-
-            if (ctrl._IsChanging)
-            {
-                return;
-            }
-
             ctrl._IsChanging = true;
             ctrl._Date.Date = newValue;
             ctrl._Time.Time = newValue.TimeOfDay;
@@ -71,10 +64,23 @@ namespace Adapt.Presentation.Controls
         #region Event Handlers
         private void PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (new List<string> { nameof(TimePicker.Time), nameof(DatePicker.DateProperty) }.Contains(propertyChangedEventArgs.PropertyName))
+            //This is just here for debugging purposes
+            if(propertyChangedEventArgs.PropertyName== "IsFocused")
             {
-                Value = _Date.Date.Add(_Time.Time);
+                return;
             }
+
+            if (_IsChanging)
+            {
+                return;
+            }
+
+            if (!new List<string> { nameof(TimePicker.Time), nameof(DatePicker.Date) }.Contains(propertyChangedEventArgs.PropertyName))
+            {
+                return;
+            }
+
+            Value = _Date.Date.Add(_Time.Time);
         }
         #endregion
     }
