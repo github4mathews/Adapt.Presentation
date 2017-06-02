@@ -6,7 +6,7 @@ using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls
 {
-    public class DateTimePicker : WrapLayout, IDisposable
+    public class DateTimePicker : WrapLayout
     {
         #region Fields
         private readonly DatePicker _Date;
@@ -93,16 +93,6 @@ namespace Adapt.Presentation.Controls
             }
 
             Value = _Date.Date.Add(_Time.Time);
-        }
-        #endregion
-
-        #region Public Methods
-        public void Dispose()
-        {
-            _Date.PropertyChanged -= PropertyChanged;
-            _Time.PropertyChanged -= PropertyChanged;
-            _ClearButton.Clicked -= ClearButton_Clicked;
-            _NowButton.Clicked -= NowButton_Clicked;
         }
         #endregion
     }
