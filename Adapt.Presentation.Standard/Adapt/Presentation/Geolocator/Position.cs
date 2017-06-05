@@ -15,7 +15,7 @@ namespace Adapt.Presentation.Geolocator
         public Position(Position position)
         {
             if (position == null)
-                throw new ArgumentNullException("position");
+                throw new ArgumentNullException(nameof(position));
 
             Timestamp = position.Timestamp;
             Latitude = position.Latitude;
@@ -113,7 +113,7 @@ namespace Adapt.Presentation.Geolocator
         public PositionEventArgs(Position position)
         {
             if (position == null)
-                throw new ArgumentNullException("position");
+                throw new ArgumentNullException(nameof(position));
 
             Position = position;
         }
@@ -137,12 +137,11 @@ namespace Adapt.Presentation.Geolocator
         /// <summary>
         /// Location exception
         /// </summary>
-        /// <param name="error"></param>
         public GeolocationException(GeolocationError error)
           : base("A geolocation error occured: " + error)
         {
             if (!Enum.IsDefined(typeof(GeolocationError), error))
-                throw new ArgumentException("error is not a valid GelocationError member", "error");
+                throw new ArgumentException("error is not a valid GelocationError member", nameof(error));
 
             Error = error;
         }
@@ -150,13 +149,11 @@ namespace Adapt.Presentation.Geolocator
         /// <summary>
         /// Geolocation error
         /// </summary>
-        /// <param name="error"></param>
-        /// <param name="innerException"></param>
         public GeolocationException(GeolocationError error, Exception innerException)
           : base("A geolocation error occured: " + error, innerException)
         {
             if (!Enum.IsDefined(typeof(GeolocationError), error))
-                throw new ArgumentException("error is not a valid GelocationError member", "error");
+                throw new ArgumentException("error is not a valid GelocationError member", nameof(error));
 
             Error = error;
         }

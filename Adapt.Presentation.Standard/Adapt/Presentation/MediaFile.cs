@@ -95,7 +95,7 @@ namespace Adapt.Presentation
 
 		bool isDisposed;
 		Func<Stream> streamGetter;
-        string path;
+        readonly string path;
         string albumPath;
 
         void Dispose(bool disposing)

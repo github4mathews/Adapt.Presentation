@@ -11,7 +11,7 @@ namespace Adapt.Presentation.Controls
     /// <author>Jason Smith</author>
     public class WrapLayout : Layout<View>
     {
-        Dictionary<View, SizeRequest> layoutCache = new Dictionary<View, SizeRequest>();
+        readonly Dictionary<View, SizeRequest> layoutCache = new Dictionary<View, SizeRequest>();
 
         /// <summary>
         /// Backing Storage for the Spacing property
@@ -46,7 +46,7 @@ namespace Adapt.Presentation.Controls
 
             double lastX;
             double lastY;
-            var layout = NaiveLayout(widthConstraint, heightConstraint, out lastX, out lastY);
+            NaiveLayout(widthConstraint, heightConstraint, out lastX, out lastY);
 
             return new SizeRequest(new Size(lastX, lastY));
         }
@@ -71,7 +71,7 @@ namespace Adapt.Presentation.Controls
         {
             double startX = 0;
             double startY = 0;
-            double right = width;
+            var right = width;
             double nextY = 0;
 
             lastX = 0;
@@ -162,7 +162,7 @@ namespace Adapt.Presentation.Controls
         /// </summary>
         private void OnSizeChanged()
         {
-            this.ForceLayout();
+            ForceLayout();
         }
 
         //http://forums.xamarin.com/discussion/17961/stacklayout-with-horizontal-orientation-how-to-wrap-vertically#latest
@@ -188,8 +188,8 @@ namespace Adapt.Presentation.Controls
             if (HeightRequest > 0)
                 heightConstraint = Math.Min(heightConstraint, HeightRequest);
 
-            double internalWidth = double.IsPositiveInfinity(widthConstraint) ? double.PositiveInfinity : Math.Max(0, widthConstraint);
-            double internalHeight = double.IsPositiveInfinity(heightConstraint) ? double.PositiveInfinity : Math.Max(0, heightConstraint);
+            var internalWidth = double.IsPositiveInfinity(widthConstraint) ? double.PositiveInfinity : Math.Max(0, widthConstraint);
+            var internalHeight = double.IsPositiveInfinity(heightConstraint) ? double.PositiveInfinity : Math.Max(0, heightConstraint);
 
             return Orientation == StackOrientation.Vertical
                 ? DoVerticalMeasure(internalWidth, internalHeight)
@@ -205,7 +205,7 @@ namespace Adapt.Presentation.Controls
         /// <param name="heightConstraint">Height constraint.</param>
         private SizeRequest DoVerticalMeasure(double widthConstraint, double heightConstraint)
         {
-            int columnCount = 1;
+            var columnCount = 1;
 
             double width = 0;
             double height = 0;
@@ -232,11 +232,13 @@ namespace Adapt.Presentation.Controls
                 minWidth = Math.Max(minWidth, size.Minimum.Width);
             }
 
-            if (columnCount > 1)
+            if (columnCount <= 1)
             {
-                height = Math.Max(height, heightUsed);
-                width *= columnCount;  // take max width
+                return new SizeRequest(new Size(width, height), new Size(minWidth, minHeight));
             }
+
+            height = Math.Max(height, heightUsed);
+            width *= columnCount;  // take max width
 
             return new SizeRequest(new Size(width, height), new Size(minWidth, minHeight));
         }
@@ -244,12 +246,9 @@ namespace Adapt.Presentation.Controls
         /// <summary>
         /// Does the horizontal measure.
         /// </summary>
-        /// <returns>The horizontal measure.</returns>
-        /// <param name="widthConstraint">Width constraint.</param>
-        /// <param name="heightConstraint">Height constraint.</param>
         private SizeRequest DoHorizontalMeasure(double widthConstraint, double heightConstraint)
         {
-            int rowCount = 1;
+            var rowCount = 1;
 
             double width = 0;
             double height = 0;
@@ -276,11 +275,13 @@ namespace Adapt.Presentation.Controls
                 minWidth = Math.Max(minWidth, size.Minimum.Width);
             }
 
-            if (rowCount > 1)
+            if (rowCount <= 1)
             {
-                width = Math.Max(width, widthUsed);
-                height = (height + Spacing) * rowCount - Spacing; // via MitchMilam 
+                return new SizeRequest(new Size(width, height), new Size(minWidth, minHeight));
             }
+
+            width = Math.Max(width, widthUsed);
+            height = (height + Spacing) * rowCount - Spacing; // via MitchMilam 
 
             return new SizeRequest(new Size(width, height), new Size(minWidth, minHeight));
         }
@@ -303,8 +304,8 @@ namespace Adapt.Presentation.Controls
                 {
                     var request = child.GetSizeRequest(width, height);
 
-                    double childWidth = request.Request.Width;
-                    double childHeight = request.Request.Height;
+                    var childWidth = request.Request.Width;
+                    var childHeight = request.Request.Height;
                     colWidth = Math.Max(colWidth, childWidth);
 
                     if (yPos + childHeight > height)
@@ -328,8 +329,8 @@ namespace Adapt.Presentation.Controls
                 {
                     var request = child.GetSizeRequest(width, height);
 
-                    double childWidth = request.Request.Width;
-                    double childHeight = request.Request.Height;
+                    var childWidth = request.Request.Width;
+                    var childHeight = request.Request.Height;
                     rowHeight = Math.Max(rowHeight, childHeight);
 
                     if (xPos + childWidth > width)

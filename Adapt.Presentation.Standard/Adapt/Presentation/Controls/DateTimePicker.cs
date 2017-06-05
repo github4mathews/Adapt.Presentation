@@ -21,12 +21,9 @@ namespace Adapt.Presentation.Controls
         BindableProperty.Create<DateTimePicker, DateTime>
         (
             p => p.Value,
-            defaultValue: default(DateTime),
-            defaultBindingMode: BindingMode.TwoWay,
-            propertyChanging: (bindable, oldValue, newValue) =>
-            {
-                ValueChanging(bindable, oldValue, newValue);
-            }
+            default(DateTime),
+            BindingMode.TwoWay,
+            propertyChanging: ValueChanging
         );
 
         private static void ValueChanging(BindableObject bindable, DateTime oldValue, DateTime newValue)
@@ -59,8 +56,8 @@ namespace Adapt.Presentation.Controls
             Children.Add(_NowButton);
             Children.Add(_Date);
             Children.Add(_Time);
-            _Date.PropertyChanged += PropertyChanged;
-            _Time.PropertyChanged += PropertyChanged;
+            _Date.PropertyChanged += DateOrTimePropertyChanged;
+            _Time.PropertyChanged += DateOrTimePropertyChanged;
             _ClearButton.Clicked += ClearButton_Clicked;
             _NowButton.Clicked += NowButton_Clicked;
             _Date.Date = new DateTime();
@@ -80,7 +77,7 @@ namespace Adapt.Presentation.Controls
             Value = DateTime.MinValue;
         }
 
-        private void PropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        private void DateOrTimePropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             if (_IsChanging)
             {

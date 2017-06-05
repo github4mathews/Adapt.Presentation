@@ -256,7 +256,7 @@ namespace Adapt.Presentation
         /// <summary>
         /// High
         /// </summary>
-        High = 2,
+        High = 2
     }
 
     /// <summary>

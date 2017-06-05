@@ -7,7 +7,7 @@ namespace Adapt.Presentation
     /// </summary>
     public static class CrossPermissions
     {
-        static Lazy<IPermissions> Implementation = new Lazy<IPermissions>(CreatePermissions, System.Threading.LazyThreadSafetyMode.PublicationOnly);
+        static readonly Lazy<IPermissions> Implementation = new Lazy<IPermissions>(CreatePermissions, System.Threading.LazyThreadSafetyMode.PublicationOnly);
 
         /// <summary>
         /// Current settings to use
