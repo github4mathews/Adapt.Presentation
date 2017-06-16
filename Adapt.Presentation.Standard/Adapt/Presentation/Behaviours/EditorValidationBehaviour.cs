@@ -25,8 +25,8 @@ namespace Adapt.Presentation.Behaviours
 
         static void OnAttachBehaviorChanged(BindableObject view, object oldValue, object newValue)
         {
-            var Editor = view as Editor;
-            if (Editor == null)
+            var editor = view as Editor;
+            if (editor == null)
             {
                 return;
             }
@@ -34,19 +34,26 @@ namespace Adapt.Presentation.Behaviours
             bool attachBehavior = (bool)newValue;
             if (attachBehavior)
             {
-                Editor.TextChanged += OnEditorTextChanged;
+                editor.TextChanged += OnEditorTextChanged;
             }
             else
             {
-                Editor.TextChanged -= OnEditorTextChanged;
+                editor.TextChanged -= OnEditorTextChanged;
             }
 
-            var notifyDataErrorInfo = Editor.BindingContext as INotifyDataErrorInfo;
+            editor.BindingContextChanged += Editor_BindingContextChanged;
+
+            var notifyDataErrorInfo = editor.BindingContext as INotifyDataErrorInfo;
             if (notifyDataErrorInfo != null)
             {
                 notifyDataErrorInfo.ErrorsChanged += NotifyDataErrorInfo_ErrorsChanged;
             }
 
+        }
+
+        private static void Editor_BindingContextChanged(object sender, System.EventArgs e)
+        {
+            Refresh(sender);
         }
 
         private static void NotifyDataErrorInfo_ErrorsChanged(object sender, DataErrorsChangedEventArgs e)
