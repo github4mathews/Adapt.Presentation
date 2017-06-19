@@ -2,9 +2,5 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <SelectedDevice>LGE Nexus 5X</SelectedDevice>
-    <DefaultDevice>AVD_GalaxyNexus_ToolsForApacheCordova</DefaultDevice>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ReferencePath>C:\GitRepos\Adapt.Presentation\packages\Xamarin.Forms.2.3.4.247\lib\MonoAndroid10\</ReferencePath>
   </PropertyGroup>
 </Project>
