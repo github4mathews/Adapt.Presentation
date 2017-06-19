@@ -1,8 +1,8 @@
 using Android;
 using Android.App;
 using app = Android.App;
-using Android.Support.V4.App;
-using Android.Support.V4.Content;
+//using Android.Support.V4.App;
+//using Android.Support.V4.Content;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -57,8 +57,10 @@ namespace Adapt.Presentation.AndroidPlatform
 
             foreach (var name in names)
             {
-                if(ActivityCompat.ShouldShowRequestPermissionRationale(activity, name))
-                    return Task.FromResult(true);
+                throw new NotImplementedException();
+
+                //if (ActivityCompat.ShouldShowRequestPermissionRationale(activity, name))
+                //    return Task.FromResult(true);
             }
 
             return Task.FromResult(false);
@@ -97,8 +99,11 @@ namespace Adapt.Presentation.AndroidPlatform
 
             foreach (var name in names)
             {
-                if (ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied)
-                    return Task.FromResult(PermissionStatus.Denied);
+                throw new NotImplementedException();
+
+
+                //if (ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied)
+                //    return Task.FromResult(PermissionStatus.Denied);
             }
             return Task.FromResult(PermissionStatus.Granted);
         }
@@ -168,7 +173,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
             tcs = new TaskCompletionSource<Dictionary<Permission, PermissionStatus>>();
 
-            ActivityCompat.RequestPermissions(activity, permissionsToRequest.ToArray(), PermissionCode);
+            throw new NotImplementedException();
+
+            //ActivityCompat.RequestPermissions(activity, permissionsToRequest.ToArray(), PermissionCode);
 
             return await tcs.Task.ConfigureAwait(false);
         }

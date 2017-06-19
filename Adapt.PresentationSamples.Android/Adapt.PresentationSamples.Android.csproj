@@ -118,7 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Adapt.Presentation.Android\Adapt.Presentation.Android.csproj">
-      <Project>{c6cc9c59-775c-4128-9c70-cb9ac1889338}</Project>
+      <Project>{9e4e6901-ac34-4fd2-a88c-df4bf9cbb843}</Project>
       <Name>Adapt.Presentation.Android</Name>
     </ProjectReference>
     <ProjectReference Include="..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
