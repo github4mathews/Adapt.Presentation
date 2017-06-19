@@ -87,9 +87,8 @@
       <HintPath>..\packages\Xamarin.Forms.2.2.0.45\lib\MonoAndroid10\Xamarin.Forms.Platform.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Xamarin.Forms.Platform.Android, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Xamarin.Forms.2.2.0.45\lib\MonoAndroid10\Xamarin.Forms.Platform.Android.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Xamarin.Forms.Platform.Android">
+      <HintPath>..\packages\Xamarin.Forms.2.2.0.45\lib\MonoAndroid10\Xamarin.Forms.Platform.Android.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Forms.Xaml, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Xamarin.Forms.2.2.0.45\lib\MonoAndroid10\Xamarin.Forms.Xaml.dll</HintPath>
@@ -116,6 +115,10 @@
     <ProjectReference Include="..\Adapt.Presentation.Android\Adapt.Presentation.Android.csproj">
       <Project>{9e4e6901-ac34-4fd2-a88c-df4bf9cbb843}</Project>
       <Name>Adapt.Presentation.Android</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.csproj">
+      <Project>{dbc98916-4e18-40ff-833d-af318da6a1d0}</Project>
+      <Name>Adapt.Presentation.Standard</Name>
     </ProjectReference>
     <ProjectReference Include="..\Adapt.PresentationSamples.Standard\Adapt.PresentationSamples.Standard.csproj">
       <Project>{9a1ed959-56be-48db-bd07-545b00242318}</Project>
