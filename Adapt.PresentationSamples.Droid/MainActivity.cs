@@ -1,12 +1,9 @@
-﻿using System;
-
+﻿
+using Adapt.Presentation.AndroidPlatform;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
-using System.IO;
-
 using samples = Adapt.PresentationSamples;
-using Adapt.Presentation.AndroidPlatform;
 
 namespace XamForms.Droid
 {
