@@ -1,13 +1,19 @@
-﻿using samples = Adapt.PresentationSamples;
+﻿using Adapt.Presentation.UWP;
+using System.IO;
+using Windows.Storage;
+using samples = Adapt.PresentationSamples;
 
-namespace Adapt.Presentation.UWP
+namespace XamForms.UWP
 {
     public sealed partial class MainPage
     {
         public MainPage()
         {
-            InitializeComponent();
-            LoadApplication(new samples.App(new PresentationFactory(), new Permissions()));
+            this.InitializeComponent();
+
+            var app = new samples.App(new PresentationFactory(), new Permissions());
+
+            LoadApplication(app);
         }
     }
 }
