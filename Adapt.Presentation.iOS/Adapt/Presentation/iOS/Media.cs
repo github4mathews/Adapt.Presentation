@@ -86,10 +86,15 @@ namespace Adapt.Presentation.iOS
 
             foreach (var type in availableCameraMedia.Concat(avaialbleLibraryMedia))
             {
-                if (type == TypeMovie)
-                    IsTakeVideoSupported = IsPickVideoSupported = true;
-                else if (type == TypeImage)
-                    IsTakePhotoSupported = IsPickPhotoSupported = true;
+                switch (type)
+                {
+                    case TypeMovie:
+                        IsTakeVideoSupported = IsPickVideoSupported = true;
+                        break;
+                    case TypeImage:
+                        IsTakePhotoSupported = IsPickPhotoSupported = true;
+                        break;
+                }
             }
         }
         #endregion

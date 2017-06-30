@@ -16,8 +16,6 @@ namespace Adapt.Presentation.UWP.Geolocator
     /// </summary>
     public class Geolocator : IGeolocator
     {
-
-        bool isListening;
         double desiredAccuracy;
         Windows.Devices.Geolocation.Geolocator locator = new Windows.Devices.Geolocation.Geolocator();
 
@@ -96,7 +94,7 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// <summary>
         /// Gets if you are listening for location changes
         /// </summary>
-        public bool IsListening => isListening;
+        public bool IsListening { get; private set; }
 
 
         /// <summary>
@@ -106,7 +104,7 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// <returns>Best and most recent location or null if none found</returns>
         public Task<Position> GetLastKnownLocationAsync()
         {
-            return Task.Factory.StartNew<Position>(()=> { return null; });
+            return Task.Factory.StartNew<Position>(()=> null);
         }
 
         /// <summary>
@@ -198,10 +196,10 @@ namespace Adapt.Presentation.UWP.Geolocator
                 throw new ArgumentOutOfRangeException("minTime");
             if (minDistance < 0)
                 throw new ArgumentOutOfRangeException("minDistance");
-            if (isListening)
+            if (IsListening)
                 throw new InvalidOperationException();
 
-            isListening = true;
+            IsListening = true;
 
             var loc = GetGeolocator();
             loc.ReportInterval = (uint)minTime.TotalMilliseconds;
@@ -217,12 +215,12 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// </summary>
         public Task<bool> StopListeningAsync()
         {
-            if (!isListening)
+            if (!IsListening)
                 return Task.FromResult(true);
 
             locator.PositionChanged -= OnLocatorPositionChanged;
             locator.StatusChanged -= OnLocatorStatusChanged;
-            isListening = false;
+            IsListening = false;
 
             return Task.FromResult(true);
         }
@@ -245,7 +243,7 @@ namespace Adapt.Presentation.UWP.Geolocator
                     return;
             }
 
-            if (isListening)
+            if (IsListening)
             {
                 await StopListeningAsync();
                 OnPositionError(new PositionErrorEventArgs(error));

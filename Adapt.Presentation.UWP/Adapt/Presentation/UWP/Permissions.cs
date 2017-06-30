@@ -83,10 +83,7 @@ namespace Adapt.Presentation.UWP
         {
             var accessStatus = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
 
-            if (accessStatus == null)
-                return PermissionStatus.Denied;
-
-            return PermissionStatus.Granted;
+            return accessStatus == null ? PermissionStatus.Denied : PermissionStatus.Granted;
         }
 
         private async Task<PermissionStatus> CheckLocationAsync()

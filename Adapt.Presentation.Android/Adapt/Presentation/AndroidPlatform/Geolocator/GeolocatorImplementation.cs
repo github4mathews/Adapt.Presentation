@@ -85,23 +85,25 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 
         }
 
-        async Task<bool> CheckPermissions()
+        private async Task<bool> CheckPermissions()
         {
             var status = await CurrentPermissions.CheckPermissionStatusAsync(Permission.Location);
-            if (status != PermissionStatus.Granted)
+            if (status == PermissionStatus.Granted)
             {
-                Console.WriteLine("Currently does not have Location permissions, requesting permissions");
-
-                var request = await CurrentPermissions.RequestPermissionsAsync(Permission.Location);
-
-                if (request[Permission.Location] != PermissionStatus.Granted)
-                {
-                    Console.WriteLine("Location permission denied, can not get positions async.");
-                    return false;
-                }
+                return true;
             }
 
-            return true;
+            Console.WriteLine("Currently does not have Location permissions, requesting permissions");
+
+            var request = await CurrentPermissions.RequestPermissionsAsync(Permission.Location);
+
+            if (request[Permission.Location] == PermissionStatus.Granted)
+            {
+                return true;
+            }
+
+            Console.WriteLine("Location permission denied, can not get positions async.");
+            return false;
         }
 
 
@@ -149,12 +151,12 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                     var looper = Looper.MyLooper() ?? Looper.MainLooper;
 
                     var enabled = 0;
-                    for (var i = 0; i < providers.Length; ++i)
+                    foreach (var provider in providers)
                     {
-                        if (Manager.IsProviderEnabled(providers[i]))
+                        if (Manager.IsProviderEnabled(provider))
                             enabled++;
 
-                        Manager.RequestLocationUpdates(providers[i], 0, 0, singleListener, looper);
+                        Manager.RequestLocationUpdates(provider, 0, 0, singleListener, looper);
                     }
 
                     if (enabled == 0)

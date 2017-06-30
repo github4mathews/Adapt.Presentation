@@ -105,13 +105,9 @@ namespace Adapt.Presentation.Geolocator
         /// <summary>
         /// Position args
         /// </summary>
-        /// <param name="position"></param>
         public PositionEventArgs(Position position)
         {
-            if (position == null)
-                throw new ArgumentNullException(nameof(position));
-
-            Position = position;
+            Position = position ?? throw new ArgumentNullException(nameof(position));
         }
 
         /// <summary>
@@ -120,7 +116,6 @@ namespace Adapt.Presentation.Geolocator
         public Position Position
         {
             get;
-            private set;
         }
     }
 

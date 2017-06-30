@@ -82,18 +82,13 @@ namespace Adapt.Presentation.AndroidPlatform
             }
 
             var context = CrossCurrentActivity.Current.Activity ?? Application.Context;
-            if (context == null)
+            if (context != null)
             {
-                Debug.WriteLine("Unable to detect current Activity or App Context. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
-                return Task.FromResult(PermissionStatus.Unknown);
+                return Task.FromResult(Enumerable.Any(names, name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted);
             }
 
-            foreach (var name in names)
-            {
-                if (ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied)
-                    return Task.FromResult(PermissionStatus.Denied);
-            }
-            return Task.FromResult(PermissionStatus.Granted);
+            Debug.WriteLine("Unable to detect current Activity or App Context. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
+            return Task.FromResult(PermissionStatus.Unknown);
         }
 
         /// <summary>

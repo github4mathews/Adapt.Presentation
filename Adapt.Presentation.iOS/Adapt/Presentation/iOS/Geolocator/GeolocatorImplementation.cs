@@ -22,7 +22,6 @@ namespace Adapt.Presentation.iOS.Geolocator
     {
         bool deferringUpdates;
         readonly CLLocationManager manager;
-        bool isListening;
         Position position;
         ListenerSettings listenerSettings;
 
@@ -85,7 +84,7 @@ namespace Adapt.Presentation.iOS.Geolocator
         /// <summary>
         /// Gets if you are listening for location changes
         ///
-        public bool IsListening => isListening;
+        public bool IsListening { get; private set; }
 
 #if __IOS__ || __MACOS__
         /// <summary>
@@ -131,15 +130,17 @@ namespace Adapt.Presentation.iOS.Geolocator
 #if __IOS__
             var info = NSBundle.MainBundle.InfoDictionary;
 
-            if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+            if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
             {
-                if (info.ContainsKey(new NSString("NSLocationAlwaysUsageDescription")))
-                    manager.RequestAlwaysAuthorization();
-                else if (info.ContainsKey(new NSString("NSLocationWhenInUseUsageDescription")))
-                    manager.RequestWhenInUseAuthorization();
-                else
-                    throw new UnauthorizedAccessException("On iOS 8.0 and higher you must set either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in your Info.plist file to enable Authorization Requests for Location updates!");
+                return;
             }
+
+            if (info.ContainsKey(new NSString("NSLocationAlwaysUsageDescription")))
+                manager.RequestAlwaysAuthorization();
+            else if (info.ContainsKey(new NSString("NSLocationWhenInUseUsageDescription")))
+                manager.RequestWhenInUseAuthorization();
+            else
+                throw new UnauthorizedAccessException("On iOS 8.0 and higher you must set either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in your Info.plist file to enable Authorization Requests for Location updates!");
 #elif __MACOS__
             //nothing to do here.
 #elif __TVOS__
@@ -168,15 +169,17 @@ namespace Adapt.Presentation.iOS.Geolocator
             if (newLocation == null)
                 return null;
 
-            var position = new Position();
-            position.Accuracy = newLocation.HorizontalAccuracy;
-            position.Altitude = newLocation.Altitude;
-            position.AltitudeAccuracy = newLocation.VerticalAccuracy;
-            position.Latitude = newLocation.Coordinate.Latitude;
-            position.Longitude = newLocation.Coordinate.Longitude;
+            var position = new Position
+            {
+                Accuracy = newLocation.HorizontalAccuracy,
+                Altitude = newLocation.Altitude,
+                AltitudeAccuracy = newLocation.VerticalAccuracy,
+                Latitude = newLocation.Coordinate.Latitude,
+                Longitude = newLocation.Coordinate.Longitude,
+                Speed = newLocation.Speed
+            };
 
 #if !__TVOS__
-            position.Speed = newLocation.Speed;
 #endif 
 
             try
@@ -305,7 +308,7 @@ namespace Adapt.Presentation.iOS.Geolocator
         {
             if (minDistance < 0)
                 throw new ArgumentOutOfRangeException("minDistance");
-            if (isListening)
+            if (IsListening)
                 throw new InvalidOperationException("Already listening");
 
             // if no settings were passed in, instantiate the default settings. need to check this and create default settings since
@@ -355,7 +358,7 @@ namespace Adapt.Presentation.iOS.Geolocator
                 desiredAccuracy = CLLocation.AccuracyBest;
             }
 
-            isListening = true;
+            IsListening = true;
             manager.DesiredAccuracy = desiredAccuracy;
             manager.DistanceFilter = minDistance;
 
@@ -381,10 +384,10 @@ namespace Adapt.Presentation.iOS.Geolocator
         /// </summary>
         public Task<bool> StopListeningAsync()
         {
-            if (!isListening)
+            if (!IsListening)
                 return Task.FromResult(true);
 
-            isListening = false;
+            IsListening = false;
 #if __IOS__
             if (CLLocationManager.HeadingAvailable)
                 manager.StopUpdatingHeading();

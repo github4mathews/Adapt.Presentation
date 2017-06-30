@@ -124,11 +124,13 @@ namespace Adapt.Presentation.iOS.Geolocator
             }
             haveLocation = true;
 
-            if ((!includeHeading || haveHeading) && position.Accuracy <= desiredAccuracy)
+            if ((includeHeading && !haveHeading) || !(position.Accuracy <= desiredAccuracy))
             {
-                tcs.TrySetResult(new Position(position));
-                StopListening();
+                return;
             }
+
+            tcs.TrySetResult(new Position(position));
+            StopListening();
         }
 
 #if __IOS__
@@ -143,11 +145,13 @@ namespace Adapt.Presentation.iOS.Geolocator
             position.Heading = newHeading.TrueHeading;
             haveHeading = true;
 
-            if (haveLocation && position.Accuracy <= desiredAccuracy)
+            if (!haveLocation || !(position.Accuracy <= desiredAccuracy))
             {
-                tcs.TrySetResult(new Position(position));
-                StopListening();
+                return;
             }
+
+            tcs.TrySetResult(new Position(position));
+            StopListening();
         }
 #endif
 
