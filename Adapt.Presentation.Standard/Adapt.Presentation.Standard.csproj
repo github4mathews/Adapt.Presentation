@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Adapt\Presentation\Behaviours\EditorValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EntryValidationBehaviour.cs" />
+    <Compile Include="Adapt\Presentation\Controls\asdasdasd.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
