@@ -3,6 +3,7 @@ using Adapt.Presentation.Geolocator;
 using System;
 using System.Collections.Generic;
 using Address = Adapt.Presentation.Geolocator.Address;
+using System.Linq;
 
 namespace Adapt.Presentation.AndroidPlatform.Geolocator
 {
@@ -93,7 +94,8 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         }
 
         private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        internal static DateTimeOffset GetTimestamp(this Location location)
+
+        private static DateTimeOffset GetTimestamp(this Location location)
         {
             try
             {

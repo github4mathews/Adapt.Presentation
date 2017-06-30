@@ -291,7 +291,7 @@ namespace Adapt.Presentation.UWP.Geolocator
                 Accuracy = position.Coordinate.Accuracy,
                 Latitude = position.Coordinate.Point.Position.Latitude,
                 Longitude = position.Coordinate.Point.Position.Longitude,
-                Timestamp = position.Coordinate.Timestamp.ToUniversalTime(),
+                Timestamp = position.Coordinate.Timestamp.ToUniversalTime()
             };
 
             if (position.Coordinate.Heading != null)

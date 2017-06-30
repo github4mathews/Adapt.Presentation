@@ -266,7 +266,7 @@ namespace Adapt.Presentation.AndroidPlatform
                                 percent = .25f;
                                 break;
                             case PhotoSize.Custom:
-                                percent = (float)customPhotoSize / 100f;
+                                percent = customPhotoSize / 100f;
                                 break;
                         }
 
@@ -495,7 +495,7 @@ namespace Adapt.Presentation.AndroidPlatform
                                 percent = .25f;
                                 break;
                             case PhotoSize.Custom:
-                                percent = (float)customPhotoSize / 100f;
+                                percent = customPhotoSize / 100f;
                                 break;
                         }
 

@@ -9,6 +9,7 @@ using Android.Content;
 using Android.Runtime;
 using Address = Adapt.Presentation.Geolocator.Address;
 using Adapt.Presentation.Geolocator;
+using System.Linq;
 
 namespace Adapt.Presentation.AndroidPlatform.Geolocator
 {

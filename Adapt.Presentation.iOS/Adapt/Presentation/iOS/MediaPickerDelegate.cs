@@ -297,7 +297,7 @@ namespace Adapt.Presentation.iOS
                             percent = .25f;
                             break;
                         case PhotoSize.Custom:
-                            percent = (float)options.CustomPhotoSize / 100f;
+                            percent = options.CustomPhotoSize / 100f;
                             break;
                     }
 

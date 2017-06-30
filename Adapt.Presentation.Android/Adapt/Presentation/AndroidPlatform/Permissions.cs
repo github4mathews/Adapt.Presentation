@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Android.Content;
+using System.Linq;
 
 namespace Adapt.Presentation.AndroidPlatform
 {
