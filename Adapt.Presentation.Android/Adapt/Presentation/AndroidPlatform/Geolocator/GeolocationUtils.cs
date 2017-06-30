@@ -42,15 +42,10 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             if (isNewer && !isLessAccurate)
                 return true;
 
-            if (isNewer && !isSignificantlyLessAccurage && isFromSameProvider)
-                return true;
-
-            return false;
-
-
+            return isNewer && !isSignificantlyLessAccurage && isFromSameProvider;
         }
 
-        internal static bool IsSameProvider(string provider1, string provider2)
+        private static bool IsSameProvider(string provider1, string provider2)
         {
             if (provider1 == null)
                 return provider2 == null;

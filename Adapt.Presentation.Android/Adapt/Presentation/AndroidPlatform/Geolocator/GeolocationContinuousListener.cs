@@ -57,9 +57,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             }
 
             var previous = Interlocked.Exchange(ref lastLocation, location);
-            if (previous != null)
-                previous.Dispose();
-            
+            previous?.Dispose();
 
             PositionChanged?.Invoke(this, new PositionEventArgs(location.ToPosition()));
         }

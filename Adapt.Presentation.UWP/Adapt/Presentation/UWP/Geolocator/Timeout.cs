@@ -15,7 +15,7 @@ namespace Adapt.Presentation.UWP.Geolocator
             if (timeout < 0)
                 throw new ArgumentOutOfRangeException("timeoutMilliseconds");
             if (timesup == null)
-                throw new ArgumentNullException("timesup");
+                throw new ArgumentNullException(nameof(timesup));
 
             Task.Delay(TimeSpan.FromMilliseconds(timeout), canceller.Token)
                 .ContinueWith(t =>

@@ -42,15 +42,11 @@ namespace Adapt.Presentation.Behaviours
             }
         }
 
-        static void OnEntryTextChanged(object sender, TextChangedEventArgs args)
+        private static void OnEntryTextChanged(object sender, TextChangedEventArgs args)
         {
             var entry = sender as Entry;
-            if (entry == null)
-            {
-                return;
-            }
 
-            var notifyDataErrorInfo = entry.BindingContext as INotifyDataErrorInfo;
+            var notifyDataErrorInfo = entry?.BindingContext as INotifyDataErrorInfo;
             if (notifyDataErrorInfo == null)
             {
                 return;

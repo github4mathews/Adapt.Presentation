@@ -49,20 +49,13 @@ namespace Adapt.Presentation.AndroidPlatform
                 return Task.FromResult(false);
             }
 
-            if (names.Count == 0)
+            if (names.Count != 0)
             {
-                Debug.WriteLine("No permissions found in manifest for: " + permission + " no need to show request rationale");
-                return Task.FromResult(false);
+                return Task.FromResult(Enumerable.Any(names, name => ActivityCompat.ShouldShowRequestPermissionRationale(activity, name)));
             }
 
-            foreach (var name in names)
-            {
-                if (ActivityCompat.ShouldShowRequestPermissionRationale(activity, name))
-                    return Task.FromResult(true);
-            }
-
+            Debug.WriteLine("No permissions found in manifest for: " + permission + " no need to show request rationale");
             return Task.FromResult(false);
-
         }
 
         /// <summary>

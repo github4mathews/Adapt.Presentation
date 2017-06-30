@@ -38,16 +38,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         string[] Providers => Manager.GetProviders(enabledOnly: false).ToArray();
         string[] IgnoredProviders => new string[] { LocationManager.PassiveProvider, "local_database" };
 
-        LocationManager Manager
-        {
-            get
-            {
-                if (locationManager == null)
-                    locationManager = (LocationManager)app.Application.Context.GetSystemService(Context.LocationService);
-
-                return locationManager;
-            }
-        }
+        private LocationManager Manager => locationManager ?? (locationManager = (LocationManager) app.Application.Context.GetSystemService(Context.LocationService));
 
         /// <inheritdoc/>
         public event EventHandler<PositionErrorEventArgs> PositionError;

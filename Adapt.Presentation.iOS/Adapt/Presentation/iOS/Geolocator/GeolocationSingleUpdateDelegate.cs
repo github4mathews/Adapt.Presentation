@@ -60,11 +60,13 @@ namespace Adapt.Presentation.iOS.Geolocator
         public override void AuthorizationChanged(CLLocationManager manager, CLAuthorizationStatus status)
         {
             // If user has services disabled, we're just going to throw an exception for consistency.
-            if (status == CLAuthorizationStatus.Denied || status == CLAuthorizationStatus.Restricted)
+            if (status != CLAuthorizationStatus.Denied && status != CLAuthorizationStatus.Restricted)
             {
-                StopListening();
-                tcs.TrySetException(new GeolocationException(GeolocationError.Unauthorized));
+                return;
             }
+
+            StopListening();
+            tcs.TrySetException(new GeolocationException(GeolocationError.Unauthorized));
         }
 
         public override void Failed(CLLocationManager manager, NSError error)

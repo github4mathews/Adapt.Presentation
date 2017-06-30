@@ -43,9 +43,14 @@ namespace Adapt.Presentation.UWP
                 return null;
             }
 
-            var retVal = new FileData { FileName = file.Name };
+            var fileStream = await file.OpenStreamForWriteAsync();
 
-            retVal.FileStream = await file.OpenStreamForWriteAsync();
+            var retVal = new FileData
+            {
+                FileName = file.Name,
+                FileStream = fileStream
+            };
+
 
             return retVal;
         }
