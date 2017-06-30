@@ -1,5 +1,4 @@
 using Android.App;
-using System;
 
 
 namespace Adapt.Presentation.AndroidPlatform

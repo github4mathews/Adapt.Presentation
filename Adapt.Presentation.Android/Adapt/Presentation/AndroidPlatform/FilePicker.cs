@@ -1,4 +1,3 @@
-using Adapt.Presentation;
 using Android.Content;
 using Android.Runtime;
 using System;

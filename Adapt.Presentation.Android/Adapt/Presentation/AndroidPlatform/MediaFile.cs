@@ -15,12 +15,8 @@
 //
 
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using Android.Content;
-using File = System.IO.File;
-using IOException = System.IO.IOException;
-using Adapt.Presentation;
 
 namespace Adapt.Presentation.AndroidPlatform
 {

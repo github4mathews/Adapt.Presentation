@@ -4,7 +4,6 @@ using CoreLocation;
 using Foundation;
 using System.Threading.Tasks;
 using System.Threading;
-using System.Linq;
 using Adapt.Presentation.Geolocator;
 
 namespace Adapt.Presentation.iOS.Geolocator

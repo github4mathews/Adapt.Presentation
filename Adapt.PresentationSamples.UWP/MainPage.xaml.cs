@@ -1,6 +1,4 @@
 ﻿using Adapt.Presentation.UWP;
-using System.IO;
-using Windows.Storage;
 using samples = Adapt.PresentationSamples;
 
 namespace XamForms.UWP

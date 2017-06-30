@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Adapt.Presentation.Geolocator
+﻿namespace Adapt.Presentation.Geolocator
 {
     /// <summary>
 	/// Activity type (iOS only). Used to determine when to automatically pause location updates. 

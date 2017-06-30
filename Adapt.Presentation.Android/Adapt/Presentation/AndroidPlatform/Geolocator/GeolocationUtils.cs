@@ -2,7 +2,6 @@ using Android.Locations;
 using Adapt.Presentation.Geolocator;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Address = Adapt.Presentation.Geolocator.Address;
 
 namespace Adapt.Presentation.AndroidPlatform.Geolocator

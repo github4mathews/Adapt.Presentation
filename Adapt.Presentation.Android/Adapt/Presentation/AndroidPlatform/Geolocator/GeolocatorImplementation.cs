@@ -5,7 +5,6 @@ using Android.Locations;
 using System.Threading;
 using app = Android.App;
 using Android.OS;
-using System.Linq;
 using Android.Content;
 using Android.Runtime;
 using Address = Adapt.Presentation.Geolocator.Address;

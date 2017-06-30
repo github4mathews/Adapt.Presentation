@@ -27,7 +27,6 @@ using Android.Provider;
 using Environment = Android.OS.Environment;
 using Path = System.IO.Path;
 using Uri = Android.Net.Uri;
-using Android.Net;
 //using Android.Support.V4.Content;
 using Android.Content.PM;
 using System.Globalization;
