@@ -1,5 +1,7 @@
 ﻿
 using Adapt.Presentation;
+using Model;
+using System;
 using System.Collections.Generic;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -14,6 +16,8 @@ namespace Adapt.PresentationSamples
             InitializeComponent();
 
             TakePhotoButton.Clicked += TakePhotoButton_Clicked;
+
+            DateTimePickerTab.BindingContext = new DateTimeModel { TheDateTime = DateTime.Now };
         }
 
         private async void TakePhotoButton_Clicked(object sender, System.EventArgs e)
