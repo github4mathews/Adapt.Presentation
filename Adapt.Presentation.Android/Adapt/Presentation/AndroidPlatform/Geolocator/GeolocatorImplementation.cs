@@ -96,12 +96,12 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 
         async Task<bool> CheckPermissions()
         {
-            var status = await this.CurrentPermissions.CheckPermissionStatusAsync(Permission.Location);
+            var status = await CurrentPermissions.CheckPermissionStatusAsync(Permission.Location);
             if (status != PermissionStatus.Granted)
             {
                 Console.WriteLine("Currently does not have Location permissions, requesting permissions");
 
-                var request = await this.CurrentPermissions.RequestPermissionsAsync(Permission.Location);
+                var request = await CurrentPermissions.RequestPermissionsAsync(Permission.Location);
 
                 if (request[Permission.Location] != PermissionStatus.Granted)
                 {

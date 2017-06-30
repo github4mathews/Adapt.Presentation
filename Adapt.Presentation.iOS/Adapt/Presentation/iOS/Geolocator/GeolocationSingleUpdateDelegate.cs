@@ -39,7 +39,7 @@ namespace Adapt.Presentation.iOS.Geolocator
                 t = new Timer(s =>
                 {
                     if (haveLocation)
-                        tcs.TrySetResult(new Position(this.position));
+                        tcs.TrySetResult(new Position(position));
                     else
                         tcs.TrySetCanceled();
 

@@ -9,7 +9,7 @@ namespace XamForms.UWP
     {
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
             var app = new samples.App(new PresentationFactory(), new Permissions());
 

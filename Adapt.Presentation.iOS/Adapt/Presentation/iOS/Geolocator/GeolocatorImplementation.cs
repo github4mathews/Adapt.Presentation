@@ -456,7 +456,7 @@ namespace Adapt.Presentation.iOS.Geolocator
 
         void UpdatePosition(CLLocation location)
         {
-            var p = (position == null) ? new Position() : new Position(this.position);
+            var p = (position == null) ? new Position() : new Position(position);
 
             if (location.HorizontalAccuracy > -1)
             {

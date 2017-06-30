@@ -153,14 +153,14 @@ namespace Adapt.Presentation.AndroidPlatform
 
                         try
                         {
-                            targetsNOrNewer = (int)app.Application.Context.ApplicationInfo.TargetSdkVersion >= 24;
+                            targetsNOrNewer = (int)Application.Context.ApplicationInfo.TargetSdkVersion >= 24;
                         }
                         catch (Exception appInfoEx)
                         {
                             System.Diagnostics.Debug.WriteLine("Unable to get application info for targetSDK, trying to get from package manager: " + appInfoEx);
                             targetsNOrNewer = false;
 
-                            var appInfo = PackageManager.GetApplicationInfo(app.Application.Context.PackageName, 0);
+                            var appInfo = PackageManager.GetApplicationInfo(Application.Context.PackageName, 0);
                             if (appInfo != null)
                             {
                                 targetsNOrNewer = (int)appInfo.TargetSdkVersion >= 24;
