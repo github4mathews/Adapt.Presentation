@@ -148,7 +148,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                         Touch();
 
-                        var targetsNOrNewer = false;
+                        bool targetsNOrNewer;
 
                         try
                         {
