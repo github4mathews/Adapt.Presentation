@@ -25,4 +25,16 @@
         </Grid>
     </ContentPage>
 
+    <ContentPage Title="WrapLayout" >
+        <controls:WrapLayout>
+
+            <Label Text="Some Text" />
+
+            <controls:DateTimePicker />
+
+            <Entry Text="Something"  />
+
+        </controls:WrapLayout>
+    </ContentPage>
+
 </TabbedPage>
