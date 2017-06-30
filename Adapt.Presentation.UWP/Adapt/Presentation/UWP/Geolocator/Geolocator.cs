@@ -193,9 +193,9 @@ namespace Adapt.Presentation.UWP.Geolocator
         {
 
             if (minTime.TotalMilliseconds < 0)
-                throw new ArgumentOutOfRangeException("minTime");
+                throw new ArgumentOutOfRangeException(nameof(minTime));
             if (minDistance < 0)
-                throw new ArgumentOutOfRangeException("minDistance");
+                throw new ArgumentOutOfRangeException(nameof(minDistance));
             if (IsListening)
                 throw new InvalidOperationException();
 
@@ -266,12 +266,14 @@ namespace Adapt.Presentation.UWP.Geolocator
         private Windows.Devices.Geolocation.Geolocator GetGeolocator()
         {
             var loc = locator;
-            if (loc == null)
+            if (loc != null)
             {
-                locator = new Windows.Devices.Geolocation.Geolocator();
-                locator.StatusChanged += OnLocatorStatusChanged;
-                loc = locator;
+                return loc;
             }
+
+            locator = new Windows.Devices.Geolocation.Geolocator();
+            locator.StatusChanged += OnLocatorStatusChanged;
+            loc = locator;
 
             return loc;
         }

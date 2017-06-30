@@ -430,12 +430,11 @@ namespace Adapt.Presentation.AndroidPlatform
 
             context.StartActivity(CreateMediaIntent(id, type, action, options));
 
-            EventHandler<MediaPickedEventArgs> handler = null;
-            handler = (s, e) =>
+            void Handler(object s, MediaPickedEventArgs e)
             {
                 var tcs = Interlocked.Exchange(ref completionSource, null);
 
-                MediaPickerActivity.MediaPicked -= handler;
+                MediaPickerActivity.MediaPicked -= Handler;
 
                 if (e.RequestId != id)
                     return;
@@ -446,9 +445,9 @@ namespace Adapt.Presentation.AndroidPlatform
                     tcs.SetException(e.Error);
                 else
                     tcs.SetResult(e.Media);
-            };
+            }
 
-            MediaPickerActivity.MediaPicked += handler;
+            MediaPickerActivity.MediaPicked += Handler;
 
             return completionSource.Task;
         }

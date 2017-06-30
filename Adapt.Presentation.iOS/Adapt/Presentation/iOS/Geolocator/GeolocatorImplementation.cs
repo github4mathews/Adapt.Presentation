@@ -257,23 +257,21 @@ namespace Adapt.Presentation.iOS.Geolocator
                     cancelToken.Value.Register(() => tcs.TrySetCanceled());
                 }
 
-                EventHandler<PositionErrorEventArgs> gotError = null;
-                gotError = (s, e) =>
+                void GotError(object s, PositionErrorEventArgs e)
                 {
                     tcs.TrySetException(new GeolocationException(e.Error));
-                    PositionError -= gotError;
-                };
+                    PositionError -= GotError;
+                }
 
-                PositionError += gotError;
+                PositionError += GotError;
 
-                EventHandler<PositionEventArgs> gotPosition = null;
-                gotPosition = (s, e) =>
+                void GotPosition(object s, PositionEventArgs e)
                 {
                     tcs.TrySetResult(e.Position);
-                    PositionChanged -= gotPosition;
-                };
+                    PositionChanged -= GotPosition;
+                }
 
-                PositionChanged += gotPosition;
+                PositionChanged += GotPosition;
             }
             else
                 tcs.SetResult(position);
@@ -300,14 +298,10 @@ namespace Adapt.Presentation.iOS.Geolocator
         /// <summary>
         /// Start listening for changes
         /// </summary>
-        /// <param name="minimumTime">Time</param>
-        /// <param name="minimumDistance">Distance</param>
-        /// <param name="includeHeading">Include heading or not</param>
-        /// <param name="listenerSettings">Optional settings (iOS only)</param>
         public Task<bool> StartListeningAsync(TimeSpan minTime, double minDistance, bool includeHeading = false, ListenerSettings settings = null)
         {
             if (minDistance < 0)
-                throw new ArgumentOutOfRangeException("minDistance");
+                throw new ArgumentOutOfRangeException(nameof(minDistance));
             if (IsListening)
                 throw new InvalidOperationException("Already listening");
 
@@ -434,7 +428,7 @@ namespace Adapt.Presentation.iOS.Geolocator
         }
 #endif
 
-        void OnLocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
+        private void OnLocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
         {
             foreach (var location in e.Locations)
                 UpdatePosition(location);

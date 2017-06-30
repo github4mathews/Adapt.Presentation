@@ -303,25 +303,23 @@ namespace Adapt.Presentation.iOS
             picker.CameraDevice = GetUICameraDevice(options.DefaultCamera);
             picker.AllowsEditing = options?.AllowCropping ?? false;
 
-            if (options.OverlayViewProvider != null)
+            var overlay = options.OverlayViewProvider?.Invoke();
+            if (overlay is UIView)
             {
-                var overlay = options.OverlayViewProvider();
-                if (overlay is UIView)
-                {
-                    picker.CameraOverlayView = overlay as UIView;
-                }
+                picker.CameraOverlayView = overlay as UIView;
             }
-            if (mediaType == TypeImage)
+            switch (mediaType)
             {
-                picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Photo;
-            }
-            else if (mediaType == TypeMovie)
-            {
-                var voptions = (StoreVideoOptions)options;
+                case TypeImage:
+                    picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Photo;
+                    break;
+                case TypeMovie:
+                    var voptions = (StoreVideoOptions)options;
 
-                picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Video;
-                picker.VideoQuality = GetQuailty(voptions.Quality);
-                picker.VideoMaximumDuration = voptions.DesiredLength.TotalSeconds;
+                    picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Video;
+                    picker.VideoQuality = GetQuailty(voptions.Quality);
+                    picker.VideoMaximumDuration = voptions.DesiredLength.TotalSeconds;
+                    break;
             }
 
             return picker;

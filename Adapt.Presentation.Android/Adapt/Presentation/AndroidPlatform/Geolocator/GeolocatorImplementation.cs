@@ -187,14 +187,13 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                         cancelToken.Value.Register(() => tcs.TrySetCanceled());
                     }
 
-                    EventHandler<PositionEventArgs> gotPosition = null;
-                    gotPosition = (s, e) =>
+                    void GotPosition(object s, PositionEventArgs e)
                     {
                         tcs.TrySetResult(e.Position);
-                        PositionChanged -= gotPosition;
-                    };
+                        PositionChanged -= GotPosition;
+                    }
 
-                    PositionChanged += gotPosition;
+                    PositionChanged += GotPosition;
                 }
                 else
                 {
@@ -230,9 +229,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 
             var minTimeMilliseconds = minTime.TotalMilliseconds;
             if (minTimeMilliseconds < 0)
-                throw new ArgumentOutOfRangeException("minTime");
+                throw new ArgumentOutOfRangeException(nameof(minTime));
             if (minDistance < 0)
-                throw new ArgumentOutOfRangeException("minDistance");
+                throw new ArgumentOutOfRangeException(nameof(minDistance));
             if (IsListening)
                 throw new InvalidOperationException("This Geolocator is already listening");
 
@@ -242,8 +241,10 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             listener.PositionError += OnListenerPositionError;
 
             var looper = Looper.MyLooper() ?? Looper.MainLooper;
-            for (var i = 0; i < providers.Length; ++i)
-                Manager.RequestLocationUpdates(providers[i], (long)minTimeMilliseconds, (float)minDistance, listener, looper);
+            foreach (var provider in providers)
+            {
+                Manager.RequestLocationUpdates(provider, (long) minTimeMilliseconds, (float) minDistance, listener, looper);
+            }
 
             return true;
         }

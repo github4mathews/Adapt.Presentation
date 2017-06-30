@@ -217,8 +217,13 @@ namespace Adapt.Presentation.iOS
             var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var filePath = Path.Combine(documents, fileName);
 
-            var retVal = new FileData { FileName = fileName };
-            retVal.FileStream = File.Create(filePath);
+            var fileStream = File.Create(filePath);
+
+            var retVal = new FileData
+            {
+                FileName = fileName,
+                FileStream = fileStream
+            };
 
             return retVal;
         }

@@ -204,13 +204,7 @@ namespace Adapt.Presentation.UWP
                 Debug.WriteLine("unable to save to app directory:" + ex);
             }
 
-            return new MediaFile(path, () =>
-                {
-                    if (copy != null)
-                        return copy.OpenStreamForReadAsync().Result;
-
-                    return result.OpenStreamForReadAsync().Result;
-                }, albumPath: aPath);
+            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, albumPath: aPath);
         }
 
         /// <summary>
@@ -294,13 +288,7 @@ namespace Adapt.Presentation.UWP
                 Debug.WriteLine("unable to save to app directory:" + ex);
             }
 
-            return new MediaFile(path, () =>
-            {
-                if (copy != null)
-                    return copy.OpenStreamForReadAsync().Result;
-
-                return result.OpenStreamForReadAsync().Result;
-            }, albumPath: aPath);
+            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, albumPath: aPath);
         }
         #endregion
 

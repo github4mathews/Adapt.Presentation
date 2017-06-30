@@ -298,10 +298,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     return new MediaPickedEventArgs(requestCode, new MediaFileNotFoundException(originalPath));
                 }
 
-                var mf = new MediaFile(resultPath, () =>
-                {
-                    return File.OpenRead(resultPath);
-                }, albumPath: aPath);
+                var mf = new MediaFile(resultPath, () => File.OpenRead(resultPath), albumPath: aPath);
                 return new MediaPickedEventArgs(requestCode, false, mf);
             });
         }
@@ -482,80 +479,84 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             var tcs = new TaskCompletionSource<Tuple<string, bool>>();
 
-            if (uri.Scheme == "file")
-                tcs.SetResult(new Tuple<string, bool>(new System.Uri(uri.ToString()).LocalPath, false));
-            else if (uri.Scheme == "content")
+            switch (uri.Scheme)
             {
-                Task.Factory.StartNew(() =>
-                {
-                    ICursor cursor = null;
-                    try
+                case "file":
+                    tcs.SetResult(new Tuple<string, bool>(new System.Uri(uri.ToString()).LocalPath, false));
+                    break;
+                case "content":
+                    Task.Factory.StartNew(() =>
                     {
-                        string[] proj = null;
-                        if ((int)Build.VERSION.SdkInt >= 22)
-                            proj = new[] { MediaStore.MediaColumns.Data };
-
-                        cursor = context.ContentResolver.Query(uri, proj, null, null, null);
-                        if (cursor == null || !cursor.MoveToNext())
-                            tcs.SetResult(new Tuple<string, bool>(null, false));
-                        else
+                        ICursor cursor = null;
+                        try
                         {
-                            var column = cursor.GetColumnIndex(MediaStore.MediaColumns.Data);
-                            string contentPath = null;
+                            string[] proj = null;
+                            if ((int)Build.VERSION.SdkInt >= 22)
+                                proj = new[] { MediaStore.MediaColumns.Data };
 
-                            if (column != -1)
-                                contentPath = cursor.GetString(column);
-
-
-
-                            // If they don't follow the "rules", try to copy the file locally
-                            if (contentPath == null || !contentPath.StartsWith("file", StringComparison.InvariantCultureIgnoreCase))
+                            cursor = context.ContentResolver.Query(uri, proj, null, null, null);
+                            if (cursor == null || !cursor.MoveToNext())
+                                tcs.SetResult(new Tuple<string, bool>(null, false));
+                            else
                             {
-                                string fileName = null;
-                                try
-                                {
-                                    fileName = Path.GetFileName(contentPath);
-                                }
-                                catch (Exception ex)
-                                {
-                                    System.Diagnostics.Debug.WriteLine("Unable to get file path name, using new unique " + ex);
-                                }
+                                var column = cursor.GetColumnIndex(MediaStore.MediaColumns.Data);
+                                string contentPath = null;
+
+                                if (column != -1)
+                                    contentPath = cursor.GetString(column);
 
 
-                                var outputPath = GetOutputMediaFile(context, "temp", fileName, isPhoto, false);
 
-                                try
+                                // If they don't follow the "rules", try to copy the file locally
+                                if (contentPath == null || !contentPath.StartsWith("file", StringComparison.InvariantCultureIgnoreCase))
                                 {
-                                    using (var input = context.ContentResolver.OpenInputStream(uri))
-                                    using (Stream output = File.Create(outputPath.Path))
-                                        input.CopyTo(output);
+                                    string fileName = null;
+                                    try
+                                    {
+                                        fileName = Path.GetFileName(contentPath);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        System.Diagnostics.Debug.WriteLine("Unable to get file path name, using new unique " + ex);
+                                    }
 
-                                    contentPath = outputPath.Path;
+
+                                    var outputPath = GetOutputMediaFile(context, "temp", fileName, isPhoto, false);
+
+                                    try
+                                    {
+                                        using (var input = context.ContentResolver.OpenInputStream(uri))
+                                        using (Stream output = File.Create(outputPath.Path))
+                                            input.CopyTo(output);
+
+                                        contentPath = outputPath.Path;
+                                    }
+                                    catch (Java.IO.FileNotFoundException fnfEx)
+                                    {
+                                        // If there's no data associated with the uri, we don't know
+                                        // how to open this. contentPath will be null which will trigger
+                                        // MediaFileNotFoundException.
+                                        System.Diagnostics.Debug.WriteLine("Unable to save picked file from disk " + fnfEx);
+                                    }
                                 }
-                                catch (Java.IO.FileNotFoundException fnfEx)
-                                {
-                                    // If there's no data associated with the uri, we don't know
-                                    // how to open this. contentPath will be null which will trigger
-                                    // MediaFileNotFoundException.
-                                    System.Diagnostics.Debug.WriteLine("Unable to save picked file from disk " + fnfEx);
-                                }
+
+                                tcs.SetResult(new Tuple<string, bool>(contentPath, false));
                             }
-
-                            tcs.SetResult(new Tuple<string, bool>(contentPath, false));
                         }
-                    }
-                    finally
-                    {
-                        if (cursor != null)
+                        finally
                         {
-                            cursor.Close();
-                            cursor.Dispose();
+                            if (cursor != null)
+                            {
+                                cursor.Close();
+                                cursor.Dispose();
+                            }
                         }
-                    }
-                }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+                    }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
+                    break;
+                default:
+                    tcs.SetResult(new Tuple<string, bool>(null, false));
+                    break;
             }
-            else
-                tcs.SetResult(new Tuple<string, bool>(null, false));
 
             return tcs.Task;
         }
@@ -597,11 +598,8 @@ namespace Adapt.Presentation.AndroidPlatform
     {
         public MediaPickedEventArgs(int id, Exception error)
         {
-            if (error == null)
-                throw new ArgumentNullException(nameof(error));
-
             RequestId = id;
-            Error = error;
+            Error = error ?? throw new ArgumentNullException(nameof(error));
         }
 
         public MediaPickedEventArgs(int id, bool isCanceled, MediaFile media = null)
