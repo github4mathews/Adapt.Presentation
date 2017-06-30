@@ -63,8 +63,6 @@ namespace Adapt.Presentation.UWP
 
             var retVal = new FileData();
 
-            retVal.FileName = file.Name;
-
             var randomAccessStream = await file.OpenReadAsync();
 
             retVal.FileStream = randomAccessStream.AsStreamForRead();

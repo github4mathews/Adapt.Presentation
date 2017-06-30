@@ -8,7 +8,6 @@ namespace Adapt.Presentation
     /// </summary>
     public class FileData : IDisposable
     {
-        public string FileName { get; set; }
         public Stream  FileStream { get; set; }
 
         public void Dispose()

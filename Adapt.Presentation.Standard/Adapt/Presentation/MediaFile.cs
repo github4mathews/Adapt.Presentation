@@ -30,8 +30,6 @@ namespace Adapt.Presentation
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="path"></param>
-        /// <param name="streamGetter"></param>
         public MediaFile(string path, Func<Stream> streamGetter, string albumPath = null)
         {
             this.streamGetter = streamGetter;

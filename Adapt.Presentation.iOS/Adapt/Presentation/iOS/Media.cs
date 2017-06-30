@@ -312,7 +312,7 @@ namespace Adapt.Presentation.iOS
             }
             else if (mediaType == TypeMovie)
             {
-                StoreVideoOptions voptions = (StoreVideoOptions)options;
+                var voptions = (StoreVideoOptions)options;
 
                 picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Video;
                 picker.VideoQuality = GetQuailty(voptions.Quality);

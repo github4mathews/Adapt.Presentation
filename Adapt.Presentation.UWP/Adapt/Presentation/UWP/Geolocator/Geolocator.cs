@@ -49,7 +49,7 @@ namespace Adapt.Presentation.UWP.Geolocator
         {
             get
             {
-                PositionStatus status = GetGeolocatorStatus();
+                var status = GetGeolocatorStatus();
 
                 while (status == PositionStatus.Initializing)
                 {
@@ -68,7 +68,7 @@ namespace Adapt.Presentation.UWP.Geolocator
         {
             get
             {
-                PositionStatus status = GetGeolocatorStatus();
+                var status = GetGeolocatorStatus();
 
                 while (status == PositionStatus.Initializing)
                 {
@@ -126,7 +126,7 @@ namespace Adapt.Presentation.UWP.Geolocator
             if (!cancelToken.HasValue)
                 cancelToken = CancellationToken.None;
 
-            IAsyncOperation<Geoposition> pos = GetGeolocator().GetGeopositionAsync(TimeSpan.FromTicks(0), TimeSpan.FromDays(365));
+            var pos = GetGeolocator().GetGeopositionAsync(TimeSpan.FromTicks(0), TimeSpan.FromDays(365));
             cancelToken.Value.Register(o => ((IAsyncOperation<Geoposition>)o).Cancel(), pos);
 
 
@@ -147,7 +147,7 @@ namespace Adapt.Presentation.UWP.Geolocator
                         tcs.SetResult(GetPosition(op.GetResults()));
                         break;
                     case AsyncStatus.Error:
-                        Exception ex = op.ErrorCode;
+                        var ex = op.ErrorCode;
                         if (ex is UnauthorizedAccessException)
                             ex = new GeolocationException(GeolocationError.Unauthorized, ex);
 

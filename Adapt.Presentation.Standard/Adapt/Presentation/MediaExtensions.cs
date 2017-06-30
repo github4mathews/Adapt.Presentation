@@ -49,28 +49,13 @@ namespace Adapt.Presentation
 
             var ext = Path.GetExtension(name);
             if (ext == string.Empty)
-                ext = ((isPhoto) ? ".jpg" : ".mp4");
+                ext = isPhoto ? ".jpg" : ".mp4";
 
             name = Path.GetFileNameWithoutExtension(name);
 
             var folder = Path.Combine(rootPath ?? string.Empty, self?.Directory ?? string.Empty);
 
             return Path.Combine(folder, name + ext);
-        }
-
-        public static string GetUniqueFilepath(this StoreMediaOptions self, string rootPath, Func<string, bool> checkExists)
-        {
-            var path = self.GetFilePath(rootPath);
-            var folder = Path.GetDirectoryName(path);
-            var ext = Path.GetExtension(path);
-            var name = Path.GetFileNameWithoutExtension(path);
-
-            var nname = name + ext;
-            var i = 1;
-            while (checkExists(Path.Combine(folder, nname)))
-                nname = name + "_" + (i++) + ext;
-
-            return Path.Combine(folder, nname);
         }
     }
 }

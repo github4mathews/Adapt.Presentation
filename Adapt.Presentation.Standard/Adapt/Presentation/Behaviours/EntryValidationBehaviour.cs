@@ -31,7 +31,7 @@ namespace Adapt.Presentation.Behaviours
                 return;
             }
 
-            bool attachBehavior = (bool)newValue;
+            var attachBehavior = (bool)newValue;
             if (attachBehavior)
             {
                 entry.TextChanged += OnEntryTextChanged;

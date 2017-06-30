@@ -2,9 +2,9 @@
 {
     public class MediaBase
     {
-        public IPermissions CurrentPermissions { get; private set; }
+        protected IPermissions CurrentPermissions { get; }
 
-        public MediaBase(IPermissions currentPermissions)
+        protected MediaBase(IPermissions currentPermissions)
         {
             CurrentPermissions = currentPermissions;
         }

@@ -26,7 +26,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             this.timePeriod = timePeriod;
             this.providers = providers;
 
-            foreach (string p in providers)
+            foreach (var p in providers)
             {
                 if (manager.IsProviderEnabled(p))
                     activeProviders.Add(p);

@@ -138,7 +138,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                 singleListener = new GeolocationSingleListener(Manager, (float)DesiredAccuracy, timeoutMilliseconds, providers.Where(Manager.IsProviderEnabled),
                     finishedCallback: () =>
                 {
-                    for (int i = 0; i < providers.Length; ++i)
+                    for (var i = 0; i < providers.Length; ++i)
                         Manager.RemoveUpdates(singleListener);
                 });
 
@@ -148,7 +148,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                     {
                         singleListener.Cancel();
 
-                        for (int i = 0; i < providers.Length; ++i)
+                        for (var i = 0; i < providers.Length; ++i)
                             Manager.RemoveUpdates(singleListener);
                     }, true);
                 }
@@ -157,8 +157,8 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                 {
                     var looper = Looper.MyLooper() ?? Looper.MainLooper;
 
-                    int enabled = 0;
-                    for (int i = 0; i < providers.Length; ++i)
+                    var enabled = 0;
+                    for (var i = 0; i < providers.Length; ++i)
                     {
                         if (Manager.IsProviderEnabled(providers[i]))
                             enabled++;
@@ -168,7 +168,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 
                     if (enabled == 0)
                     {
-                        for (int i = 0; i < providers.Length; ++i)
+                        for (var i = 0; i < providers.Length; ++i)
                             Manager.RemoveUpdates(singleListener);
 
                         tcs.SetException(new GeolocationException(GeolocationError.PositionUnavailable));
@@ -248,8 +248,8 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             listener.PositionChanged += OnListenerPositionChanged;
             listener.PositionError += OnListenerPositionError;
 
-            Looper looper = Looper.MyLooper() ?? Looper.MainLooper;
-            for (int i = 0; i < providers.Length; ++i)
+            var looper = Looper.MyLooper() ?? Looper.MainLooper;
+            for (var i = 0; i < providers.Length; ++i)
                 Manager.RequestLocationUpdates(providers[i], (long)minTimeMilliseconds, (float)minDistance, listener, looper);
 
             return true;
@@ -264,7 +264,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             listener.PositionChanged -= OnListenerPositionChanged;
             listener.PositionError -= OnListenerPositionError;
 
-            for (int i = 0; i < providers.Length; ++i)
+            for (var i = 0; i < providers.Length; ++i)
                 Manager.RemoveUpdates(listener);
 
             listener = null;

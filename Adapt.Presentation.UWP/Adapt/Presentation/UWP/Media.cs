@@ -111,7 +111,7 @@ namespace Adapt.Presentation.UWP
 
             var folder = ApplicationData.Current.LocalFolder;
 
-            string path = options.GetFilePath(folder.Path);
+            var path = options.GetFilePath(folder.Path);
             var directoryFull = Path.GetDirectoryName(path);
             var newFolder = directoryFull.Replace(folder.Path, string.Empty);
             if (!string.IsNullOrWhiteSpace(newFolder))
@@ -188,8 +188,8 @@ namespace Adapt.Presentation.UWP
             if (result == null)
                 return null;
 
-            string aPath = result.Path;
-            string path = result.Path;
+            var aPath = result.Path;
+            var path = result.Path;
             StorageFile copy = null;
             //copy local
             try
@@ -278,8 +278,8 @@ namespace Adapt.Presentation.UWP
             if (result == null)
                 return null;
 
-            string aPath = result.Path;
-            string path = result.Path;
+            var aPath = result.Path;
+            var path = result.Path;
             StorageFile copy = null;
             //copy local
             try

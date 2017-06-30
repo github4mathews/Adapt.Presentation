@@ -218,7 +218,7 @@ namespace Adapt.Presentation.iOS.Geolocator
                 // permit background updates if background location mode is enabled
                 if (UIDevice.CurrentDevice.CheckSystemVersion(9, 0))
                 {
-                    NSArray backgroundModes = NSBundle.MainBundle.InfoDictionary[(NSString)"UIBackgroundModes"] as NSArray;
+                    var backgroundModes = NSBundle.MainBundle.InfoDictionary[(NSString)"UIBackgroundModes"] as NSArray;
                     m.AllowsBackgroundLocationUpdates = backgroundModes != null && (backgroundModes.Contains((NSString)"Location") || backgroundModes.Contains((NSString)"location"));
                 }
 
@@ -434,7 +434,7 @@ namespace Adapt.Presentation.iOS.Geolocator
 
         void OnLocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
         {
-            foreach (CLLocation location in e.Locations)
+            foreach (var location in e.Locations)
                 UpdatePosition(location);
 
             // defer future location updates if requested
