@@ -69,7 +69,6 @@ namespace Adapt.Presentation.UWP
                                 return Task.FromResult(PermissionStatus.Unknown);
                         }
                     }
-                 break;
                 case Permission.Sms:
                     break;
                 case Permission.Storage:
@@ -86,8 +85,6 @@ namespace Adapt.Presentation.UWP
 
             if (accessStatus == null)
                 return PermissionStatus.Denied;
-
-            return PermissionStatus.Granted;
 
             return PermissionStatus.Granted;
         }

@@ -41,6 +41,7 @@ namespace Adapt.Presentation.Controls
             layoutCache.Clear();
         }
 
+        [Obsolete]
         protected override SizeRequest OnSizeRequest(double widthConstraint, double heightConstraint)
         {
 
@@ -181,6 +182,7 @@ namespace Adapt.Presentation.Controls
         /// </summary>
         /// <param name="widthConstraint">The available width for the element to use.</param>
         /// <param name="heightConstraint">The available height for the element to use.</param>
+        [Obsolete]
         protected override SizeRequest OnSizeRequest(double widthConstraint, double heightConstraint)
         {
             if (WidthRequest > 0)
