@@ -212,7 +212,7 @@ namespace Adapt.Presentation.iOS
 
         private bool GetShouldRotate(UIDeviceOrientation orientation)
         {
-            var iorientation = UIInterfaceOrientation.Portrait;
+            UIInterfaceOrientation iorientation;
             switch (orientation)
             {
                 case UIDeviceOrientation.LandscapeLeft:
@@ -242,7 +242,7 @@ namespace Adapt.Presentation.iOS
             if (!_ViewController.ShouldAutorotate())
                 return false;
 
-            var mask = UIInterfaceOrientationMask.Portrait;
+            UIInterfaceOrientationMask mask;
             switch (orientation)
             {
                 case UIDeviceOrientation.LandscapeLeft:
@@ -331,7 +331,7 @@ namespace Adapt.Presentation.iOS
             {
                 if (!_Options.SaveToAlbum)
                 {
-                    return new MediaFile(path, () => File.OpenRead(path), aPath);
+                    return new MediaFile(path, () => File.OpenRead(path));
                 }
 
                 try

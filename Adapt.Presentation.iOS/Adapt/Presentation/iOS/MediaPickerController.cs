@@ -43,7 +43,7 @@ namespace Adapt.Presentation.iOS
             set
             {
                 if (value == null)
-                    base.Delegate = value;
+                    base.Delegate = null;
                 else
                     throw new NotSupportedException();
             }

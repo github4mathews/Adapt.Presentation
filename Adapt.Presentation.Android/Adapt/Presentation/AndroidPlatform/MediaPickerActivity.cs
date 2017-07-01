@@ -20,6 +20,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Android.App;
 using app = Android.App;
+using diag = System.Diagnostics;
 using Android.Content;
 using Android.Database;
 using Android.OS;
@@ -148,7 +149,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                         Touch();
 
-                        var targetsNOrNewer = false;
+                        bool targetsNOrNewer;
 
                         try
                         {
@@ -169,23 +170,12 @@ namespace Adapt.Presentation.AndroidPlatform
                         if (targetsNOrNewer && _Path.Scheme == "file")
                         {
                             throw new NotImplementedException();
-                            //var photoURI = FileProvider.GetUriForFile(this,
-                            //                                          app.Application.Context.PackageName + ".fileprovider",
-                            //                                          new Java.IO.File(path.Path));
-
-                            //GrantUriPermissionsForIntent(pickIntent, photoURI);
-                            //pickIntent.PutExtra(MediaStore.ExtraOutput, photoURI);
                         }
-                        else
-                        {
-                            pickIntent.PutExtra(MediaStore.ExtraOutput, _Path);
-                        }
+                        pickIntent.PutExtra(MediaStore.ExtraOutput, _Path);
                     }
                     else
                         _Path = Uri.Parse(b.GetString(ExtraPath));
                 }
-
-
 
                 if (!ran)
                     StartActivityForResult(pickIntent, _Id);
@@ -217,8 +207,8 @@ namespace Adapt.Presentation.AndroidPlatform
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine("Unable to create path: " + newPath + " " + ex.Message + "This means you have illegal characters");
-                throw ex;
+                diag.Debug.WriteLine("Unable to create path: " + newPath + " " + ex.Message + "This means you have illegal characters");
+                throw ;
             }
         }
 

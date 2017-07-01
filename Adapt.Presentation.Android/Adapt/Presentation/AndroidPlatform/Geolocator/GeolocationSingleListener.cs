@@ -4,6 +4,7 @@ using Android.Locations;
 using Android.OS;
 using System.Threading;
 using System.Collections.Generic;
+using System.Linq;
 using Android.Runtime;
 using Adapt.Presentation.Geolocator;
 
@@ -13,24 +14,28 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     internal class GeolocationSingleListener
        : Java.Lang.Object, ILocationListener
     {
+        #region Fields
         private readonly object _LocationSync = new object();
         private Location _BestLocation;
-
-
         private readonly Action _FinishedCallback;
         private readonly float _DesiredAccuracy;
-        private readonly Timer _Timer;
         private readonly TaskCompletionSource<Position> _CompletionSource = new TaskCompletionSource<Position>();
-        private readonly HashSet<string> _ActiveProviders = new HashSet<string>();
+        private readonly HashSet<string> _ActiveProviders;
+        #endregion
+
+        #region Public Properties
+        public Task<Position> Task => _CompletionSource.Task;
+        #endregion
 
         public GeolocationSingleListener(LocationManager manager, float desiredAccuracy, int timeout, IEnumerable<string> activeProviders, Action finishedCallback)
         {
             _DesiredAccuracy = desiredAccuracy;
             _FinishedCallback = finishedCallback;
 
-            _ActiveProviders = new HashSet<string>(activeProviders);
+            var activeProviderStrings = activeProviders as string[] ?? activeProviders.ToArray();
+            _ActiveProviders = new HashSet<string>(activeProviderStrings);
 
-            foreach(var provider in activeProviders)
+            foreach(var provider in activeProviderStrings)
             {
                 var location = manager.GetLastKnownLocation(provider);
                 if (location != null && GeolocationUtils.IsBetterLocation(location, _BestLocation))
@@ -39,11 +44,8 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             
 
             if (timeout != Timeout.Infinite)
-                _Timer = new Timer(TimesUp, null, timeout, 0);
+                new Timer(TimesUp, null, timeout, 0);
         }
-
-        public Task<Position> Task => _CompletionSource.Task; 
-        
 
         public void OnLocationChanged(Location location)
         {

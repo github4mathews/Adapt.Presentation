@@ -232,12 +232,12 @@ namespace Adapt.Presentation.UWP
             if (result == null)
                 return null;
 
-            string aPath = null;
             if (!(options?.SaveToAlbum ?? false))
             {
-                return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, aPath);
+                return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result);
             }
 
+            string aPath = null;
             try
             {
                 var fileNameNoEx = Path.GetFileNameWithoutExtension(result.Path);
