@@ -1,7 +1,6 @@
 using Foundation;
 using MobileCoreServices;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -105,7 +104,9 @@ namespace Adapt.Presentation.iOS
             var ntcs = new TaskCompletionSource<FileData>(id);
 
             if (Interlocked.CompareExchange(ref _CompletionSource, ntcs, null) != null)
+            {
                 throw new InvalidOperationException("Only one operation can be active at a time");
+            }
 
             var allowedUtis = new string[] {
                 UTType.UTF8PlainText,
@@ -160,9 +161,13 @@ namespace Adapt.Presentation.iOS
             var id = _RequestId;
 
             if (_RequestId == int.MaxValue)
+            {
                 _RequestId = 0;
+            }
             else
+            {
                 _RequestId++;
+            }
 
             return id;
         }
@@ -195,7 +200,9 @@ namespace Adapt.Presentation.iOS
             OpenFile(url);
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<FileData> PickAndOpenFileForWriting(FileSelectionDictionary fileTypes, string fileName)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var filePath = Path.Combine(documents, fileName);

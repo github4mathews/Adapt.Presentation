@@ -8,7 +8,6 @@ using Foundation;
 using Photos;
 using Speech;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using UIKit;
@@ -226,7 +225,9 @@ namespace Adapt.Presentation.iOS
         {
 
             if (GetEventPermissionStatus(eventType) == PermissionStatus.Granted)
+            {
                 return PermissionStatus.Granted;
+            }
 
             if (_EventStore == null)
                 _EventStore = new EKEventStore();
@@ -270,12 +271,17 @@ namespace Adapt.Presentation.iOS
 
             var info = NSBundle.MainBundle.InfoDictionary;
             if (info.ContainsKey(new NSString("NSLocationAlwaysUsageDescription")))
+            {
                 _LocationManager.RequestAlwaysAuthorization();
+            }
             else if (info.ContainsKey(new NSString("NSLocationWhenInUseUsageDescription")))
+            {
                 _LocationManager.RequestWhenInUseAuthorization();
+            }
             else
+            {
                 throw new UnauthorizedAccessException("On iOS 8.0 and higher you must set either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in your Info.plist file to enable Authorization Requests for Location updates!");
-
+            }
 
             return tcs.Task;
         }

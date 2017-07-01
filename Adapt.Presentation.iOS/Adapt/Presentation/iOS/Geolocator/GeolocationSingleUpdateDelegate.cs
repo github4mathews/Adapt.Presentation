@@ -36,9 +36,13 @@ namespace Adapt.Presentation.iOS.Geolocator
                 t = new Timer(s =>
                 {
                     if (_HaveLocation)
+                    {
                         _Tcs.TrySetResult(new Position(_Position));
+                    }
                     else
+                    {
                         _Tcs.TrySetCanceled();
+                    }
 
                     StopListening();
                     t.Dispose();
@@ -84,7 +88,10 @@ namespace Adapt.Presentation.iOS.Geolocator
 
 
 #if __IOS__
-        public override bool ShouldDisplayHeadingCalibration(CLLocationManager manager) => true;
+        public override bool ShouldDisplayHeadingCalibration(CLLocationManager manager)
+        {
+            return true;
+        }
 #endif
 
 #if __TVOS__
@@ -99,10 +106,14 @@ namespace Adapt.Presentation.iOS.Geolocator
         {
 #endif
             if (newLocation.HorizontalAccuracy < 0)
+            {
                 return;
+            }
 
             if (_HaveLocation && newLocation.HorizontalAccuracy > _Position.Accuracy)
+            {
                 return;
+            }
 
             _Position.Accuracy = newLocation.HorizontalAccuracy;
             _Position.Altitude = newLocation.Altitude;
@@ -116,8 +127,9 @@ namespace Adapt.Presentation.iOS.Geolocator
             {
                 _Position.Timestamp = new DateTimeOffset(newLocation.Timestamp.ToDateTime());
             }
-            catch(Exception ex)
+            catch
             {
+                //TODO: Error swallowed
                 _Position.Timestamp = DateTimeOffset.UtcNow;
             }
             _HaveLocation = true;
@@ -135,9 +147,14 @@ namespace Adapt.Presentation.iOS.Geolocator
         public override void UpdatedHeading(CLLocationManager manager, CLHeading newHeading)
         {
             if (newHeading.HeadingAccuracy < 0)
+            {
                 return;
+            }
+
             if (_BestHeading != null && newHeading.HeadingAccuracy >= _BestHeading.HeadingAccuracy)
+            {
                 return;
+            }
 
             _BestHeading = newHeading;
             _Position.Heading = newHeading.TrueHeading;
@@ -158,7 +175,9 @@ namespace Adapt.Presentation.iOS.Geolocator
         {
 #if __IOS__
             if (CLLocationManager.HeadingAvailable)
+            {
                 _Manager.StopUpdatingHeading();
+            }
 #endif
 
             _Manager.StopUpdatingLocation();
