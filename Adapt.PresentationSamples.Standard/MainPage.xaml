@@ -56,7 +56,7 @@
         </Grid>
     </ContentPage>
 
-    <ContentPage Title="Geo Location (UWP Tested)" x:Name="GeoLocationTab" >
+    <ContentPage Title="Geo Location" x:Name="GeoLocationTab" >
 
         <Grid>
             <Grid.RowDefinitions>
