@@ -1,14 +1,9 @@
 ﻿using Adapt.Presentation;
-using Xamarin.Forms;
 
 namespace Adapt.PresentationSamples
 {
     public partial class App
     {
-        #region Fields
-        private ContentPage _MainPage;
-        #endregion
-
         #region Public Static Properties
         public static IPresentationFactory PresentationFactory { get; private set; }
         public static IPermissions CurrentPermissions { get; private set; }

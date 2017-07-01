@@ -83,7 +83,7 @@ namespace Adapt.Presentation.iOS.Geolocator
 
         /// <summary>
         /// Gets if you are listening for location changes
-        ///
+        /// </summary>
         public bool IsListening { get; private set; }
 
 #if __IOS__ || __MACOS__

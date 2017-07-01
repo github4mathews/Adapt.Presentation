@@ -110,10 +110,6 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// <summary>
         /// Gets position async with specified parameters
         /// </summary>
-        /// <param name="timeout">Timeout to wait, Default Infinite</param>
-        /// <param name="token">Cancelation token</param>
-        /// <param name="includeHeading">If you would like to include heading</param>
-        /// <returns>Position</returns>
         public Task<Position> GetPositionAsync(TimeSpan? timeout, CancellationToken? cancelToken = null, bool includeHeading = false)
         {
             var timeoutMilliseconds = timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : Timeout.Infite;
@@ -185,10 +181,6 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// <summary>
 		/// Start listening for changes
 		/// </summary>
-		/// <param name="minimumTime">Time</param>
-		/// <param name="minimumDistance">Distance</param>
-		/// <param name="includeHeading">Include heading or not</param>
-		/// <param name="listenerSettings">Optional settings (iOS only)</param>
 		public Task<bool> StartListeningAsync(TimeSpan minTime, double minDistance, bool includeHeading = false, ListenerSettings settings = null)
         {
 

@@ -19,7 +19,6 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     [Preserve(AllMembers = true)]
     public class GeolocatorImplementation : GeolocatorBase, IGeolocator
     {
-        private string[] allProviders;
         private LocationManager locationManager;
 
         private GeolocationContinuousListener listener;
