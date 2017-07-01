@@ -167,23 +167,6 @@ namespace Adapt.Presentation.iOS
             return id;
         }
 
-        //public async Task<bool> SaveFile(FileData fileToSave)
-        //{
-        //    try
-        //    {
-        //        var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        //        var fileName = Path.Combine(documents, fileToSave.FileName);
-
-        //        File.WriteAllBytes(fileName, fileToSave.DataArray);
-
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine(ex.Message);
-        //        return false;
-        //    }
-        //}
 
         public void OpenFile(NSUrl fileUrl)
         {
@@ -212,7 +195,7 @@ namespace Adapt.Presentation.iOS
             OpenFile(url);
         }
 
-        public async Task<FileData> PickAndOpenFileForWriting(IDictionary<string, IList<string>> fileTypes, string fileName)
+        public async Task<FileData> PickAndOpenFileForWriting(FileSelectionDictionary fileTypes, string fileName)
         {
             var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var filePath = Path.Combine(documents, fileName);

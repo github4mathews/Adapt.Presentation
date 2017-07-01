@@ -12,7 +12,7 @@ namespace Adapt.Presentation.UWP
     public class FilePicker : IFilePicker
     {
         #region Public Methods (Implementation)
-        public async Task<FileData> PickAndOpenFileForWriting(IDictionary<string, IList<string>> fileTypes, string fileName)
+        public async Task<FileData> PickAndOpenFileForWriting(FileSelectionDictionary fileTypes, string fileName)
         {
             if (fileTypes == null)
             {

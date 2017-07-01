@@ -2,7 +2,7 @@
 
 namespace Adapt.Presentation
 {
-    public interface IFileSelectionDictionary : IDictionary<string, IList<string>>
+    public class FileSelectionDictionary : Dictionary<string, IList<string>>
     {
     }
 }

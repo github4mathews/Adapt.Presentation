@@ -61,7 +61,7 @@ namespace Adapt.Presentation.Geolocator
         /// <param name="token">Cancelation token</param>
         /// <param name="includeHeading">If you would like to include heading</param>
         /// <returns>Position</returns>
-        Task<Position> GetPositionAsync(TimeSpan? timeout = null, CancellationToken? token = null, bool includeHeading = false);
+        Task<Position> GetPositionAsync(TimeSpan? timeout, CancellationToken? token, bool includeHeading);
 
         /// <summary>
         /// Retrieve addresses for position.
