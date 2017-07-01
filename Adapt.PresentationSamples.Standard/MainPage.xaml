@@ -44,9 +44,9 @@
         
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="50*" />
+                <RowDefinition Height="60*" />
                 <RowDefinition Height="30" />
-                <RowDefinition Height="50*" />
+                <RowDefinition Height="40*" />
             </Grid.RowDefinitions>
 
             <Editor x:Name="XAMLBox" />
