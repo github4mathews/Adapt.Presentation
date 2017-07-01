@@ -56,4 +56,13 @@
         </Grid>
     </ContentPage>
 
+    <ContentPage Title="Geo Location" >
+
+        <Grid>
+
+            <Button x:Name="GetLocationButton"></Button>
+
+        </Grid>
+    </ContentPage>
+
 </TabbedPage>
