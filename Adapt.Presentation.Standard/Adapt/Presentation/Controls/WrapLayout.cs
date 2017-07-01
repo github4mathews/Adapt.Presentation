@@ -84,7 +84,9 @@ namespace Adapt.Presentation.Controls
             {
                 if (!_LayoutCache.TryGetValue(child, out SizeRequest sizeRequest))
                 {
-                    _LayoutCache[child] = sizeRequest = child.Measure(double.PositiveInfinity, double.PositiveInfinity);
+#pragma warning disable CS0618 // Type or member is obsolete
+                    _LayoutCache[child] = sizeRequest = child.GetSizeRequest(double.PositiveInfinity, double.PositiveInfinity);
+#pragma warning restore CS0618 // Type or member is obsolete
                 }
 
                 var paddedWidth = sizeRequest.Request.Width + Spacing;
