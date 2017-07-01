@@ -32,9 +32,9 @@ namespace Adapt.Presentation.iOS
     {
         internal MediaPickerDelegate(UIViewController viewController, UIImagePickerControllerSourceType sourceType, StoreCameraMediaOptions options)
         {
-            this.viewController = viewController;
-            source = sourceType;
-            this.options = options ?? new StoreCameraMediaOptions();
+            this._ViewController = viewController;
+            _Source = sourceType;
+            this._Options = options ?? new StoreCameraMediaOptions();
 
             if (viewController == null)
             {
@@ -42,7 +42,7 @@ namespace Adapt.Presentation.iOS
             }
 
             UIDevice.CurrentDevice.BeginGeneratingDeviceOrientationNotifications();
-            observer = NSNotificationCenter.DefaultCenter.AddObserver(UIDevice.OrientationDidChangeNotification, DidRotate);
+            _Observer = NSNotificationCenter.DefaultCenter.AddObserver(UIDevice.OrientationDidChangeNotification, DidRotate);
         }
 
         public UIPopoverController Popover
@@ -51,9 +51,9 @@ namespace Adapt.Presentation.iOS
             set;
         }
 
-        public UIView View => viewController.View;
+        public UIView View => _ViewController.View;
 
-        public Task<MediaFile> Task => tcs.Task;
+        public Task<MediaFile> Task => _Tcs.Task;
 
         public override async void FinishedPickingMedia(UIImagePickerController picker, NSDictionary info)
         {
@@ -83,7 +83,7 @@ namespace Adapt.Presentation.iOS
             {
 
 
-                tcs.TrySetResult(mediaFile);
+                _Tcs.TrySetResult(mediaFile);
             });
         }
 
@@ -100,7 +100,7 @@ namespace Adapt.Presentation.iOS
             {
 
 
-                tcs.SetResult(null);
+                _Tcs.SetResult(null);
             });
         }
 
@@ -116,13 +116,13 @@ namespace Adapt.Presentation.iOS
             nfloat height = 300;
 
 
-            if (orientation == null)
+            if (_Orientation == null)
             {
-                orientation = IsValidInterfaceOrientation(UIDevice.CurrentDevice.Orientation) ? UIDevice.CurrentDevice.Orientation : GetDeviceOrientation(viewController.InterfaceOrientation);
+                _Orientation = IsValidInterfaceOrientation(UIDevice.CurrentDevice.Orientation) ? UIDevice.CurrentDevice.Orientation : GetDeviceOrientation(_ViewController.InterfaceOrientation);
             }
 
             nfloat x, y;
-            if (orientation == UIDeviceOrientation.LandscapeLeft || orientation == UIDeviceOrientation.LandscapeRight)
+            if (_Orientation == UIDeviceOrientation.LandscapeLeft || _Orientation == UIDeviceOrientation.LandscapeRight)
             {
                 y = swidth / 2 - height / 2;
                 x = sheight / 2 - width / 2;
@@ -139,21 +139,21 @@ namespace Adapt.Presentation.iOS
             Popover.PresentFromRect(new CGRect(x, y, width, height), View, 0, true);
         }
 
-        private UIDeviceOrientation? orientation;
-        private readonly NSObject observer;
-        private readonly UIViewController viewController;
-        private readonly UIImagePickerControllerSourceType source;
-        private TaskCompletionSource<MediaFile> tcs = new TaskCompletionSource<MediaFile>();
-        private readonly StoreCameraMediaOptions options;
+        private UIDeviceOrientation? _Orientation;
+        private readonly NSObject _Observer;
+        private readonly UIViewController _ViewController;
+        private readonly UIImagePickerControllerSourceType _Source;
+        private TaskCompletionSource<MediaFile> _Tcs = new TaskCompletionSource<MediaFile>();
+        private readonly StoreCameraMediaOptions _Options;
 
-        private bool IsCaptured => source == UIImagePickerControllerSourceType.Camera;
+        private bool IsCaptured => _Source == UIImagePickerControllerSourceType.Camera;
 
         private void Dismiss(UIImagePickerController picker, NSAction onDismiss)
         {
-            if (viewController == null)
+            if (_ViewController == null)
             {
                 onDismiss();
-                tcs = new TaskCompletionSource<MediaFile>();
+                _Tcs = new TaskCompletionSource<MediaFile>();
             }
             else
             {
@@ -175,14 +175,14 @@ namespace Adapt.Presentation.iOS
 
         private void RemoveOrientationChangeObserverAndNotifications()
         {
-            if (viewController == null)
+            if (_ViewController == null)
             {
                 return;
             }
 
             UIDevice.CurrentDevice.EndGeneratingDeviceOrientationNotifications();
-            NSNotificationCenter.DefaultCenter.RemoveObserver(observer);
-            observer.Dispose();
+            NSNotificationCenter.DefaultCenter.RemoveObserver(_Observer);
+            _Observer.Dispose();
         }
 
         private void DidRotate(NSNotification notice)
@@ -190,7 +190,7 @@ namespace Adapt.Presentation.iOS
             var device = (UIDevice)notice.Object;
             if (!IsValidInterfaceOrientation(device.Orientation) || Popover == null)
                 return;
-            if (orientation.HasValue && IsSameOrientationKind(orientation.Value, device.Orientation))
+            if (_Orientation.HasValue && IsSameOrientationKind(_Orientation.Value, device.Orientation))
                 return;
 
             if (UIDevice.CurrentDevice.CheckSystemVersion(6, 0))
@@ -201,8 +201,8 @@ namespace Adapt.Presentation.iOS
             else if (!GetShouldRotate(device.Orientation))
                 return;
 
-            var co = orientation;
-            orientation = device.Orientation;
+            var co = _Orientation;
+            _Orientation = device.Orientation;
 
             if (co == null)
                 return;
@@ -234,12 +234,12 @@ namespace Adapt.Presentation.iOS
                 default: return false;
             }
 
-            return viewController.ShouldAutorotateToInterfaceOrientation(iorientation);
+            return _ViewController.ShouldAutorotateToInterfaceOrientation(iorientation);
         }
 
         private bool GetShouldRotate6(UIDeviceOrientation orientation)
         {
-            if (!viewController.ShouldAutorotate())
+            if (!_ViewController.ShouldAutorotate())
                 return false;
 
             var mask = UIInterfaceOrientationMask.Portrait;
@@ -264,7 +264,7 @@ namespace Adapt.Presentation.iOS
                 default: return false;
             }
 
-            return viewController.GetSupportedInterfaceOrientations().HasFlag(mask);
+            return _ViewController.GetSupportedInterfaceOrientations().HasFlag(mask);
         }
 
         private async Task<MediaFile> GetPictureMediaFile(NSDictionary info)
@@ -275,17 +275,17 @@ namespace Adapt.Presentation.iOS
 
 
             var path = GetOutputPath(Media.TypeImage,
-                options.Directory ?? (IsCaptured ? string.Empty : "temp"),
-                options.Name);
+                _Options.Directory ?? (IsCaptured ? string.Empty : "temp"),
+                _Options.Name);
 
             var cgImage = image.CGImage;
 
-            if (options.PhotoSize != PhotoSize.Full)
+            if (_Options.PhotoSize != PhotoSize.Full)
             {
                 try
                 {
                     var percent = 1.0f;
-                    switch (options.PhotoSize)
+                    switch (_Options.PhotoSize)
                     {
                         case PhotoSize.Large:
                             percent = .75f;
@@ -297,7 +297,7 @@ namespace Adapt.Presentation.iOS
                             percent = .25f;
                             break;
                         case PhotoSize.Custom:
-                            percent = options.CustomPhotoSize / 100f;
+                            percent = _Options.CustomPhotoSize / 100f;
                             break;
                     }
 
@@ -316,11 +316,11 @@ namespace Adapt.Presentation.iOS
             }
 
             //iOS quality is 0.0-1.0
-            var quality = options.CompressionQuality / 100f;
+            var quality = _Options.CompressionQuality / 100f;
             image.AsJPEG(quality).Save(path, true);
 
             string aPath = null;
-            if (source != UIImagePickerControllerSourceType.Camera)
+            if (_Source != UIImagePickerControllerSourceType.Camera)
             {
 
                 //try to get the album path's url
@@ -329,7 +329,7 @@ namespace Adapt.Presentation.iOS
             }
             else
             {
-                if (!options.SaveToAlbum)
+                if (!_Options.SaveToAlbum)
                 {
                     return new MediaFile(path, () => File.OpenRead(path), aPath);
                 }
@@ -356,13 +356,13 @@ namespace Adapt.Presentation.iOS
             var url = (NSUrl)info[UIImagePickerController.MediaURL];
 
             var path = GetOutputPath(Media.TypeMovie,
-                      options.Directory ?? (IsCaptured ? string.Empty : "temp"),
-                      options.Name ?? Path.GetFileName(url.Path));
+                      _Options.Directory ?? (IsCaptured ? string.Empty : "temp"),
+                      _Options.Name ?? Path.GetFileName(url.Path));
 
             File.Move(url.Path, path);
 
             string aPath = null;
-            if (source != UIImagePickerControllerSourceType.Camera)
+            if (_Source != UIImagePickerControllerSourceType.Camera)
             {
                 //try to get the album path's url
                 var url2 = (NSUrl)info[UIImagePickerController.ReferenceUrl];
@@ -370,7 +370,7 @@ namespace Adapt.Presentation.iOS
             }
             else
             {
-                if (!options.SaveToAlbum)
+                if (!_Options.SaveToAlbum)
                 {
                     return new MediaFile(path, () => File.OpenRead(path), aPath);
                 }

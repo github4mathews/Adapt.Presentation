@@ -20,25 +20,25 @@ using System.Runtime.InteropServices;
 
 namespace Adapt.Presentation.iOS
 {
-    internal class NSDataStream : Stream
+    internal class NsDataStream : Stream
     {
-        private NSData theData;
-        private uint pos;
+        private NSData _TheData;
+        private uint _Pos;
 
-        public NSDataStream(NSData data)
+        public NsDataStream(NSData data)
         {
-            theData = data;
+            _TheData = data;
         }
 
         protected override void Dispose(bool disposing)
         {
-            if (theData == null)
+            if (_TheData == null)
             {
                 return;
             }
 
-            theData.Dispose();
-            theData = null;
+            _TheData.Dispose();
+            _TheData = null;
         }
 
         public override void Flush()
@@ -47,13 +47,13 @@ namespace Adapt.Presentation.iOS
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (pos >= theData.Length)
+            if (_Pos >= _TheData.Length)
             {
                 return 0;
             }
-            var len = (int)Math.Min (count, (double)(theData.Length - pos));
-            Marshal.Copy(new IntPtr(theData.Bytes.ToInt64() + pos), buffer, offset, len);
-            pos += (uint)len;
+            var len = (int)Math.Min (count, (double)(_TheData.Length - _Pos));
+            Marshal.Copy(new IntPtr(_TheData.Bytes.ToInt64() + _Pos), buffer, offset, len);
+            _Pos += (uint)len;
             return len;
         }
 
@@ -78,13 +78,13 @@ namespace Adapt.Presentation.iOS
 
         public override bool CanWrite => false;
 
-        public override long Length => (long) theData.Length;
+        public override long Length => (long) _TheData.Length;
 
         public override long Position
         {
             get
             {
-                return pos;
+                return _Pos;
             }
             set
             {

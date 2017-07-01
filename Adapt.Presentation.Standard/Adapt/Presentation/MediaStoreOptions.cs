@@ -98,7 +98,7 @@ namespace Adapt.Presentation
             }
         }
 
-        private int quality = 100;
+        private int _Quality = 100;
         /// <summary>
         /// The compression quality to use, 0 is the maximum compression (worse quality),
         /// and 100 minimum compression (best quality)
@@ -106,15 +106,15 @@ namespace Adapt.Presentation
         /// </summary>
         public int CompressionQuality
         {
-            get { return quality; }
+            get { return _Quality; }
             set
             {
                 if (value > 100)
-                    quality = 100;
+                    _Quality = 100;
                 else if (value < 0)
-                    quality = 0;
+                    _Quality = 0;
                 else
-                    quality = value;
+                    _Quality = value;
             }
         }
     }
@@ -169,7 +169,7 @@ namespace Adapt.Presentation
         public PhotoSize PhotoSize { get; set; } = PhotoSize.Full;
 
 
-        private int customPhotoSize = 100;
+        private int _CustomPhotoSize = 100;
         /// <summary>
         /// The custom photo size to use, 100 full size (same as Full),
         /// and 1 being smallest size at 1% of original
@@ -177,20 +177,20 @@ namespace Adapt.Presentation
         /// </summary>
         public int CustomPhotoSize
         {
-            get { return customPhotoSize; }
+            get { return _CustomPhotoSize; }
             set
             {
                 if (value > 100)
-                    customPhotoSize = 100;
+                    _CustomPhotoSize = 100;
                 else if (value < 1)
-                    customPhotoSize = 1;
+                    _CustomPhotoSize = 1;
                 else
-                    customPhotoSize = value;
+                    _CustomPhotoSize = value;
             }
         }
 
 
-        private int quality = 100;
+        private int _Quality = 100;
         /// <summary>
         /// The compression quality to use, 0 is the maximum compression (worse quality),
         /// and 100 minimum compression (best quality)
@@ -198,15 +198,15 @@ namespace Adapt.Presentation
         /// </summary>
         public int CompressionQuality
         {
-            get { return quality; }
+            get { return _Quality; }
             set
             {
                 if (value > 100)
-                    quality = 100;
+                    _Quality = 100;
                 else if (value < 0)
-                    quality = 0;
+                    _Quality = 0;
                 else
-                    quality = value;
+                    _Quality = value;
             }
         }
 

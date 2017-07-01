@@ -11,14 +11,14 @@ namespace Adapt.Presentation.Controls
     /// <author>Jason Smith</author>
     public class WrapLayout : Layout<View>
     {
-        private readonly Dictionary<View, SizeRequest> layoutCache = new Dictionary<View, SizeRequest>();
+        private readonly Dictionary<View, SizeRequest> _LayoutCache = new Dictionary<View, SizeRequest>();
 
         /// <summary>
         /// Backing Storage for the Spacing property
         /// </summary>
         public static readonly BindableProperty SpacingProperty =
             BindableProperty.Create<WrapLayout, double>(w => w.Spacing, 5,
-                propertyChanged: (bindable, oldvalue, newvalue) => ((WrapLayout)bindable).layoutCache.Clear());
+                propertyChanged: (bindable, oldvalue, newvalue) => ((WrapLayout)bindable)._LayoutCache.Clear());
 
         /// <summary>
         /// Spacing added between elements (both directions)
@@ -38,7 +38,7 @@ namespace Adapt.Presentation.Controls
         protected override void OnChildMeasureInvalidated()
         {
             base.OnChildMeasureInvalidated();
-            layoutCache.Clear();
+            _LayoutCache.Clear();
         }
 
         [Obsolete]
@@ -84,9 +84,9 @@ namespace Adapt.Presentation.Controls
             foreach (var child in Children)
             {
                 SizeRequest sizeRequest;
-                if (!layoutCache.TryGetValue(child, out sizeRequest))
+                if (!_LayoutCache.TryGetValue(child, out sizeRequest))
                 {
-                    layoutCache[child] = sizeRequest = child.GetSizeRequest(double.PositiveInfinity, double.PositiveInfinity);
+                    _LayoutCache[child] = sizeRequest = child.GetSizeRequest(double.PositiveInfinity, double.PositiveInfinity);
                 }
 
                 var paddedWidth = sizeRequest.Request.Width + Spacing;

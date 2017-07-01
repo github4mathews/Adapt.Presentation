@@ -13,7 +13,7 @@ namespace Adapt.Presentation.UWP
     /// </summary>
     public class Permissions : IPermissions
     {
-        private readonly Guid ActivitySensorClassId = new Guid("9D9E0118-1807-4F2E-96E4-2CE57142E196");
+        private readonly Guid _ActivitySensorClassId = new Guid("9D9E0118-1807-4F2E-96E4-2CE57142E196");
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission
         /// Only on Android
@@ -57,7 +57,7 @@ namespace Adapt.Presentation.UWP
                 case Permission.Sensors:
                     {
                         // Determine if the user has allowed access to activity sensors
-                        var deviceAccessInfo = DeviceAccessInformation.CreateFromDeviceClassId(ActivitySensorClassId);
+                        var deviceAccessInfo = DeviceAccessInformation.CreateFromDeviceClassId(_ActivitySensorClassId);
                         switch(deviceAccessInfo.CurrentStatus)
                         {
                             case DeviceAccessStatus.Allowed:

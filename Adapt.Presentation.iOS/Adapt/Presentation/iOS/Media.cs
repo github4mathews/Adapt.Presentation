@@ -30,8 +30,8 @@ namespace Adapt.Presentation.iOS
     public class Media : IMedia
     {
         #region Fields
-        private UIPopoverController popover;
-        private UIImagePickerControllerDelegate pickerDelegate;
+        private UIPopoverController _Popover;
+        private UIImagePickerControllerDelegate _PickerDelegate;
         private readonly bool _IsCameraAvailable;
         #endregion
 
@@ -221,7 +221,7 @@ namespace Adapt.Presentation.iOS
                 viewController = viewController.PresentedViewController;
 
             var ndelegate = new MediaPickerDelegate(viewController, sourceType, options);
-            var od = Interlocked.CompareExchange(ref pickerDelegate, ndelegate, null);
+            var od = Interlocked.CompareExchange(ref _PickerDelegate, ndelegate, null);
             if (od != null)
                 throw new InvalidOperationException("Only one operation can be active at at time");
 
@@ -247,13 +247,13 @@ namespace Adapt.Presentation.iOS
 
             return ndelegate.Task.ContinueWith(t =>
             {
-                if (popover != null)
+                if (_Popover != null)
                 {
-                    popover.Dispose();
-                    popover = null;
+                    _Popover.Dispose();
+                    _Popover = null;
                 }
 
-                Interlocked.Exchange(ref pickerDelegate, null);
+                Interlocked.Exchange(ref _PickerDelegate, null);
                 return t;
             }).Unwrap();
         }
@@ -300,7 +300,7 @@ namespace Adapt.Presentation.iOS
                 return picker;
             }
 
-            picker.CameraDevice = GetUICameraDevice(options.DefaultCamera);
+            picker.CameraDevice = GetUiCameraDevice(options.DefaultCamera);
             picker.AllowsEditing = options?.AllowCropping ?? false;
 
             var overlay = options.OverlayViewProvider?.Invoke();
@@ -325,7 +325,7 @@ namespace Adapt.Presentation.iOS
             return picker;
         }
 
-        private static UIImagePickerControllerCameraDevice GetUICameraDevice(CameraDevice device)
+        private static UIImagePickerControllerCameraDevice GetUiCameraDevice(CameraDevice device)
         {
             switch (device)
             {

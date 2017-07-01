@@ -13,50 +13,50 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     internal class GeolocationSingleListener
        : Java.Lang.Object, ILocationListener
     {
-        private readonly object locationSync = new object();
-        private Location bestLocation;
+        private readonly object _LocationSync = new object();
+        private Location _BestLocation;
 
 
-        private readonly Action finishedCallback;
-        private readonly float desiredAccuracy;
-        private readonly Timer timer;
-        private readonly TaskCompletionSource<Position> completionSource = new TaskCompletionSource<Position>();
-        private readonly HashSet<string> activeProviders = new HashSet<string>();
+        private readonly Action _FinishedCallback;
+        private readonly float _DesiredAccuracy;
+        private readonly Timer _Timer;
+        private readonly TaskCompletionSource<Position> _CompletionSource = new TaskCompletionSource<Position>();
+        private readonly HashSet<string> _ActiveProviders = new HashSet<string>();
 
         public GeolocationSingleListener(LocationManager manager, float desiredAccuracy, int timeout, IEnumerable<string> activeProviders, Action finishedCallback)
         {
-            this.desiredAccuracy = desiredAccuracy;
-            this.finishedCallback = finishedCallback;
+            this._DesiredAccuracy = desiredAccuracy;
+            this._FinishedCallback = finishedCallback;
 
-            this.activeProviders = new HashSet<string>(activeProviders);
+            this._ActiveProviders = new HashSet<string>(activeProviders);
 
             foreach(var provider in activeProviders)
             {
                 var location = manager.GetLastKnownLocation(provider);
-                if (location != null && GeolocationUtils.IsBetterLocation(location, bestLocation))
-                    bestLocation = location;
+                if (location != null && GeolocationUtils.IsBetterLocation(location, _BestLocation))
+                    _BestLocation = location;
             }
             
 
             if (timeout != Timeout.Infinite)
-                timer = new Timer(TimesUp, null, timeout, 0);
+                _Timer = new Timer(TimesUp, null, timeout, 0);
         }
 
-        public Task<Position> Task => completionSource.Task; 
+        public Task<Position> Task => _CompletionSource.Task; 
         
 
         public void OnLocationChanged(Location location)
         {
-            if (location.Accuracy <= desiredAccuracy)
+            if (location.Accuracy <= _DesiredAccuracy)
             {
                 Finish(location);
                 return;
             }
 
-            lock (locationSync)
+            lock (_LocationSync)
             {
-                if (GeolocationUtils.IsBetterLocation(location, bestLocation))
-                    bestLocation = location;
+                if (GeolocationUtils.IsBetterLocation(location, _BestLocation))
+                    _BestLocation = location;
             }
         }
 
@@ -64,17 +64,17 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 
         public void OnProviderDisabled(string provider)
         {
-            lock (activeProviders)
+            lock (_ActiveProviders)
             {
-                if (activeProviders.Remove(provider) && activeProviders.Count == 0)
-                    completionSource.TrySetException(new GeolocationException(GeolocationError.PositionUnavailable));
+                if (_ActiveProviders.Remove(provider) && _ActiveProviders.Count == 0)
+                    _CompletionSource.TrySetException(new GeolocationException(GeolocationError.PositionUnavailable));
             }
         }
 
         public void OnProviderEnabled(string provider)
         {
-            lock (activeProviders)
-              activeProviders.Add(provider);
+            lock (_ActiveProviders)
+              _ActiveProviders.Add(provider);
         }
 
         public void OnStatusChanged(string provider, Availability status, Bundle extras)
@@ -91,28 +91,28 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             }
         }
 
-        public void Cancel() =>  completionSource.TrySetCanceled();
+        public void Cancel() =>  _CompletionSource.TrySetCanceled();
 
         private void TimesUp(object state)
         {
-            lock (locationSync)
+            lock (_LocationSync)
             {
-                if (bestLocation == null)
+                if (_BestLocation == null)
                 {
-                    if (completionSource.TrySetCanceled())
-                        finishedCallback?.Invoke();
+                    if (_CompletionSource.TrySetCanceled())
+                        _FinishedCallback?.Invoke();
                 }
                 else
                 {
-                    Finish(bestLocation);
+                    Finish(_BestLocation);
                 }
             }
         }
 
         private void Finish(Location location)
         {
-            finishedCallback?.Invoke();
-            completionSource.TrySetResult(location.ToPosition());
+            _FinishedCallback?.Invoke();
+            _CompletionSource.TrySetResult(location.ToPosition());
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Adapt.Presentation
     {
         #region Fields
         private static MethodInfo _FirstExtensionsMethods;
-        private const string _ClrNamespaceParamName = "clrNamespace";
+        private const string ClrNamespaceParamName = "clrNamespace";
         #endregion
 
         #region Static Constructor
@@ -51,9 +51,9 @@ namespace Adapt.Presentation
                     throw;
                 }
 
-                if (anex.ParamName == _ClrNamespaceParamName)
+                if (anex.ParamName == ClrNamespaceParamName)
                 {
-                    throw new Exception($"The XAML parser did not receive the argument {_ClrNamespaceParamName}. This probably indicates that a default namespace was not specified in the XAML.\r\n\r\nXaml:\r\n{xaml}");
+                    throw new Exception($"The XAML parser did not receive the argument {ClrNamespaceParamName}. This probably indicates that a default namespace was not specified in the XAML.\r\n\r\nXaml:\r\n{xaml}");
                 }
 
                 throw;

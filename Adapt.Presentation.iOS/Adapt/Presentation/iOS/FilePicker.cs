@@ -15,8 +15,8 @@ namespace Adapt.Presentation.iOS
     /// </summary>
     public class FilePicker : NSObject, IUIDocumentMenuDelegate, IFilePicker
     {
-        private int _requestId;
-        private TaskCompletionSource<FileData> _completionSource;
+        private int _RequestId;
+        private TaskCompletionSource<FileData> _CompletionSource;
 
         /// <summary>
         /// Event which is invoked when a file was picked
@@ -81,7 +81,7 @@ namespace Adapt.Presentation.iOS
         public void DocumentPicker_WasCancelled(object sender, EventArgs e)
         {
             {
-                var tcs = Interlocked.Exchange(ref _completionSource, null);
+                var tcs = Interlocked.Exchange(ref _CompletionSource, null);
                 tcs.SetResult(null);
             }
         }
@@ -104,7 +104,7 @@ namespace Adapt.Presentation.iOS
 
             var ntcs = new TaskCompletionSource<FileData>(id);
 
-            if (Interlocked.CompareExchange(ref _completionSource, ntcs, null) != null)
+            if (Interlocked.CompareExchange(ref _CompletionSource, ntcs, null) != null)
                 throw new InvalidOperationException("Only one operation can be active at a time");
 
             var allowedUtis = new string[] {
@@ -140,29 +140,29 @@ namespace Adapt.Presentation.iOS
 
             Handler = (s, e) =>
             {
-                var tcs = Interlocked.Exchange(ref _completionSource, null);
+                var tcs = Interlocked.Exchange(ref _CompletionSource, null);
 
                 tcs?.SetResult(new FileData { FileName = e.FileName, FileStream = File.OpenRead(e.FilePath) });
             };
 
-            return _completionSource.Task;
+            return _CompletionSource.Task;
         }
 
         public void WasCancelled(UIDocumentMenuViewController documentMenu)
         {
-            var tcs = Interlocked.Exchange(ref _completionSource, null);
+            var tcs = Interlocked.Exchange(ref _CompletionSource, null);
 
             tcs?.SetResult(null);
         }
 
         private int GetRequestId()
         {
-            var id = _requestId;
+            var id = _RequestId;
 
-            if (_requestId == int.MaxValue)
-                _requestId = 0;
+            if (_RequestId == int.MaxValue)
+                _RequestId = 0;
             else
-                _requestId++;
+                _RequestId++;
 
             return id;
         }

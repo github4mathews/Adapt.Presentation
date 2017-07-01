@@ -19,10 +19,10 @@ namespace Adapt.Presentation.AndroidPlatform
     {
         #region Fields
 
-        private readonly object locker = new object();
-        private TaskCompletionSource<Dictionary<Permission, PermissionStatus>> tcs;
-        private Dictionary<Permission, PermissionStatus> results;
-        private IList<string> requestedPermissions;
+        private readonly object _Locker = new object();
+        private TaskCompletionSource<Dictionary<Permission, PermissionStatus>> _Tcs;
+        private Dictionary<Permission, PermissionStatus> _Results;
+        private IList<string> _RequestedPermissions;
         #endregion
 
         /// <summary>
@@ -98,14 +98,14 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <param name="permissions">Permissions to request.</param>
         public async Task<Dictionary<Permission, PermissionStatus>> RequestPermissionsAsync(params Permission[] permissions)
         {
-            if (tcs != null && !tcs.Task.IsCompleted)
+            if (_Tcs != null && !_Tcs.Task.IsCompleted)
             {
-                tcs.SetCanceled();
-                tcs = null;
+                _Tcs.SetCanceled();
+                _Tcs = null;
             }
-            lock (locker)
+            lock (_Locker)
             {
-                results = new Dictionary<Permission, PermissionStatus>();
+                _Results = new Dictionary<Permission, PermissionStatus>();
             }
             var activity = CrossCurrentActivity.Current.Activity;
             if (activity == null)
@@ -113,13 +113,13 @@ namespace Adapt.Presentation.AndroidPlatform
                 Debug.WriteLine("Unable to detect current Activity. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
                 foreach (var permission in permissions)
                 {
-                    if (results.ContainsKey(permission))
+                    if (_Results.ContainsKey(permission))
                         continue;
 
-                    results.Add(permission, PermissionStatus.Unknown);
+                    _Results.Add(permission, PermissionStatus.Unknown);
                 }
 
-                return results;
+                return _Results;
             }
             var permissionsToRequest = new List<string>();
             foreach (var permission in permissions)
@@ -132,9 +132,9 @@ namespace Adapt.Presentation.AndroidPlatform
                     //if we can't add as unknown and continue
                     if ((names?.Count ?? 0) == 0)
                     {
-                        lock (locker)
+                        lock (_Locker)
                         {
-                            results.Add(permission, PermissionStatus.Unknown);
+                            _Results.Add(permission, PermissionStatus.Unknown);
                         }
                         continue;
                     }
@@ -144,21 +144,21 @@ namespace Adapt.Presentation.AndroidPlatform
                 else
                 {
                     //if we are granted you are good!
-                    lock (locker)
+                    lock (_Locker)
                     {
-                        results.Add(permission, PermissionStatus.Granted);
+                        _Results.Add(permission, PermissionStatus.Granted);
                     }
                 }
             }
 
             if (permissionsToRequest.Count == 0)
-                return results;
+                return _Results;
 
-            tcs = new TaskCompletionSource<Dictionary<Permission, PermissionStatus>>();
+            _Tcs = new TaskCompletionSource<Dictionary<Permission, PermissionStatus>>();
 
             ActivityCompat.RequestPermissions(activity, permissionsToRequest.ToArray(), PermissionCode);
 
-            return await tcs.Task.ConfigureAwait(false);
+            return await _Tcs.Task.ConfigureAwait(false);
         }
 
         private const int PermissionCode = 25;
@@ -173,30 +173,30 @@ namespace Adapt.Presentation.AndroidPlatform
             if (requestCode != PermissionCode)
                 return;
 
-            if (tcs == null)
+            if (_Tcs == null)
                 return;
 
             for (var i = 0; i < permissions.Length; i++)
             {
-                if (tcs.Task.Status == TaskStatus.Canceled)
+                if (_Tcs.Task.Status == TaskStatus.Canceled)
                     return;
 
                 var permission = GetPermissionForManifestName(permissions[i]);
                 if (permission == Permission.Unknown)
                     continue;
 
-                lock (locker)
+                lock (_Locker)
                 {
                     if (permission == Permission.Microphone)
                     {
-                        if (!results.ContainsKey(Permission.Speech))
-                            results.Add(Permission.Speech, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                        if (!_Results.ContainsKey(Permission.Speech))
+                            _Results.Add(Permission.Speech, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
                     }
-                    if (!results.ContainsKey(permission))
-                        results.Add(permission, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                    if (!_Results.ContainsKey(permission))
+                        _Results.Add(permission, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
                 }
             }
-            tcs.SetResult(results);
+            _Tcs.SetResult(_Results);
         }
 
         private static Permission GetPermissionForManifestName(string permission)
@@ -358,8 +358,8 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             try
             {
-                if (requestedPermissions != null)
-                    return requestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
+                if (_RequestedPermissions != null)
+                    return _RequestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
 
                 //try to use current activity else application context
                 var context = CrossCurrentActivity.Current.Activity ?? Application.Context;
@@ -378,11 +378,11 @@ namespace Adapt.Presentation.AndroidPlatform
                     return false;
                 }
 
-                requestedPermissions = info.RequestedPermissions;
+                _RequestedPermissions = info.RequestedPermissions;
 
-                if (requestedPermissions != null)
+                if (_RequestedPermissions != null)
                 {
-                    return requestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
+                    return _RequestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
                 }
 
                 Debug.WriteLine("There are no requested permissions, please check to ensure you have marked permissions you want to request.");

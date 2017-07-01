@@ -20,12 +20,12 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     public class GeolocatorImplementation : GeolocatorBase, IGeolocator
     {
         #region Fields
-        private LocationManager locationManager;
-        private GeolocationContinuousListener listener;
-        private readonly object positionSync = new object();
-        private Position lastPosition;
+        private LocationManager _LocationManager;
+        private GeolocationContinuousListener _Listener;
+        private readonly object _PositionSync = new object();
+        private Position _LastPosition;
         private string[] Providers => Manager.GetProviders(false).ToArray();
-        private LocationManager Manager => locationManager ?? (locationManager = (LocationManager)app.Application.Context.GetSystemService(Context.LocationService));
+        private LocationManager Manager => _LocationManager ?? (_LocationManager = (LocationManager)app.Application.Context.GetSystemService(Context.LocationService));
         #endregion
 
         #region Static Fields
@@ -34,7 +34,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 
         #region Public Properties
         /// <inheritdoc/>
-        public bool IsListening => listener != null;
+        public bool IsListening => _Listener != null;
 
         /// <inheritdoc/>
         public double DesiredAccuracy
@@ -182,9 +182,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             }
 
             // If we're already listening, just use the current listener
-            lock (positionSync)
+            lock (_PositionSync)
             {
-                if (lastPosition == null)
+                if (_LastPosition == null)
                 {
                     if (cancelToken != CancellationToken.None)
                     {
@@ -201,7 +201,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                 }
                 else
                 {
-                    tcs.SetResult(lastPosition);
+                    tcs.SetResult(_LastPosition);
                 }
             }
 
@@ -240,14 +240,14 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                 throw new InvalidOperationException("This Geolocator is already listening");
 
             var providers = Providers;
-            listener = new GeolocationContinuousListener(Manager, minTime, providers);
-            listener.PositionChanged += OnListenerPositionChanged;
-            listener.PositionError += OnListenerPositionError;
+            _Listener = new GeolocationContinuousListener(Manager, minTime, providers);
+            _Listener.PositionChanged += OnListenerPositionChanged;
+            _Listener.PositionError += OnListenerPositionError;
 
             var looper = Looper.MyLooper() ?? Looper.MainLooper;
             foreach (var provider in providers)
             {
-                Manager.RequestLocationUpdates(provider, (long)minTimeMilliseconds, (float)minDistance, listener, looper);
+                Manager.RequestLocationUpdates(provider, (long)minTimeMilliseconds, (float)minDistance, _Listener, looper);
             }
 
             return true;
@@ -255,17 +255,17 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         /// <inheritdoc/>
         public Task<bool> StopListeningAsync()
         {
-            if (listener == null)
+            if (_Listener == null)
                 return Task.FromResult(true);
 
             var providers = Providers;
-            listener.PositionChanged -= OnListenerPositionChanged;
-            listener.PositionError -= OnListenerPositionError;
+            _Listener.PositionChanged -= OnListenerPositionChanged;
+            _Listener.PositionError -= OnListenerPositionError;
 
             for (var i = 0; i < providers.Length; ++i)
-                Manager.RemoveUpdates(listener);
+                Manager.RemoveUpdates(_Listener);
 
-            listener = null;
+            _Listener = null;
             return Task.FromResult(true);
         }
 
@@ -276,9 +276,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             if (!IsListening) // ignore anything that might come in afterwards
                 return;
 
-            lock (positionSync)
+            lock (_PositionSync)
             {
-                lastPosition = e.Position;
+                _LastPosition = e.Position;
 
                 PositionChanged?.Invoke(this, e);
             }

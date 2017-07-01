@@ -36,9 +36,9 @@ namespace Adapt.Presentation.AndroidPlatform
     {
         #region Fields
         private readonly bool _IsCameraAvailable;
-        private readonly Context context;
-        private int requestId;
-        private TaskCompletionSource<MediaFile> completionSource;
+        private readonly Context _Context;
+        private int _RequestId;
+        private TaskCompletionSource<MediaFile> _CompletionSource;
         private const string IllegalCharacters = "[|\\?*<\":>/']";
         #endregion
 
@@ -49,11 +49,11 @@ namespace Adapt.Presentation.AndroidPlatform
         public Media(IPermissions currentPermissions) : base(currentPermissions)
         {
 
-            context = Android.App.Application.Context;
-            _IsCameraAvailable = context.PackageManager.HasSystemFeature(PackageManager.FeatureCamera);
+            _Context = Android.App.Application.Context;
+            _IsCameraAvailable = _Context.PackageManager.HasSystemFeature(PackageManager.FeatureCamera);
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Gingerbread)
-                _IsCameraAvailable |= context.PackageManager.HasSystemFeature(PackageManager.FeatureCameraFront);
+                _IsCameraAvailable |= _Context.PackageManager.HasSystemFeature(PackageManager.FeatureCameraFront);
         }
         #endregion
 
@@ -142,7 +142,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 try
                 {
                     var fileName = System.IO.Path.GetFileName(media.Path);
-                    var publicUri = MediaPickerActivity.GetOutputMediaFile(context, options.Directory ?? "temp", fileName, true, true);
+                    var publicUri = MediaPickerActivity.GetOutputMediaFile(_Context, options.Directory ?? "temp", fileName, true, true);
                     using (System.IO.Stream input = File.OpenRead(media.Path))
                     using (System.IO.Stream output = File.Create(publicUri.Path))
                         input.CopyTo(output);
@@ -156,7 +156,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                     try
                     {
-                        MediaScannerConnection.ScanFile(context, new[] { f.AbsolutePath }, null, context as MediaPickerActivity);
+                        MediaScannerConnection.ScanFile(_Context, new[] { f.AbsolutePath }, null, _Context as MediaPickerActivity);
 
                         var values = new ContentValues();
                         values.Put(MediaStore.Images.Media.InterfaceConsts.Title, System.IO.Path.GetFileNameWithoutExtension(f.AbsolutePath));
@@ -166,7 +166,7 @@ namespace Adapt.Presentation.AndroidPlatform
                         values.Put(MediaStore.Images.ImageColumns.BucketDisplayName, f.Name.ToLowerInvariant());
                         values.Put("_data", f.AbsolutePath);
 
-                        var cr = context.ContentResolver;
+                        var cr = _Context.ContentResolver;
                         cr.Insert(MediaStore.Images.Media.ExternalContentUri, values);
                     }
                     catch (Exception ex1)
@@ -176,7 +176,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                     var contentUri = Android.Net.Uri.FromFile(f);
                     var mediaScanIntent = new Intent(Intent.ActionMediaScannerScanFile, contentUri);
-                    context.SendBroadcast(mediaScanIntent);
+                    _Context.SendBroadcast(mediaScanIntent);
                 }
                 catch (Exception ex2)
                 {
@@ -373,7 +373,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
         private Intent CreateMediaIntent(int id, string type, string action, StoreMediaOptions options, bool tasked = true)
         {
-            var pickerIntent = new Intent(context, typeof(MediaPickerActivity));
+            var pickerIntent = new Intent(_Context, typeof(MediaPickerActivity));
             pickerIntent.PutExtra(MediaPickerActivity.ExtraId, id);
             pickerIntent.PutExtra(MediaPickerActivity.ExtraType, type);
             pickerIntent.PutExtra(MediaPickerActivity.ExtraAction, action);
@@ -411,11 +411,11 @@ namespace Adapt.Presentation.AndroidPlatform
 
         private int GetRequestId()
         {
-            var id = requestId;
-            if (requestId == int.MaxValue)
-                requestId = 0;
+            var id = _RequestId;
+            if (_RequestId == int.MaxValue)
+                _RequestId = 0;
             else
-                requestId++;
+                _RequestId++;
 
             return id;
         }
@@ -425,14 +425,14 @@ namespace Adapt.Presentation.AndroidPlatform
             var id = GetRequestId();
 
             var ntcs = new TaskCompletionSource<MediaFile>(id);
-            if (Interlocked.CompareExchange(ref completionSource, ntcs, null) != null)
+            if (Interlocked.CompareExchange(ref _CompletionSource, ntcs, null) != null)
                 throw new InvalidOperationException("Only one operation can be active at a time");
 
-            context.StartActivity(CreateMediaIntent(id, type, action, options));
+            _Context.StartActivity(CreateMediaIntent(id, type, action, options));
 
             void Handler(object s, MediaPickedEventArgs e)
             {
-                var tcs = Interlocked.Exchange(ref completionSource, null);
+                var tcs = Interlocked.Exchange(ref _CompletionSource, null);
 
                 MediaPickerActivity.MediaPicked -= Handler;
 
@@ -449,7 +449,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
             MediaPickerActivity.MediaPicked += Handler;
 
-            return completionSource.Task;
+            return _CompletionSource.Task;
         }
 
         /// <summary>

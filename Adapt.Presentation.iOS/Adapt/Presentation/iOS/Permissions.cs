@@ -50,13 +50,13 @@ namespace Adapt.Presentation.iOS
                 case Permission.Calendar:
                     return Task.FromResult(GetEventPermissionStatus(EKEntityType.Event));
                 case Permission.Camera:
-                    return Task.FromResult(GetAVPermissionStatus(AVMediaType.Video));
+                    return Task.FromResult(GetAvPermissionStatus(AVMediaType.Video));
                 case Permission.Contacts:
                     return Task.FromResult(ContactsPermissionStatus);
                 case Permission.Location:
                     return Task.FromResult(LocationPermissionStatus);
                 case Permission.Microphone:
-                    return Task.FromResult(GetAVPermissionStatus(AVMediaType.Audio));
+                    return Task.FromResult(GetAvPermissionStatus(AVMediaType.Audio));
                 //case Permission.NotificationsLocal:
                 //    break;
                 //case Permission.NotificationsRemote:
@@ -144,7 +144,7 @@ namespace Adapt.Presentation.iOS
 
         #region AV: Camera and Microphone
 
-        private PermissionStatus GetAVPermissionStatus(NSString mediaType)
+        private PermissionStatus GetAvPermissionStatus(NSString mediaType)
         {
             var status = AVCaptureDevice.GetAuthorizationStatus(mediaType);
             switch (status)

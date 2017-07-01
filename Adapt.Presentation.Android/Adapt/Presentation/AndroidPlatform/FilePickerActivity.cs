@@ -47,12 +47,12 @@ namespace Adapt.Presentation.AndroidPlatform
                 {
                     var uri = data.Data;
 
-                    var filePath = IOUtil.getPath(ApplicationContext, uri);
+                    var filePath = IoUtil.GetPath(ApplicationContext, uri);
 
                     if (string.IsNullOrEmpty(filePath))
                         filePath = uri.Path;
 
-                    var file = IOUtil.readFile(filePath);
+                    var file = IoUtil.ReadFile(filePath);
 
                     var fileName = GetFileName(ApplicationContext, uri);
 

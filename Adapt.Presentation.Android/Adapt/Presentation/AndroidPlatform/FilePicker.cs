@@ -17,8 +17,8 @@ namespace Adapt.Presentation.AndroidPlatform
     public class FilePicker : IFilePicker
     {
         #region Fields
-        private int _requestId;
-        private TaskCompletionSource<FileData> _completionSource;
+        private int _RequestId;
+        private TaskCompletionSource<FileData> _CompletionSource;
         private readonly Context _Context;
         #endregion
 
@@ -32,12 +32,12 @@ namespace Adapt.Presentation.AndroidPlatform
         #region Private Methods
         private int GetRequestId()
         {
-            var id = _requestId;
+            var id = _RequestId;
 
-            if (_requestId == int.MaxValue)
-                _requestId = 0;
+            if (_RequestId == int.MaxValue)
+                _RequestId = 0;
             else
-                _requestId++;
+                _RequestId++;
 
             return id;
         }
@@ -48,7 +48,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
             var ntcs = new TaskCompletionSource<FileData>(id);
 
-            if (Interlocked.CompareExchange(ref _completionSource, ntcs, null) != null)
+            if (Interlocked.CompareExchange(ref _CompletionSource, ntcs, null) != null)
                 throw new InvalidOperationException("Only one operation can be active at a time");
 
             try
@@ -63,7 +63,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                 handler = (s, e) =>
                 {
-                    var tcs = Interlocked.Exchange(ref _completionSource, null);
+                    var tcs = Interlocked.Exchange(ref _CompletionSource, null);
 
                     FilePickerActivity.FilePicked -= handler;
 
@@ -74,7 +74,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                 cancelledHandler = (s, e) =>
                 {
-                    var tcs = Interlocked.Exchange(ref _completionSource, null);
+                    var tcs = Interlocked.Exchange(ref _CompletionSource, null);
 
                     FilePickerActivity.FilePickCancelled -= cancelledHandler;
 
@@ -89,7 +89,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 Debug.Write(exAct);
             }
 
-            return _completionSource.Task;
+            return _CompletionSource.Task;
         }
 
         #endregion

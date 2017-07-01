@@ -17,7 +17,7 @@ namespace Adapt.Presentation.UWP.Geolocator
             if (timesup == null)
                 throw new ArgumentNullException(nameof(timesup));
 
-            Task.Delay(TimeSpan.FromMilliseconds(timeout), canceller.Token)
+            Task.Delay(TimeSpan.FromMilliseconds(timeout), _Canceller.Token)
                 .ContinueWith(t =>
                 {
                     if (!t.IsCanceled)
@@ -27,10 +27,10 @@ namespace Adapt.Presentation.UWP.Geolocator
 
         public void Cancel()
         {
-            canceller.Cancel();
+            _Canceller.Cancel();
         }
 
-        private readonly CancellationTokenSource canceller = new CancellationTokenSource();
+        private readonly CancellationTokenSource _Canceller = new CancellationTokenSource();
 
         public const int Infite = -1;
     }

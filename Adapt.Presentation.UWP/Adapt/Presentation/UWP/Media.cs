@@ -21,7 +21,7 @@ namespace Adapt.Presentation.UWP
         #endregion
 
         #region Private Fields
-        private readonly Task InitializeTask;
+        private readonly Task _InitializeTask;
         private readonly HashSet<string> _Devices = new HashSet<string>();
         #endregion
 
@@ -46,7 +46,7 @@ namespace Adapt.Presentation.UWP
         /// </summary>
         public Media()
         {
-            InitializeTask = InitializeAsync();
+            _InitializeTask = InitializeAsync();
 
             var watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
             watcher.Added += OnDeviceAdded;
@@ -59,7 +59,7 @@ namespace Adapt.Presentation.UWP
         #region Public Methods
         public async Task<bool> GetIsCameraAvailable()
         {
-            await InitializeTask;
+            await _InitializeTask;
             return _Devices.Count > 0;
         }
 
@@ -89,7 +89,7 @@ namespace Adapt.Presentation.UWP
         /// </summary>
         public async Task<MediaFile> TakePhotoAsync(StoreCameraMediaOptions options)
         {
-            await InitializeTask;
+            await _InitializeTask;
 
             if (_Devices.Count == 0)
                 throw new NotSupportedException();
@@ -212,7 +212,7 @@ namespace Adapt.Presentation.UWP
         /// </summary>
         public async Task<MediaFile> TakeVideoAsync(StoreVideoOptions options)
         {
-            await InitializeTask;
+            await _InitializeTask;
 
             if (_Devices.Count == 0)
                 throw new NotSupportedException();
