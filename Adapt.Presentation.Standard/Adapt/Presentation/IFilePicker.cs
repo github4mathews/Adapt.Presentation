@@ -8,6 +8,6 @@ namespace Adapt.Presentation
     public interface IFilePicker
     {
         Task<FileData> PickAndOpenFileForReading();
-        Task<FileData> PickAndOpenFileForWriting(IFileSelectionTypes fileTypes, string fileName);
+        Task<FileData> PickAndOpenFileForWriting(IFileSelectionDictionary fileTypes, string fileName);
     }
 }

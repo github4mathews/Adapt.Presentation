@@ -76,7 +76,7 @@
     <Compile Include="Adapt\Presentation\Geolocator\Position.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\PositionErrorEventArgs.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\PositionEventArgs.cs" />
-    <Compile Include="Adapt\Presentation\IFileSelectionTypes.cs" />
+    <Compile Include="Adapt\Presentation\IFileSelectionDictionary.cs" />
     <Compile Include="Adapt\Presentation\IFilePicker.cs" />
     <Compile Include="Adapt\Presentation\IMedia.cs" />
     <Compile Include="Adapt\Presentation\IPermissions.cs" />
