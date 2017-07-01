@@ -23,7 +23,7 @@ namespace Adapt.Presentation.Behaviours
             view.SetValue(AttachBehaviorProperty, value);
         }
 
-        static void OnAttachBehaviorChanged(BindableObject view, object oldValue, object newValue)
+        private static void OnAttachBehaviorChanged(BindableObject view, object oldValue, object newValue)
         {
             var editor = view as Editor;
             if (editor == null)
@@ -61,7 +61,7 @@ namespace Adapt.Presentation.Behaviours
             Refresh(sender);
         }
 
-        static void OnEditorTextChanged(object sender, TextChangedEventArgs args)
+        private static void OnEditorTextChanged(object sender, TextChangedEventArgs args)
         {
             Refresh(sender);
         }

@@ -91,12 +91,12 @@ namespace Adapt.Presentation
             GC.SuppressFinalize(this);
         }
 
-		bool isDisposed;
-		Func<Stream> streamGetter;
-        readonly string path;
-        string albumPath;
+        private bool isDisposed;
+        private Func<Stream> streamGetter;
+        private readonly string path;
+        private string albumPath;
 
-        void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (isDisposed)
                 return;

@@ -9,8 +9,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 {
     public static class GeolocationUtils
     {
-
-        static readonly int TwoMinutes = 120000;
+        private const int TwoMinutes = 120000;
 
         internal static bool IsBetterLocation(Location location, Location bestLocation)
         {

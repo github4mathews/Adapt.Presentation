@@ -20,10 +20,10 @@ namespace Adapt.Presentation.iOS.Geolocator
     [Preserve(AllMembers = true)]
     public class GeolocatorImplementation : IGeolocator
     {
-        bool deferringUpdates;
-        readonly CLLocationManager manager;
-        Position position;
-        ListenerSettings listenerSettings;
+        private bool deferringUpdates;
+        private readonly CLLocationManager manager;
+        private Position position;
+        private ListenerSettings listenerSettings;
 
         public GeolocatorImplementation()
         {
@@ -51,11 +51,11 @@ namespace Adapt.Presentation.iOS.Geolocator
             RequestAuthorization();
         }
 
-        void OnDeferredUpdatedFinished(object sender, NSErrorEventArgs e) => deferringUpdates = false;
+        private void OnDeferredUpdatedFinished(object sender, NSErrorEventArgs e) => deferringUpdates = false;
 
 
 #if __IOS__
-        bool CanDeferLocationUpdate => CLLocationManager.DeferredLocationUpdatesAvailable && UIDevice.CurrentDevice.CheckSystemVersion(6, 0);
+        private bool CanDeferLocationUpdate => CLLocationManager.DeferredLocationUpdatesAvailable && UIDevice.CurrentDevice.CheckSystemVersion(6, 0);
 #elif __MACOS__
         bool CanDeferLocationUpdate => CLLocationManager.DeferredLocationUpdatesAvailable;
 #elif __TVOS__
@@ -125,7 +125,7 @@ namespace Adapt.Presentation.iOS.Geolocator
             }
         }
 
-        void RequestAuthorization()
+        private void RequestAuthorization()
         {
 #if __IOS__
             var info = NSBundle.MainBundle.InfoDictionary;
@@ -405,7 +405,7 @@ namespace Adapt.Presentation.iOS.Geolocator
             return Task.FromResult(true);
         }
 
-        CLLocationManager GetManager()
+        private CLLocationManager GetManager()
         {
             CLLocationManager m = null;
             new NSObject().InvokeOnMainThread(() => m = new CLLocationManager());
@@ -413,7 +413,8 @@ namespace Adapt.Presentation.iOS.Geolocator
         }
 
 #if __IOS__
-        void OnUpdatedHeading(object sender, CLHeadingUpdatedEventArgs e)
+
+        private void OnUpdatedHeading(object sender, CLHeadingUpdatedEventArgs e)
         {
             if (e.NewHeading.TrueHeading == -1)
                 return;
@@ -446,11 +447,11 @@ namespace Adapt.Presentation.iOS.Geolocator
         }
 
 #if __IOS__ || __MACOS__
-        void OnUpdatedLocation(object sender, CLLocationUpdatedEventArgs e) => UpdatePosition(e.NewLocation);
+        private void OnUpdatedLocation(object sender, CLLocationUpdatedEventArgs e) => UpdatePosition(e.NewLocation);
 #endif
 
 
-        void UpdatePosition(CLLocation location)
+        private void UpdatePosition(CLLocation location)
         {
             var p = (position == null) ? new Position() : new Position(position);
 
@@ -491,24 +492,22 @@ namespace Adapt.Presentation.iOS.Geolocator
         }
 
 
-        
-
-        void OnPositionChanged(PositionEventArgs e) => PositionChanged?.Invoke(this, e);
+        private void OnPositionChanged(PositionEventArgs e) => PositionChanged?.Invoke(this, e);
 
 
-        async void OnPositionError(PositionErrorEventArgs e)
+        private async void OnPositionError(PositionErrorEventArgs e)
         {
             await StopListeningAsync();
             PositionError?.Invoke(this, e);
         }
 
-            void OnFailed(object sender, NSErrorEventArgs e)
+        private void OnFailed(object sender, NSErrorEventArgs e)
         {
             if ((CLError)(int)e.Error.Code == CLError.Network)
                 OnPositionError(new PositionErrorEventArgs(GeolocationError.PositionUnavailable));
         }
 
-        void OnAuthorizationChanged(object sender, CLAuthorizationChangedEventArgs e)
+        private void OnAuthorizationChanged(object sender, CLAuthorizationChangedEventArgs e)
         {
             if (e.Status == CLAuthorizationStatus.Denied || e.Status == CLAuthorizationStatus.Restricted)
                 OnPositionError(new PositionErrorEventArgs(GeolocationError.Unauthorized));

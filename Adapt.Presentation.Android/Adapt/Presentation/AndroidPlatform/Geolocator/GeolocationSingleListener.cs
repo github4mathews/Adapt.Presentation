@@ -13,16 +13,15 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     internal class GeolocationSingleListener
        : Java.Lang.Object, ILocationListener
     {
+        private readonly object locationSync = new object();
+        private Location bestLocation;
 
-        readonly object locationSync = new object();
-        Location bestLocation;
 
-
-        readonly Action finishedCallback;
-        readonly float desiredAccuracy;
-        readonly Timer timer;
-        readonly TaskCompletionSource<Position> completionSource = new TaskCompletionSource<Position>();
-        readonly HashSet<string> activeProviders = new HashSet<string>();
+        private readonly Action finishedCallback;
+        private readonly float desiredAccuracy;
+        private readonly Timer timer;
+        private readonly TaskCompletionSource<Position> completionSource = new TaskCompletionSource<Position>();
+        private readonly HashSet<string> activeProviders = new HashSet<string>();
 
         public GeolocationSingleListener(LocationManager manager, float desiredAccuracy, int timeout, IEnumerable<string> activeProviders, Action finishedCallback)
         {

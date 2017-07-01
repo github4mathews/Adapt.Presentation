@@ -16,8 +16,8 @@ namespace Adapt.Presentation.UWP.Geolocator
     /// </summary>
     public class Geolocator : IGeolocator
     {
-        double desiredAccuracy;
-        Windows.Devices.Geolocation.Geolocator locator = new Windows.Devices.Geolocation.Geolocator();
+        private double desiredAccuracy;
+        private Windows.Devices.Geolocation.Geolocator locator = new Windows.Devices.Geolocation.Geolocator();
 
 
         public Geolocator()

@@ -11,19 +11,17 @@ namespace Adapt.Presentation.iOS.Geolocator
     [Preserve(AllMembers = true)]
     internal class GeolocationSingleUpdateDelegate : CLLocationManagerDelegate
     {
-
-
-        bool haveHeading;
-        bool haveLocation;
-        readonly Position position = new Position();
+        private bool haveHeading;
+        private bool haveLocation;
+        private readonly Position position = new Position();
 #if __IOS__
-        CLHeading bestHeading;
+        private CLHeading bestHeading;
 #endif
 
-        readonly double desiredAccuracy;
-        readonly bool includeHeading;
-        readonly TaskCompletionSource<Position> tcs;
-        readonly CLLocationManager manager;
+        private readonly double desiredAccuracy;
+        private readonly bool includeHeading;
+        private readonly TaskCompletionSource<Position> tcs;
+        private readonly CLLocationManager manager;
 
         public GeolocationSingleUpdateDelegate(CLLocationManager manager, double desiredAccuracy, bool includeHeading, int timeout, CancellationToken cancelToken)
         {

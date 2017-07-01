@@ -23,7 +23,7 @@ namespace Adapt.Presentation.Behaviours
             view.SetValue(AttachBehaviorProperty, value);
         }
 
-        static void OnAttachBehaviorChanged(BindableObject view, object oldValue, object newValue)
+        private static void OnAttachBehaviorChanged(BindableObject view, object oldValue, object newValue)
         {
             var entry = view as Entry;
             if (entry == null)

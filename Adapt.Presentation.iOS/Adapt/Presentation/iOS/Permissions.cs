@@ -20,10 +20,10 @@ namespace Adapt.Presentation.iOS
     /// </summary>
     public class PermissionsImplementation : IPermissions
     {
-        CLLocationManager locationManager;
-        ABAddressBook addressBook;
-        EKEventStore eventStore;
-        CMMotionActivityManager activityManager;
+        private CLLocationManager locationManager;
+        private ABAddressBook addressBook;
+        private EKEventStore eventStore;
+        private CMMotionActivityManager activityManager;
 
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace Adapt.Presentation.iOS
 
         #region AV: Camera and Microphone
 
-        PermissionStatus GetAVPermissionStatus(NSString mediaType)
+        private PermissionStatus GetAVPermissionStatus(NSString mediaType)
         {
             var status = AVCaptureDevice.GetAuthorizationStatus(mediaType);
             switch (status)
@@ -163,7 +163,8 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Contacts
-        PermissionStatus ContactsPermissionStatus
+
+        private PermissionStatus ContactsPermissionStatus
         {
             get
             {
@@ -182,7 +183,7 @@ namespace Adapt.Presentation.iOS
             }
         }
 
-        Task<PermissionStatus> RequestContactsPermission()
+        private Task<PermissionStatus> RequestContactsPermission()
         {
 
             if (ContactsPermissionStatus != PermissionStatus.Unknown)
@@ -204,7 +205,8 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Events and Reminders
-        PermissionStatus GetEventPermissionStatus(EKEntityType eventType)
+
+        private PermissionStatus GetEventPermissionStatus(EKEntityType eventType)
         {
             var status = EKEventStore.GetAuthorizationStatus(eventType);
             switch (status)
@@ -221,7 +223,7 @@ namespace Adapt.Presentation.iOS
 
         }
 
-        async Task<PermissionStatus> RequestEventPermission(EKEntityType eventType)
+        private async Task<PermissionStatus> RequestEventPermission(EKEntityType eventType)
         {
 
             if (GetEventPermissionStatus(eventType) == PermissionStatus.Granted)
@@ -238,7 +240,7 @@ namespace Adapt.Presentation.iOS
 
         #region Location
 
-        Task<PermissionStatus> RequestLocationPermission()
+        private Task<PermissionStatus> RequestLocationPermission()
         {
 
             if (LocationPermissionStatus != PermissionStatus.Unknown)
@@ -279,7 +281,7 @@ namespace Adapt.Presentation.iOS
             return tcs.Task;
         }
 
-        PermissionStatus LocationPermissionStatus
+        private PermissionStatus LocationPermissionStatus
         {
             get
             {
@@ -347,7 +349,8 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Photos
-        PermissionStatus PhotosPermissionStatus
+
+        private PermissionStatus PhotosPermissionStatus
         {
             get
             {
@@ -366,7 +369,7 @@ namespace Adapt.Presentation.iOS
             }
         }
 
-        Task<PermissionStatus> RequestPhotosPermission()
+        private Task<PermissionStatus> RequestPhotosPermission()
         {
 
             if (PhotosPermissionStatus != PermissionStatus.Unknown)
@@ -399,7 +402,8 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Sensors
-        async Task<PermissionStatus> RequestSensorsPermission()
+
+        private async Task<PermissionStatus> RequestSensorsPermission()
         {
             if (CMMotionActivityManager.IsActivityAvailable)
                 return PermissionStatus.Granted;
@@ -424,7 +428,8 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Speech
-        Task<PermissionStatus> RequestSpeechPermission()
+
+        private Task<PermissionStatus> RequestSpeechPermission()
         {
             if (SpeechPermissionStatus != PermissionStatus.Unknown)
                 return Task.FromResult(SpeechPermissionStatus);
@@ -458,9 +463,8 @@ namespace Adapt.Presentation.iOS
             return tcs.Task;
         }
 
-        
 
-        PermissionStatus SpeechPermissionStatus
+        private PermissionStatus SpeechPermissionStatus
         {
             get
             {

@@ -11,7 +11,7 @@ namespace Adapt.Presentation.Controls
     /// <author>Jason Smith</author>
     public class WrapLayout : Layout<View>
     {
-        readonly Dictionary<View, SizeRequest> layoutCache = new Dictionary<View, SizeRequest>();
+        private readonly Dictionary<View, SizeRequest> layoutCache = new Dictionary<View, SizeRequest>();
 
         /// <summary>
         /// Backing Storage for the Spacing property

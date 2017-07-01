@@ -76,7 +76,7 @@ namespace Adapt.Presentation
         /// <value>The size of the photo.</value>
         public PhotoSize PhotoSize { get; set; } = PhotoSize.Full;
 
-        int customPhotoSize = 100;
+        private int customPhotoSize = 100;
         /// <summary>
         /// The custom photo size to use, 100 full size (same as Full),
         /// and 1 being smallest size at 1% of original
@@ -96,7 +96,7 @@ namespace Adapt.Presentation
             }
         }
 
-        int quality = 100;
+        private int quality = 100;
         /// <summary>
         /// The compression quality to use, 0 is the maximum compression (worse quality),
         /// and 100 minimum compression (best quality)
@@ -167,7 +167,7 @@ namespace Adapt.Presentation
         public PhotoSize PhotoSize { get; set; } = PhotoSize.Full;
 
 
-        int customPhotoSize = 100;
+        private int customPhotoSize = 100;
         /// <summary>
         /// The custom photo size to use, 100 full size (same as Full),
         /// and 1 being smallest size at 1% of original
@@ -188,7 +188,7 @@ namespace Adapt.Presentation
         }
 
 
-        int quality = 100;
+        private int quality = 100;
         /// <summary>
         /// The compression quality to use, 0 is the maximum compression (worse quality),
         /// and 100 minimum compression (best quality)

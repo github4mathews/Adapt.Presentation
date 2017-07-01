@@ -12,13 +12,20 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     internal class GeolocationContinuousListener
       : Java.Lang.Object, ILocationListener
     {
-        IList<string> providers;
-        readonly HashSet<string> activeProviders = new HashSet<string>();
-        readonly LocationManager manager;
+        #region Fields
+        private IList<string> providers;
+        private readonly HashSet<string> activeProviders = new HashSet<string>();
+        private readonly LocationManager manager;
 
-        string activeProvider;
-        Location lastLocation;
-        TimeSpan timePeriod;
+        private string activeProvider;
+        private Location lastLocation;
+        private TimeSpan timePeriod;
+        #endregion
+
+        #region Events
+        public event EventHandler<PositionErrorEventArgs> PositionError;
+        public event EventHandler<PositionEventArgs> PositionChanged;
+        #endregion
 
         public GeolocationContinuousListener(LocationManager manager, TimeSpan timePeriod, IList<string> providers)
         {
@@ -32,9 +39,6 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                     activeProviders.Add(p);
             }
         }
-
-        public event EventHandler<PositionErrorEventArgs> PositionError;
-        public event EventHandler<PositionEventArgs> PositionChanged;
 
         public void OnLocationChanged(Location location)
         {
@@ -80,7 +84,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                 return;
 
             lock (activeProviders)
-              activeProviders.Add(provider);
+                activeProviders.Add(provider);
         }
 
         public void OnStatusChanged(string provider, Availability status, Bundle extras)
@@ -97,10 +101,10 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             }
         }
 
-        private TimeSpan GetTimeSpan(long time) =>  new TimeSpan(TimeSpan.TicksPerMillisecond * time);
-        
+        private TimeSpan GetTimeSpan(long time) => new TimeSpan(TimeSpan.TicksPerMillisecond * time);
+
 
         private void OnPositionError(PositionErrorEventArgs e) => PositionError?.Invoke(this, e);
-        
+
     }
 }

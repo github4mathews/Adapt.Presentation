@@ -19,13 +19,13 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     [Preserve(AllMembers = true)]
     public class GeolocatorImplementation : GeolocatorBase, IGeolocator
     {
-        string[] allProviders;
-        LocationManager locationManager;
+        private string[] allProviders;
+        private LocationManager locationManager;
 
-        GeolocationContinuousListener listener;
+        private GeolocationContinuousListener listener;
 
-        readonly object positionSync = new object();
-        Position lastPosition;
+        private readonly object positionSync = new object();
+        private Position lastPosition;
 
         /// <summary>
         /// Default constructor
@@ -35,8 +35,8 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             DesiredAccuracy = 100;
         }
 
-        string[] Providers => Manager.GetProviders(enabledOnly: false).ToArray();
-        string[] IgnoredProviders => new string[] { LocationManager.PassiveProvider, "local_database" };
+        private string[] Providers => Manager.GetProviders(enabledOnly: false).ToArray();
+        private string[] IgnoredProviders => new string[] { LocationManager.PassiveProvider, "local_database" };
 
         private LocationManager Manager => locationManager ?? (locationManager = (LocationManager) app.Application.Context.GetSystemService(Context.LocationService));
 
