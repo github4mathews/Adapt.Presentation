@@ -95,7 +95,7 @@
     <Compile Include="Adapt\Presentation\VideoQuality.cs" />
     <Compile Include="Adapt\Presentation\XamlReader.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="PermissionStatusDictionary.cs" />
+    <Compile Include="Adapt\Presentation\PermissionStatusDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="CodeRulesDictionary.xml" />
