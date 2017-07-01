@@ -230,7 +230,7 @@ namespace Adapt.Presentation.iOS.Geolocator
                     m.PausesLocationUpdatesAutomatically = false;
 #endif
 
-                tcs = new TaskCompletionSource<Position>(m);
+                new TaskCompletionSource<Position>(m);
                 var singleListener = new GeolocationSingleUpdateDelegate(m, DesiredAccuracy, includeHeading, timeoutMilliseconds, cancelToken.Value);
                 m.Delegate = singleListener;
 

@@ -242,7 +242,7 @@ namespace Adapt.Presentation.AndroidPlatform
             }
         }
 
-        internal static Task<MediaPickedEventArgs> GetMediaFileAsync(Context context, int requestCode, string action, bool isPhoto, ref Uri path, Uri data, bool saveToAlbum)
+        internal static Task<MediaPickedEventArgs> GetMediaFileAsync(Context context, int requestCode, string action, bool isPhoto, ref Uri path, Uri data)
         {
             Task<Tuple<string, bool>> pathFuture;
 
@@ -260,7 +260,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 {
                     originalPath = data.ToString();
                     var currentPath = path.Path;
-                    pathFuture = TryMoveFileAsync(context, data, path, isPhoto, false).ContinueWith(t =>
+                    pathFuture = TryMoveFileAsync(context, data, path, isPhoto).ContinueWith(t =>
                         new Tuple<string, bool>(t.Result ? currentPath : null, false));
                 }
                 else
@@ -273,7 +273,7 @@ namespace Adapt.Presentation.AndroidPlatform
             {
                 originalPath = data.ToString();
                 path = data;
-                pathFuture = GetFileForUriAsync(context, path, isPhoto, false);
+                pathFuture = GetFileForUriAsync(context, path, isPhoto);
             }
             else
                 pathFuture = TaskFromResult<Tuple<string, bool>>(null);
@@ -327,7 +327,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 else
                 {
 
-                    var e = await GetMediaFileAsync(this, requestCode, _Action, _IsPhoto, ref _Path, data?.Data, false);
+                    var e = await GetMediaFileAsync(this, requestCode, _Action, _IsPhoto, ref _Path, data?.Data);
                     Finish();
                     await Task.Delay(50);
                     OnMediaPicked(e);
@@ -358,10 +358,10 @@ namespace Adapt.Presentation.AndroidPlatform
             }
         }
 
-        public static Task<bool> TryMoveFileAsync(Context context, Uri url, Uri path, bool isPhoto, bool saveToAlbum)
+        public static Task<bool> TryMoveFileAsync(Context context, Uri url, Uri path, bool isPhoto)
         {
             var moveTo = GetLocalPath(path);
-            return GetFileForUriAsync(context, url, isPhoto, false).ContinueWith(t =>
+            return GetFileForUriAsync(context, url, isPhoto).ContinueWith(t =>
             {
                 if (t.Result.Item1 == null)
                     return false;
@@ -465,7 +465,7 @@ namespace Adapt.Presentation.AndroidPlatform
             }
         }
 
-        private static Task<Tuple<string, bool>> GetFileForUriAsync(Context context, Uri uri, bool isPhoto, bool saveToAlbum)
+        private static Task<Tuple<string, bool>> GetFileForUriAsync(Context context, Uri uri, bool isPhoto)
         {
             var tcs = new TaskCompletionSource<Tuple<string, bool>>();
 

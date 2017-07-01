@@ -46,14 +46,13 @@ namespace Adapt.Presentation.AndroidPlatform
             var uri = (Android.Net.Uri)self.GetParcelableExtra("MediaFile");
             var isPhoto = self.GetBooleanExtra("isPhoto", false);
             var path = (Android.Net.Uri)self.GetParcelableExtra("path");
-            var saveToAlbum = false;
             try
             {
-                saveToAlbum = (bool)self.GetParcelableExtra("album_save");
+                self.GetParcelableExtra("album_save");
             }
             catch { }
 
-            return MediaPickerActivity.GetMediaFileAsync(context, 0, action, isPhoto, ref path, uri, saveToAlbum)
+            return MediaPickerActivity.GetMediaFileAsync(context, 0, action, isPhoto, ref path, uri)
                 .ContinueWith(t => t.Result.ToTask()).Unwrap();
         }
     }

@@ -51,7 +51,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
             if (names.Count != 0)
             {
-                return Task.FromResult(Enumerable.Any(names, name => ActivityCompat.ShouldShowRequestPermissionRationale(activity, name)));
+                return Task.FromResult(names.Any(name => ActivityCompat.ShouldShowRequestPermissionRationale(activity, name)));
             }
 
             Debug.WriteLine("No permissions found in manifest for: " + permission + " no need to show request rationale");
@@ -84,7 +84,7 @@ namespace Adapt.Presentation.AndroidPlatform
             var context = CrossCurrentActivity.Current.Activity ?? Application.Context;
             if (context != null)
             {
-                return Task.FromResult(Enumerable.Any(names, name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted);
+                return Task.FromResult(names.Any(name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted);
             }
 
             Debug.WriteLine("Unable to detect current Activity or App Context. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");

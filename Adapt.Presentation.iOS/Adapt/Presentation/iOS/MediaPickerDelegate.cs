@@ -372,7 +372,7 @@ namespace Adapt.Presentation.iOS
             {
                 if (!_Options.SaveToAlbum)
                 {
-                    return new MediaFile(path, () => File.OpenRead(path), aPath);
+                    return new MediaFile(path, () => File.OpenRead(path));
                 }
 
                 try
@@ -433,12 +433,18 @@ namespace Adapt.Presentation.iOS
 
         private static bool IsSameOrientationKind(UIDeviceOrientation o1, UIDeviceOrientation o2)
         {
-            if (o1 == UIDeviceOrientation.FaceDown || o1 == UIDeviceOrientation.FaceUp)
-                return o2 == UIDeviceOrientation.FaceDown || o2 == UIDeviceOrientation.FaceUp;
-            if (o1 == UIDeviceOrientation.LandscapeLeft || o1 == UIDeviceOrientation.LandscapeRight)
-                return o2 == UIDeviceOrientation.LandscapeLeft || o2 == UIDeviceOrientation.LandscapeRight;
-            if (o1 == UIDeviceOrientation.Portrait || o1 == UIDeviceOrientation.PortraitUpsideDown)
-                return o2 == UIDeviceOrientation.Portrait || o2 == UIDeviceOrientation.PortraitUpsideDown;
+            switch (o1)
+            {
+                case UIDeviceOrientation.FaceDown:
+                case UIDeviceOrientation.FaceUp:
+                    return o2 == UIDeviceOrientation.FaceDown || o2 == UIDeviceOrientation.FaceUp;
+                case UIDeviceOrientation.LandscapeLeft:
+                case UIDeviceOrientation.LandscapeRight:
+                    return o2 == UIDeviceOrientation.LandscapeLeft || o2 == UIDeviceOrientation.LandscapeRight;
+                case UIDeviceOrientation.Portrait:
+                case UIDeviceOrientation.PortraitUpsideDown:
+                    return o2 == UIDeviceOrientation.Portrait || o2 == UIDeviceOrientation.PortraitUpsideDown;
+            }
 
             return false;
         }
