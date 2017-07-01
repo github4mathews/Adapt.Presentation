@@ -32,7 +32,7 @@ namespace Adapt.Presentation.iOS
         #region Fields
         private UIPopoverController popover;
         private UIImagePickerControllerDelegate pickerDelegate;
-        private bool _IsCameraAvailable;
+        private readonly bool _IsCameraAvailable;
         #endregion
 
         #region Public Consts

@@ -21,7 +21,7 @@ namespace Adapt.Presentation.UWP
         #endregion
 
         #region Private Fields
-        private Task InitializeTask;
+        private readonly Task InitializeTask;
         private readonly HashSet<string> _Devices = new HashSet<string>();
         #endregion
 

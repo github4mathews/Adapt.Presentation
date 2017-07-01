@@ -22,7 +22,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         readonly float desiredAccuracy;
         readonly Timer timer;
         readonly TaskCompletionSource<Position> completionSource = new TaskCompletionSource<Position>();
-        HashSet<string> activeProviders = new HashSet<string>();
+        readonly HashSet<string> activeProviders = new HashSet<string>();
 
         public GeolocationSingleListener(LocationManager manager, float desiredAccuracy, int timeout, IEnumerable<string> activeProviders, Action finishedCallback)
         {

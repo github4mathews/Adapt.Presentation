@@ -35,7 +35,7 @@ namespace Adapt.Presentation.AndroidPlatform
     public class Media : MediaBase, IMedia
     {
         #region Fields
-        private bool _IsCameraAvailable;
+        private readonly bool _IsCameraAvailable;
         private readonly Context context;
         private int requestId;
         private TaskCompletionSource<MediaFile> completionSource;

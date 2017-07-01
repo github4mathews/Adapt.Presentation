@@ -10,7 +10,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     public static class GeolocationUtils
     {
 
-        static int TwoMinutes = 120000;
+        static readonly int TwoMinutes = 120000;
 
         internal static bool IsBetterLocation(Location location, Location bestLocation)
         {
