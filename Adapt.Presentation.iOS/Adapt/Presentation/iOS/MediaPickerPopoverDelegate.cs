@@ -27,10 +27,15 @@ namespace Adapt.Presentation.iOS
             _Picker = picker;
         }
 
-        public override bool ShouldDismiss(UIPopoverController popoverController) => true;
+        public override bool ShouldDismiss(UIPopoverController popoverController)
+        {
+            return true;
+        }
 
-        public override void DidDismiss(UIPopoverController popoverController) =>
+        public override void DidDismiss(UIPopoverController popoverController)
+        {
             _PickerDelegate.Canceled(_Picker);
+        }
 
         private readonly MediaPickerDelegate _PickerDelegate;
         private readonly UIImagePickerController _Picker;

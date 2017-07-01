@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 
 namespace Adapt.Presentation.UWP.Geolocator
 {
-    internal class Timeout
+    internal class Timeout : IDisposable
     {
-
-
         public Timeout(int timeout, Action timesup)
         {
             if (timeout == Infite)
@@ -17,7 +15,7 @@ namespace Adapt.Presentation.UWP.Geolocator
 
             if (timeout < 0)
             {
-                throw new ArgumentOutOfRangeException("timeoutMilliseconds");
+                throw new ArgumentOutOfRangeException(nameof(timeout));
             }
 
             if (timesup == null)
@@ -43,5 +41,10 @@ namespace Adapt.Presentation.UWP.Geolocator
         private readonly CancellationTokenSource _Canceller = new CancellationTokenSource();
 
         public const int Infite = -1;
+
+        public void Dispose()
+        {
+            _Canceller?.Dispose();
+        }
     }
 }

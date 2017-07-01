@@ -103,7 +103,10 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             }
         }
 
-        public void Cancel() =>  _CompletionSource.TrySetCanceled();
+        public void Cancel()
+        {
+            _CompletionSource.TrySetCanceled();
+        }
 
         private void TimesUp(object state)
         {

@@ -101,13 +101,13 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// <returns>Best and most recent location or null if none found</returns>
         public Task<Position> GetLastKnownLocationAsync()
         {
-            return Task.Factory.StartNew<Position>(()=> null);
+            return Task.Factory.StartNew<Position>(() => null);
         }
 
         /// <summary>
         /// Gets position async with specified parameters
         /// </summary>
-        public Task<Position> GetPositionAsync(TimeSpan? timeout, CancellationToken? cancelToken = null, bool includeHeading = false)
+        public Task<Position> GetPositionAsync(TimeSpan? timeout, CancellationToken? cancelToken, bool includeHeading)
         {
             var timeoutMilliseconds = timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : Timeout.Infite;
 
@@ -233,7 +233,7 @@ namespace Adapt.Presentation.UWP.Geolocator
         }
 
 
-        private async void OnLocatorStatusChanged(Windows.Devices.Geolocation.Geolocator sender, StatusChangedEventArgs e)
+        private async void OnLocatorStatusChanged(windowsgeolocator sender, StatusChangedEventArgs e)
         {
             GeolocationError error;
             switch (e.Status)
@@ -259,18 +259,22 @@ namespace Adapt.Presentation.UWP.Geolocator
             _Locator = null;
         }
 
-        private void OnLocatorPositionChanged(Windows.Devices.Geolocation.Geolocator sender, PositionChangedEventArgs e)
+        private void OnLocatorPositionChanged(windowsgeolocator sender, PositionChangedEventArgs e)
         {
             OnPositionChanged(new PositionEventArgs(GetPosition(e.Position)));
         }
 
-        private void OnPositionChanged(PositionEventArgs e) => PositionChanged?.Invoke(this, e);
+        private void OnPositionChanged(PositionEventArgs e)
+        {
+            PositionChanged?.Invoke(this, e);
+        }
 
+        private void OnPositionError(PositionErrorEventArgs e)
+        {
+            PositionError?.Invoke(this, e);
+        }
 
-        private void OnPositionError(PositionErrorEventArgs e) => PositionError?.Invoke(this, e);
-
-
-        private Windows.Devices.Geolocation.Geolocator GetGeolocator()
+        private windowsgeolocator GetGeolocator()
         {
             var loc = _Locator;
             if (loc != null)
@@ -278,7 +282,7 @@ namespace Adapt.Presentation.UWP.Geolocator
                 return loc;
             }
 
-            _Locator = new Windows.Devices.Geolocation.Geolocator();
+            _Locator = new windowsgeolocator();
             _Locator.StatusChanged += OnLocatorStatusChanged;
             loc = _Locator;
 

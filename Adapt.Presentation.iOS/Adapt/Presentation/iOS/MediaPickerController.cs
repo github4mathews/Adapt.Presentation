@@ -57,7 +57,9 @@ namespace Adapt.Presentation.iOS
         /// Gets result of picker
         /// </summary>
         /// <returns></returns>
-        public Task<MediaFile> GetResultAsync() =>
-            ((MediaPickerDelegate)Delegate).Task;
+        public Task<MediaFile> GetResultAsync()
+        {
+            return ((MediaPickerDelegate)Delegate).Task;
+        }
     }
 }

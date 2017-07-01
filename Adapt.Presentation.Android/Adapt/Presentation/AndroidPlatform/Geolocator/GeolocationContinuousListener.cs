@@ -109,10 +109,14 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             }
         }
 
-        private static TimeSpan GetTimeSpan(long time) => new TimeSpan(TimeSpan.TicksPerMillisecond * time);
+        private static TimeSpan GetTimeSpan(long time)
+        {
+            return new TimeSpan(TimeSpan.TicksPerMillisecond * time);
+        }
 
-
-        private void OnPositionError(PositionErrorEventArgs e) => PositionError?.Invoke(this, e);
-
+        private void OnPositionError(PositionErrorEventArgs e)
+        {
+            PositionError?.Invoke(this, e);
+        }
     }
 }

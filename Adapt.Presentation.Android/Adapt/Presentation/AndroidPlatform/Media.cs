@@ -80,7 +80,10 @@ namespace Adapt.Presentation.AndroidPlatform
         }
 
         ///<inheritdoc/>
-        public Task InitializeAsync() => Task.FromResult(true);
+        public Task InitializeAsync()
+        {
+            return Task.FromResult(true);
+        }
 
         /// <summary>
         /// Picks a photo from the default gallery

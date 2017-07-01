@@ -46,6 +46,8 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -113,6 +115,7 @@
     <Compile Include="Adapt\Presentation\UWP\Media.cs" />
     <Compile Include="Adapt\Presentation\UWP\Permissions.cs" />
     <Compile Include="Adapt\Presentation\UWP\PresentationFactory.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Adapt.Presentation.UWP.rd.xml" />
   </ItemGroup>
