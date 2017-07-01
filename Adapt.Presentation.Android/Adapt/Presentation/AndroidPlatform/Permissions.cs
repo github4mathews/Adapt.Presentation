@@ -1,5 +1,4 @@
 using Android;
-using Android.App;
 using app = Android.App;
 using Android.Support.V4.App;
 using Android.Support.V4.Content;
@@ -81,7 +80,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 return Task.FromResult(PermissionStatus.Unknown);
             }
 
-            var context = CrossCurrentActivity.Current.Activity ?? Application.Context;
+            var context = CrossCurrentActivity.Current.Activity ?? app.Application.Context;
             if (context != null)
             {
                 return Task.FromResult(names.Any(name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted);
@@ -362,7 +361,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     return _RequestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
 
                 //try to use current activity else application context
-                var context = CrossCurrentActivity.Current.Activity ?? Application.Context;
+                var context = CrossCurrentActivity.Current.Activity ?? app.Application.Context;
 
                 if (context == null)
                 {
