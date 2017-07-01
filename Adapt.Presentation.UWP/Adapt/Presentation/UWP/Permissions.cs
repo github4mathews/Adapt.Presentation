@@ -58,7 +58,7 @@ namespace Adapt.Presentation.UWP
                     {
                         // Determine if the user has allowed access to activity sensors
                         var deviceAccessInfo = DeviceAccessInformation.CreateFromDeviceClassId(_ActivitySensorClassId);
-                        switch(deviceAccessInfo.CurrentStatus)
+                        switch (deviceAccessInfo.CurrentStatus)
                         {
                             case DeviceAccessStatus.Allowed:
                                 return Task.FromResult(PermissionStatus.Granted);
@@ -91,7 +91,7 @@ namespace Adapt.Presentation.UWP
 
             var accessStatus = await wingeo.Geolocator.RequestAccessAsync();
 
-            switch(accessStatus)
+            switch (accessStatus)
             {
                 case wingeo.GeolocationAccessStatus.Allowed:
                     return PermissionStatus.Granted;
@@ -108,10 +108,17 @@ namespace Adapt.Presentation.UWP
         /// </summary>
         /// <returns>The permissions and their status.</returns>
         /// <param name="permissions">Permissions to request.</param>
-        public Task<Dictionary<Permission, PermissionStatus>> RequestPermissionsAsync(params Permission[] permissions)
+        public Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions)
         {
             var results = permissions.ToDictionary(permission => permission, permission => PermissionStatus.Granted);
-            return Task.FromResult(results);
+
+            var retVal = new PermissionStatusDictionary();
+            foreach (var key in results.Keys)
+            {
+                retVal.Add(key, results[key]);
+            }
+
+            return Task.FromResult(retVal);
         }
 
         public bool OpenAppSettings()
