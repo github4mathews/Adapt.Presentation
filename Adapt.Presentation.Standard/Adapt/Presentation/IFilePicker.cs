@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Adapt.Presentation
 {
@@ -9,6 +8,6 @@ namespace Adapt.Presentation
     public interface IFilePicker
     {
         Task<FileData> PickAndOpenFileForReading();
-        Task<FileData> PickAndOpenFileForWriting(IDictionary<string, IList<string>> fileTypes, string fileName);
+        Task<FileData> PickAndOpenFileForWriting(IFileSelectionTypes fileTypes, string fileName);
     }
 }
