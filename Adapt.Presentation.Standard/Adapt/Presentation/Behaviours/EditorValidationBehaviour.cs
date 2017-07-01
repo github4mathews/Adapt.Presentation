@@ -43,12 +43,10 @@ namespace Adapt.Presentation.Behaviours
 
             editor.BindingContextChanged += Editor_BindingContextChanged;
 
-            var notifyDataErrorInfo = editor.BindingContext as INotifyDataErrorInfo;
-            if (notifyDataErrorInfo != null)
+            if (editor.BindingContext is INotifyDataErrorInfo notifyDataErrorInfo)
             {
                 notifyDataErrorInfo.ErrorsChanged += NotifyDataErrorInfo_ErrorsChanged;
             }
-
         }
 
         private static void Editor_BindingContextChanged(object sender, System.EventArgs e)

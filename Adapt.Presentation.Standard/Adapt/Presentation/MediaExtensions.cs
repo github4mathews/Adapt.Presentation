@@ -28,9 +28,14 @@ namespace Adapt.Presentation
         public static void VerifyOptions(this StoreMediaOptions self)
         {
             if (self == null)
+            {
                 throw new ArgumentNullException(nameof(self));
+            }
+
             if (Path.IsPathRooted(self.Directory))
+            {
                 throw new ArgumentException("options.Directory must be a relative path", nameof(self));
+            }
         }
 
         public static string GetFilePath(this StoreMediaOptions self, string rootPath)
@@ -42,14 +47,20 @@ namespace Adapt.Presentation
             {
                 var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture);
                 if (isPhoto)
+                {
                     name = "IMG_" + timestamp + ".jpg";
+                }
                 else
+                {
                     name = "VID_" + timestamp + ".mp4";
+                }
             }
 
             var ext = Path.GetExtension(name);
             if (ext == string.Empty)
+            {
                 ext = isPhoto ? ".jpg" : ".mp4";
+            }
 
             name = Path.GetFileNameWithoutExtension(name);
 

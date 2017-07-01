@@ -1,0 +1,30 @@
+﻿<Dictionary>
+  <Words>
+    <Unrecognized>
+      <Word></Word>
+    </Unrecognized>
+    <Recognized>
+      <Word>Geolocator</Word>
+      <Word>Geolocation</Word>
+      <Word>Xamarin</Word>
+      <Word>NuGet</Word>
+      <Word>Behaviour</Word>
+    </Recognized>
+    <Deprecated>
+      <Term PreferredAlternate=""></Term>
+    </Deprecated>
+    <Compound>
+      <Term CompoundAlternate=""></Term>
+    </Compound>
+    <DiscreteExceptions>
+      <Term></Term>
+    </DiscreteExceptions>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <Acronym>AAM</Acronym>
+      <Acronym>ADO</Acronym>
+      <Acronym>ASP</Acronym>
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>

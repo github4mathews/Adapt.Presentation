@@ -65,7 +65,10 @@ namespace Adapt.Presentation
         /// <returns>The BindableObject visual tree</returns>
         public static TBindableObject Load<TBindableObject>(string xaml) where TBindableObject : BindableObject
         {
-            if (string.IsNullOrEmpty(xaml)) throw new ArgumentNullException(nameof(xaml));
+            if (string.IsNullOrEmpty(xaml))
+            {
+                throw new ArgumentNullException(nameof(xaml));
+            }
 
             var bindableObject = (TBindableObject)Activator.CreateInstance(typeof(TBindableObject));
 

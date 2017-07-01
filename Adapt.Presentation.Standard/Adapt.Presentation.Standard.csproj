@@ -26,7 +26,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodeAnalysisRuleSet>Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -93,8 +93,10 @@
     <Compile Include="Adapt\Presentation\StoreVideoOptions.cs" />
     <Compile Include="Adapt\Presentation\VideoQuality.cs" />
     <Compile Include="Adapt\Presentation\XamlReader.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <CodeAnalysisDictionary Include="CodeRulesDictionary.xml" />
     <Content Include="project.json" />
   </ItemGroup>
   <ItemGroup>

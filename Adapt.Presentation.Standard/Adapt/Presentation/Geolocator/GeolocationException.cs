@@ -12,10 +12,12 @@ namespace Adapt.Presentation.Geolocator
         /// Location exception
         /// </summary>
         public GeolocationException(GeolocationError error)
-            : base("A geolocation error occured: " + error)
+            : base("A geolocation error occurred: " + error)
         {
             if (!Enum.IsDefined(typeof(GeolocationError), error))
+            {
                 throw new ArgumentException("error is not a valid GelocationError member", nameof(error));
+            }
 
             Error = error;
         }
@@ -24,10 +26,12 @@ namespace Adapt.Presentation.Geolocator
         /// Geolocation error
         /// </summary>
         public GeolocationException(GeolocationError error, Exception innerException)
-            : base("A geolocation error occured: " + error, innerException)
+            : base("A geolocation error occurred: " + error, innerException)
         {
             if (!Enum.IsDefined(typeof(GeolocationError), error))
+            {
                 throw new ArgumentException("error is not a valid GelocationError member", nameof(error));
+            }
 
             Error = error;
         }
