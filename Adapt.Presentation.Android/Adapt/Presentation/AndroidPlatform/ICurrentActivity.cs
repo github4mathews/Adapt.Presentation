@@ -11,6 +11,6 @@ namespace Adapt.Presentation.AndroidPlatform
         /// Gets or sets the activity.
         /// </summary>
         /// <value>The activity.</value>
-        Activity Activity { get; set; }
+        Activity Activity { get; }
     }
 }

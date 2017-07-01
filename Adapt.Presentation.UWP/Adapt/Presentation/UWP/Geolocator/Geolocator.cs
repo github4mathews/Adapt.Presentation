@@ -5,6 +5,7 @@ using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using System.Threading;
 using Adapt.Presentation.Geolocator;
+using windowsgeolocator = Windows.Devices.Geolocation.Geolocator;
 #if !WINDOWS_APP
 using Windows.Services.Maps;
 #endif
@@ -16,14 +17,10 @@ namespace Adapt.Presentation.UWP.Geolocator
     /// </summary>
     public class Geolocator : IGeolocator
     {
-        private double desiredAccuracy;
-        private Windows.Devices.Geolocation.Geolocator locator = new Windows.Devices.Geolocation.Geolocator();
-
-
-        public Geolocator()
-        {
-            DesiredAccuracy = 100;
-        }
+        #region Fields
+        private double _DesiredAccuracy = 100;
+        private windowsgeolocator _Locator = new windowsgeolocator();
+        #endregion
 
         /// <summary>
         /// Position error event handler
@@ -83,10 +80,10 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// </summary>
         public double DesiredAccuracy
         {
-            get => desiredAccuracy;
+            get => _DesiredAccuracy;
             set
             {
-                desiredAccuracy = value;
+                _DesiredAccuracy = value;
                 GetGeolocator().DesiredAccuracy = value < 100 ? PositionAccuracy.High : PositionAccuracy.Default;
             }
         }
@@ -210,8 +207,8 @@ namespace Adapt.Presentation.UWP.Geolocator
             if (!IsListening)
                 return Task.FromResult(true);
 
-            locator.PositionChanged -= OnLocatorPositionChanged;
-            locator.StatusChanged -= OnLocatorStatusChanged;
+            _Locator.PositionChanged -= OnLocatorPositionChanged;
+            _Locator.StatusChanged -= OnLocatorStatusChanged;
             IsListening = false;
 
             return Task.FromResult(true);
@@ -241,7 +238,7 @@ namespace Adapt.Presentation.UWP.Geolocator
                 OnPositionError(new PositionErrorEventArgs(error));
             }
 
-            locator = null;
+            _Locator = null;
         }
 
         private void OnLocatorPositionChanged(Windows.Devices.Geolocation.Geolocator sender, PositionChangedEventArgs e)
@@ -257,15 +254,15 @@ namespace Adapt.Presentation.UWP.Geolocator
 
         private Windows.Devices.Geolocation.Geolocator GetGeolocator()
         {
-            var loc = locator;
+            var loc = _Locator;
             if (loc != null)
             {
                 return loc;
             }
 
-            locator = new Windows.Devices.Geolocation.Geolocator();
-            locator.StatusChanged += OnLocatorStatusChanged;
-            loc = locator;
+            _Locator = new Windows.Devices.Geolocation.Geolocator();
+            _Locator.StatusChanged += OnLocatorStatusChanged;
+            loc = _Locator;
 
             return loc;
         }

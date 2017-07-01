@@ -20,11 +20,12 @@ namespace Adapt.Presentation.iOS
     /// </summary>
     public class PermissionsImplementation : IPermissions
     {
-        private CLLocationManager locationManager;
-        private ABAddressBook addressBook;
-        private EKEventStore eventStore;
-        private CMMotionActivityManager activityManager;
-
+        #region Fields
+        private CLLocationManager _LocationManager;
+        private ABAddressBook _AddressBook;
+        private EKEventStore _EventStore;
+        private CMMotionActivityManager _ActivityManager;
+        #endregion
 
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission
@@ -141,8 +142,6 @@ namespace Adapt.Presentation.iOS
             return results;
         }
 
-
-
         #region AV: Camera and Microphone
 
         private PermissionStatus GetAVPermissionStatus(NSString mediaType)
@@ -189,13 +188,13 @@ namespace Adapt.Presentation.iOS
             if (ContactsPermissionStatus != PermissionStatus.Unknown)
                 return Task.FromResult(ContactsPermissionStatus);
 
-            if (addressBook == null)
-                addressBook = new ABAddressBook();
+            if (_AddressBook == null)
+                _AddressBook = new ABAddressBook();
 
             var tcs = new TaskCompletionSource<PermissionStatus>();
 
 
-            addressBook.RequestAccess((success, error) =>
+            _AddressBook.RequestAccess((success, error) =>
                 {
                     tcs.SetResult(success ? PermissionStatus.Granted : PermissionStatus.Denied);
                 });
@@ -229,10 +228,10 @@ namespace Adapt.Presentation.iOS
             if (GetEventPermissionStatus(eventType) == PermissionStatus.Granted)
                 return PermissionStatus.Granted;
 
-            if (eventStore == null)
-                eventStore = new EKEventStore();
+            if (_EventStore == null)
+                _EventStore = new EKEventStore();
 
-            var results = await eventStore.RequestAccessAsync(eventType).ConfigureAwait(false);
+            var results = await _EventStore.RequestAccessAsync(eventType).ConfigureAwait(false);
 
             return results.Item1 ? PermissionStatus.Granted : PermissionStatus.Denied;
         }
@@ -251,8 +250,8 @@ namespace Adapt.Presentation.iOS
                 return Task.FromResult(PermissionStatus.Unknown);
             }
 
-            if (locationManager == null)
-                locationManager = new CLLocationManager();
+            if (_LocationManager == null)
+                _LocationManager = new CLLocationManager();
 
             EventHandler<CLAuthorizationChangedEventArgs> authCallback = null;
             var tcs = new TaskCompletionSource<PermissionStatus>();
@@ -262,18 +261,18 @@ namespace Adapt.Presentation.iOS
                     if(e.Status == CLAuthorizationStatus.NotDetermined)
                         return;
 
-                    locationManager.AuthorizationChanged -= authCallback;
+                    _LocationManager.AuthorizationChanged -= authCallback;
                     tcs.SetResult(LocationPermissionStatus);
                 };
 
-            locationManager.AuthorizationChanged += authCallback;
+            _LocationManager.AuthorizationChanged += authCallback;
 
 
             var info = NSBundle.MainBundle.InfoDictionary;
             if (info.ContainsKey(new NSString("NSLocationAlwaysUsageDescription")))
-                locationManager.RequestAlwaysAuthorization();
+                _LocationManager.RequestAlwaysAuthorization();
             else if (info.ContainsKey(new NSString("NSLocationWhenInUseUsageDescription")))
-                locationManager.RequestWhenInUseAuthorization();
+                _LocationManager.RequestWhenInUseAuthorization();
             else
                 throw new UnauthorizedAccessException("On iOS 8.0 and higher you must set either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in your Info.plist file to enable Authorization Requests for Location updates!");
 
@@ -408,12 +407,12 @@ namespace Adapt.Presentation.iOS
             if (CMMotionActivityManager.IsActivityAvailable)
                 return PermissionStatus.Granted;
 
-            if (activityManager == null)
-                activityManager = new CMMotionActivityManager();
+            if (_ActivityManager == null)
+                _ActivityManager = new CMMotionActivityManager();
 
             try
             {
-                var results = await activityManager.QueryActivityAsync(NSDate.DistantPast, NSDate.DistantFuture, NSOperationQueue.MainQueue).ConfigureAwait(false);
+                var results = await _ActivityManager.QueryActivityAsync(NSDate.DistantPast, NSDate.DistantFuture, NSOperationQueue.MainQueue).ConfigureAwait(false);
                 if(results != null)
                     return PermissionStatus.Granted;
             }

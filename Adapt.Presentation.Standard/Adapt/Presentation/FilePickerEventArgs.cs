@@ -5,11 +5,12 @@ namespace Adapt.Presentation
     public class FilePickerEventArgs : EventArgs
     {
         public string FileName { get; }
-
+        public byte[] FileBytes { get; }
         public string FilePath { get; }
 
         private FilePickerEventArgs (byte [] fileByte)
         {
+            FileBytes = fileByte;
         }
 
         public FilePickerEventArgs (byte [] fileByte, string fileName)
