@@ -68,24 +68,24 @@ namespace Adapt.Presentation.Behaviours
 
         private static void Refresh(object sender)
         {
-            var Editor = sender as Editor;
-            if (Editor == null)
+            var editor = sender as Editor;
+            if (editor == null)
             {
                 return;
             }
 
-            DoBackgroundColour(Editor);
+            DoBackgroundColour(editor);
         }
 
-        private static void DoBackgroundColour(Editor Editor)
+        private static void DoBackgroundColour(VisualElement visualElement)
         {
-            var notifyDataErrorInfo = Editor.BindingContext as INotifyDataErrorInfo;
+            var notifyDataErrorInfo = visualElement.BindingContext as INotifyDataErrorInfo;
             if (notifyDataErrorInfo == null)
             {
                 return;
             }
 
-            Editor.BackgroundColor = notifyDataErrorInfo.HasErrors ? Color.Red : Color.Default;
+            visualElement.BackgroundColor = notifyDataErrorInfo.HasErrors ? Color.Red : Color.Default;
         }
     }
 }

@@ -69,14 +69,16 @@ namespace Adapt.Presentation
     /// </summary>
     public class PickMediaOptions
     {
+        #region Fields
+        private int _CustomPhotoSize = 100;
+        #endregion
 
         /// <summary>
         /// Gets or sets the size of the photo.
         /// </summary>
         /// <value>The size of the photo.</value>
-        public PhotoSize PhotoSize { get; set; } = PhotoSize.Full;
+        public PhotoSize PhotoSize { get; } = PhotoSize.Full;
 
-        private int customPhotoSize = 100;
         /// <summary>
         /// The custom photo size to use, 100 full size (same as Full),
         /// and 1 being smallest size at 1% of original
@@ -84,15 +86,15 @@ namespace Adapt.Presentation
         /// </summary>
         public int CustomPhotoSize
         {
-            get { return customPhotoSize; }
+            get { return _CustomPhotoSize; }
             set
             {
                 if (value > 100)
-                    customPhotoSize = 100;
+                    _CustomPhotoSize = 100;
                 else if (value < 1)
-                    customPhotoSize = 1;
+                    _CustomPhotoSize = 1;
                 else
-                    customPhotoSize = value;
+                    _CustomPhotoSize = value;
             }
         }
 

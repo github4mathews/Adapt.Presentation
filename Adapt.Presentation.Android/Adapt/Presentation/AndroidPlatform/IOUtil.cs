@@ -53,7 +53,7 @@ namespace Adapt.Presentation.AndroidPlatform
                         contentUri = MediaStore.Audio.Media.ExternalContentUri;
                     }
 
-                    var selection = "_id=?";
+                    const string selection = "_id=?";
                     var selectionArgs = new[] {
                         split[1]
                     };
@@ -77,7 +77,7 @@ namespace Adapt.Presentation.AndroidPlatform
         {
 
             ICursor cursor = null;
-            var column = "_data";
+            const string column = "_data";
             string [] projection = {
                 column
             };

@@ -79,14 +79,14 @@ namespace Adapt.Presentation.UWP
             return Task.FromResult(PermissionStatus.Granted);
         }
 
-        private async Task<PermissionStatus> CheckContactsAsync()
+        private static async Task<PermissionStatus> CheckContactsAsync()
         {
             var accessStatus = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
 
             return accessStatus == null ? PermissionStatus.Denied : PermissionStatus.Granted;
         }
 
-        private async Task<PermissionStatus> CheckLocationAsync()
+        private static async Task<PermissionStatus> CheckLocationAsync()
         {
 
             var accessStatus = await wingeo.Geolocator.RequestAccessAsync();
