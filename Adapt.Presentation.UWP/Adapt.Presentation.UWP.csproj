@@ -107,7 +107,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Adapt\Presentation\UWP\FilePicker.cs" />
-    <Compile Include="Adapt\Presentation\UWP\Geolocator\Extensions.cs" />
     <Compile Include="Adapt\Presentation\UWP\Geolocator\Geolocator.cs" />
     <Compile Include="Adapt\Presentation\UWP\Geolocator\GeolocatorUtils.cs" />
     <Compile Include="Adapt\Presentation\UWP\Geolocator\Timeout.cs" />
