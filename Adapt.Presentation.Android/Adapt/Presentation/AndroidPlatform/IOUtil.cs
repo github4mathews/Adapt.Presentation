@@ -144,7 +144,9 @@ namespace Adapt.Presentation.AndroidPlatform
                 var length = (int)longlength;
 
                 if (length != longlength)
+                {
                     throw new IOException ("Filesize exceeds allowed size");
+                }
                 // Read file and return data
                 var data = new byte [length];
                 f.ReadFully (data);

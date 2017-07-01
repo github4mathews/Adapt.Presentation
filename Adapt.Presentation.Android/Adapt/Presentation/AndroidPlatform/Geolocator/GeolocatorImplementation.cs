@@ -76,14 +76,18 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         {
             var hasPermission = await CheckPermissions();
             if (!hasPermission)
+            {
                 return null;
+            }
 
             Location bestLocation = null;
             foreach (var provider in Providers)
             {
                 var location = Manager.GetLastKnownLocation(provider);
                 if (location != null && GeolocationUtils.IsBetterLocation(location, bestLocation))
+                {
                     bestLocation = location;
+                }
             }
 
             return bestLocation?.ToPosition();
@@ -117,14 +121,20 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             var timeoutMilliseconds = timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : Timeout.Infinite;
 
             if (timeoutMilliseconds <= 0 && timeoutMilliseconds != Timeout.Infinite)
+            {
                 throw new ArgumentOutOfRangeException(nameof(timeout), "timeout must be greater than or equal to 0");
+            }
 
             if (!cancelToken.HasValue)
+            {
                 cancelToken = CancellationToken.None;
+            }
 
             var hasPermission = await CheckPermissions();
             if (!hasPermission)
+            {
                 return null;
+            }
 
             var tcs = new TaskCompletionSource<Position>();
 
@@ -136,7 +146,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                     () =>
                 {
                     for (var i = 0; i < providers.Length; ++i)
+                    {
                         Manager.RemoveUpdates(singleListener);
+                    }
                 });
 
                 if (cancelToken != CancellationToken.None)
@@ -146,7 +158,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                         singleListener.Cancel();
 
                         for (var i = 0; i < providers.Length; ++i)
+                        {
                             Manager.RemoveUpdates(singleListener);
+                        }
                     }, true);
                 }
 
@@ -158,7 +172,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                     foreach (var provider in providers)
                     {
                         if (Manager.IsProviderEnabled(provider))
+                        {
                             enabled++;
+                        }
 
                         Manager.RequestLocationUpdates(provider, 0, 0, singleListener, looper);
                     }
@@ -166,7 +182,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                     if (enabled == 0)
                     {
                         for (var i = 0; i < providers.Length; ++i)
+                        {
                             Manager.RemoveUpdates(singleListener);
+                        }
 
                         tcs.SetException(new GeolocationException(GeolocationError.PositionUnavailable));
                         return await tcs.Task;
@@ -216,7 +234,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         public async Task<IEnumerable<Address>> GetAddressesForPositionAsync(Position position)
         {
             if (position == null)
+            {
                 return null;
+            }
 
             var geocoder = new Geocoder(app.Application.Context);
             var addressList = await geocoder.GetFromLocationAsync(position.Latitude, position.Longitude, 10);
@@ -228,16 +248,25 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         {
             var hasPermission = await CheckPermissions();
             if (!hasPermission)
+            {
                 return false;
-
+            }
 
             var minTimeMilliseconds = minTime.TotalMilliseconds;
             if (minTimeMilliseconds < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(minTime));
+            }
+
             if (minDistance < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(minDistance));
+            }
+
             if (IsListening)
+            {
                 throw new InvalidOperationException("This Geolocator is already listening");
+            }
 
             var providers = Providers;
             _Listener = new GeolocationContinuousListener(Manager, minTime, providers);
@@ -256,14 +285,18 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         public Task<bool> StopListeningAsync()
         {
             if (_Listener == null)
+            {
                 return Task.FromResult(true);
+            }
 
             var providers = Providers;
             _Listener.PositionChanged -= OnListenerPositionChanged;
             _Listener.PositionError -= OnListenerPositionError;
 
             for (var i = 0; i < providers.Length; ++i)
+            {
                 Manager.RemoveUpdates(_Listener);
+            }
 
             _Listener = null;
             return Task.FromResult(true);
@@ -274,7 +307,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         private void OnListenerPositionChanged(object sender, PositionEventArgs e)
         {
             if (!IsListening) // ignore anything that might come in afterwards
+            {
                 return;
+            }
 
             lock (_PositionSync)
             {

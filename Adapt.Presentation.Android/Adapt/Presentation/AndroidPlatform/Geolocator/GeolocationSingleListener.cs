@@ -39,12 +39,16 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             {
                 var location = manager.GetLastKnownLocation(provider);
                 if (location != null && GeolocationUtils.IsBetterLocation(location, _BestLocation))
+                {
                     _BestLocation = location;
+                }
             }
             
 
             if (timeout != Timeout.Infinite)
+            {
                 new Timer(TimesUp, null, timeout, 0);
+            }
         }
 
         public void OnLocationChanged(Location location)
@@ -58,7 +62,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             lock (_LocationSync)
             {
                 if (GeolocationUtils.IsBetterLocation(location, _BestLocation))
+                {
                     _BestLocation = location;
+                }
             }
         }
 
@@ -69,14 +75,18 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             lock (_ActiveProviders)
             {
                 if (_ActiveProviders.Remove(provider) && _ActiveProviders.Count == 0)
+                {
                     _CompletionSource.TrySetException(new GeolocationException(GeolocationError.PositionUnavailable));
+                }
             }
         }
 
         public void OnProviderEnabled(string provider)
         {
             lock (_ActiveProviders)
-              _ActiveProviders.Add(provider);
+            {
+                _ActiveProviders.Add(provider);
+            }
         }
 
         public void OnStatusChanged(string provider, Availability status, Bundle extras)
@@ -102,7 +112,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                 if (_BestLocation == null)
                 {
                     if (_CompletionSource.TrySetCanceled())
+                    {
                         _FinishedCallback?.Invoke();
+                    }
                 }
                 else
                 {

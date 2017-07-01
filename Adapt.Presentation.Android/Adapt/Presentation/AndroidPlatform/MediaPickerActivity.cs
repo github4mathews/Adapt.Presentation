@@ -89,7 +89,9 @@ namespace Adapt.Presentation.AndroidPlatform
             outState.PutInt(ExtraFront, _Front);
 
             if (_Path != null)
+            {
                 outState.PutString(ExtraPath, _Path.Path);
+            }
 
             base.OnSaveInstanceState(outState);
         }
@@ -116,7 +118,9 @@ namespace Adapt.Presentation.AndroidPlatform
             _Type = b.GetString(ExtraType);
             _Front = b.GetInt(ExtraFront);
             if (_Type == "image/*")
+            {
                 _IsPhoto = true;
+            }
 
             _Action = b.GetString(ExtraAction);
             Intent pickIntent = null;
@@ -124,14 +128,18 @@ namespace Adapt.Presentation.AndroidPlatform
             {
                 pickIntent = new Intent(_Action);
                 if (_Action == Intent.ActionPick)
+                {
                     pickIntent.SetType(_Type);
+                }
                 else
                 {
                     if (!_IsPhoto)
                     {
                         _Seconds = b.GetInt(MediaStore.ExtraDurationLimit, 0);
                         if (_Seconds != 0)
+                        {
                             pickIntent.PutExtra(MediaStore.ExtraDurationLimit, _Seconds);
+                        }
                     }
 
                     _SaveToAlbum = b.GetBoolean(ExtraSaveToAlbum);
@@ -141,7 +149,9 @@ namespace Adapt.Presentation.AndroidPlatform
                     pickIntent.PutExtra(MediaStore.ExtraVideoQuality, GetVideoQuality(_Quality));
 
                     if (_Front != 0)
+                    {
                         pickIntent.PutExtra(ExtraFront, (int)Android.Hardware.CameraFacing.Front);
+                    }
 
                     if (!ran)
                     {
@@ -174,11 +184,15 @@ namespace Adapt.Presentation.AndroidPlatform
                         pickIntent.PutExtra(MediaStore.ExtraOutput, _Path);
                     }
                     else
+                    {
                         _Path = Uri.Parse(b.GetString(ExtraPath));
+                    }
                 }
 
                 if (!ran)
+                {
                     StartActivityForResult(pickIntent, _Id);
+                }
             }
             catch (Exception ex)
             {
@@ -195,7 +209,9 @@ namespace Adapt.Presentation.AndroidPlatform
         private void Touch()
         {
             if (_Path.Scheme != "file")
+            {
                 return;
+            }
 
             var newPath = GetLocalPath(_Path);
             try
@@ -217,7 +233,9 @@ namespace Adapt.Presentation.AndroidPlatform
             try
             {
                 if (_Path?.Scheme != "file")
+                {
                     return;
+                }
 
                 var localPath = GetLocalPath(_Path);
 
@@ -276,7 +294,9 @@ namespace Adapt.Presentation.AndroidPlatform
                 pathFuture = GetFileForUriAsync(context, path, isPhoto);
             }
             else
+            {
                 pathFuture = TaskFromResult<Tuple<string, bool>>(null);
+            }
 
             return pathFuture.ContinueWith(t =>
             {
@@ -364,12 +384,16 @@ namespace Adapt.Presentation.AndroidPlatform
             return GetFileForUriAsync(context, url, isPhoto).ContinueWith(t =>
             {
                 if (t.Result.Item1 == null)
+                {
                     return false;
+                }
 
                 try
                 {
                     if (url.Scheme == "content")
+                    {
                         context.ContentResolver.Delete(url, null, null);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -415,14 +439,18 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             var ext = Path.GetExtension(name);
             if (ext == string.Empty)
+            {
                 ext = isPhoto ? ".jpg" : ".mp4";
+            }
 
             name = Path.GetFileNameWithoutExtension(name);
 
             var nname = name + ext;
             var i = 1;
             while (File.Exists(Path.Combine(folder, nname)))
+            {
                 nname = name + "_" + i++ + ext;
+            }
 
             return Path.Combine(folder, nname);
         }
@@ -435,9 +463,13 @@ namespace Adapt.Presentation.AndroidPlatform
             {
                 var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss", CultureInfo.InvariantCulture);
                 if (isPhoto)
+                {
                     name = "IMG_" + timestamp + ".jpg";
+                }
                 else
+                {
                     name = "VID_" + timestamp + ".mp4";
+                }
             }
 
             var mediaType = isPhoto ? Environment.DirectoryPictures : Environment.DirectoryMovies;
@@ -450,7 +482,9 @@ namespace Adapt.Presentation.AndroidPlatform
                 }
 
                 if (!mediaStorageDir.Mkdirs())
+                {
                     throw new IOException("Couldn't create directory, have you added the WRITE_EXTERNAL_STORAGE permission?");
+                }
 
                 if (saveToAlbum)
                 {
@@ -459,7 +493,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
                 // Ensure this media doesn't show up in gallery apps
                 using (var nomedia = new Java.IO.File(mediaStorageDir, ".nomedia"))
+                {
                     nomedia.CreateNewFile();
+                }
 
                 return Uri.FromFile(new Java.IO.File(GetUniquePath(mediaStorageDir.Path, name, isPhoto)));
             }
@@ -482,18 +518,24 @@ namespace Adapt.Presentation.AndroidPlatform
                         {
                             string[] proj = null;
                             if ((int)Build.VERSION.SdkInt >= 22)
+                            {
                                 proj = new[] { MediaStore.MediaColumns.Data };
+                            }
 
                             cursor = context.ContentResolver.Query(uri, proj, null, null, null);
                             if (cursor == null || !cursor.MoveToNext())
+                            {
                                 tcs.SetResult(new Tuple<string, bool>(null, false));
+                            }
                             else
                             {
                                 var column = cursor.GetColumnIndex(MediaStore.MediaColumns.Data);
                                 string contentPath = null;
 
                                 if (column != -1)
+                                {
                                     contentPath = cursor.GetString(column);
+                                }
 
 
 
@@ -517,7 +559,9 @@ namespace Adapt.Presentation.AndroidPlatform
                                     {
                                         using (var input = context.ContentResolver.OpenInputStream(uri))
                                         using (Stream output = File.Create(outputPath.Path))
+                                        {
                                             input.CopyTo(output);
+                                        }
 
                                         contentPath = outputPath.Path;
                                     }

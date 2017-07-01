@@ -15,7 +15,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         {
 
             if (bestLocation == null)
+            {
                 return true;
+            }
 
             var timeDelta = location.Time - bestLocation.Time;
             var isSignificantlyNewer = timeDelta > TwoMinutes;
@@ -23,10 +25,14 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             var isNewer = timeDelta > 0;
 
             if (isSignificantlyNewer)
+            {
                 return true;
+            }
 
             if (isSignificantlyOlder)
+            {
                 return false;
+            }
 
             var accuracyDelta = (int)(location.Accuracy - bestLocation.Accuracy);
             var isLessAccurate = accuracyDelta > 0;
@@ -36,10 +42,14 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             var isFromSameProvider = IsSameProvider(location.Provider, bestLocation.Provider);
 
             if (isMoreAccurate)
+            {
                 return true;
+            }
 
             if (isNewer && !isLessAccurate)
+            {
                 return true;
+            }
 
             return isNewer && !isSignificantlyLessAccurage && isFromSameProvider;
         }
@@ -47,7 +57,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         private static bool IsSameProvider(string provider1, string provider2)
         {
             if (provider1 == null)
+            {
                 return provider2 == null;
+            }
 
             return provider1.Equals(provider2);
         }
@@ -56,13 +68,24 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         {
             var p = new Position();
             if (location.HasAccuracy)
+            {
                 p.Accuracy = location.Accuracy;
+            }
+
             if (location.HasAltitude)
+            {
                 p.Altitude = location.Altitude;
+            }
+
             if (location.HasBearing)
+            {
                 p.Heading = location.Bearing;
+            }
+
             if (location.HasSpeed)
+            {
                 p.Speed = location.Speed;
+            }
 
             p.Longitude = location.Longitude;
             p.Latitude = location.Latitude;

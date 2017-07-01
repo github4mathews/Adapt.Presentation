@@ -113,7 +113,9 @@ namespace Adapt.Presentation.AndroidPlatform
                 foreach (var permission in permissions)
                 {
                     if (_Results.ContainsKey(permission))
+                    {
                         continue;
+                    }
 
                     _Results.Add(permission, PermissionStatus.Unknown);
                 }
@@ -151,7 +153,9 @@ namespace Adapt.Presentation.AndroidPlatform
             }
 
             if (permissionsToRequest.Count == 0)
+            {
                 return _Results;
+            }
 
             _Tcs = new TaskCompletionSource<PermissionStatusDictionary>();
 
@@ -170,29 +174,41 @@ namespace Adapt.Presentation.AndroidPlatform
         public void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
         {
             if (requestCode != PermissionCode)
+            {
                 return;
+            }
 
             if (_Tcs == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < permissions.Length; i++)
             {
                 if (_Tcs.Task.Status == TaskStatus.Canceled)
+                {
                     return;
+                }
 
                 var permission = GetPermissionForManifestName(permissions[i]);
                 if (permission == Permission.Unknown)
+                {
                     continue;
+                }
 
                 lock (_Locker)
                 {
                     if (permission == Permission.Microphone)
                     {
                         if (!_Results.ContainsKey(Permission.Speech))
+                        {
                             _Results.Add(Permission.Speech, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                        }
                     }
                     if (!_Results.ContainsKey(permission))
+                    {
                         _Results.Add(permission, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                    }
                 }
             }
             _Tcs.SetResult(_Results);
@@ -248,102 +264,149 @@ namespace Adapt.Presentation.AndroidPlatform
                 case Permission.Calendar:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.ReadCalendar))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadCalendar);
+                        }
+
                         if (HasPermissionInManifest(Manifest.Permission.WriteCalendar))
+                        {
                             permissionNames.Add(Manifest.Permission.WriteCalendar);
+                        }
                     }
                     break;
                 case Permission.Camera:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.Camera))
+                        {
                             permissionNames.Add(Manifest.Permission.Camera);
+                        }
                     }
                     break;
                 case Permission.Contacts:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.ReadContacts))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadContacts);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.WriteContacts))
+                        {
                             permissionNames.Add(Manifest.Permission.WriteContacts);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.GetAccounts))
+                        {
                             permissionNames.Add(Manifest.Permission.GetAccounts);
+                        }
                     }
                     break;
                 case Permission.Location:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.AccessCoarseLocation))
+                        {
                             permissionNames.Add(Manifest.Permission.AccessCoarseLocation);
-
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.AccessFineLocation))
+                        {
                             permissionNames.Add(Manifest.Permission.AccessFineLocation);
+                        }
                     }
                     break;
                 case Permission.Speech:
                 case Permission.Microphone:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.RecordAudio))
+                        {
                             permissionNames.Add(Manifest.Permission.RecordAudio);
-
+                        }
                     }
                     break;
                 case Permission.Phone:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.ReadPhoneState))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadPhoneState);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.CallPhone))
+                        {
                             permissionNames.Add(Manifest.Permission.CallPhone);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReadCallLog))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadCallLog);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.WriteCallLog))
+                        {
                             permissionNames.Add(Manifest.Permission.WriteCallLog);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.AddVoicemail))
+                        {
                             permissionNames.Add(Manifest.Permission.AddVoicemail);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.UseSip))
+                        {
                             permissionNames.Add(Manifest.Permission.UseSip);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ProcessOutgoingCalls))
+                        {
                             permissionNames.Add(Manifest.Permission.ProcessOutgoingCalls);
+                        }
                     }
                     break;
                 case Permission.Sensors:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.BodySensors))
+                        {
                             permissionNames.Add(Manifest.Permission.BodySensors);
+                        }
                     }
                     break;
                 case Permission.Sms:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.SendSms))
+                        {
                             permissionNames.Add(Manifest.Permission.SendSms);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReceiveSms))
+                        {
                             permissionNames.Add(Manifest.Permission.ReceiveSms);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReadSms))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadSms);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReceiveWapPush))
+                        {
                             permissionNames.Add(Manifest.Permission.ReceiveWapPush);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReceiveMms))
+                        {
                             permissionNames.Add(Manifest.Permission.ReceiveMms);
+                        }
                     }
                     break;
                 case Permission.Storage:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.ReadExternalStorage))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadExternalStorage);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.WriteExternalStorage))
+                        {
                             permissionNames.Add(Manifest.Permission.WriteExternalStorage);
+                        }
                     }
                     break;
                 default:
@@ -358,7 +421,9 @@ namespace Adapt.Presentation.AndroidPlatform
             try
             {
                 if (_RequestedPermissions != null)
+                {
                     return _RequestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
+                }
 
                 //try to use current activity else application context
                 var context = CrossCurrentActivity.Current.Activity ?? app.Application.Context;
@@ -399,7 +464,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
             var context = CrossCurrentActivity.Current.Activity;
             if (context == null)
+            {
                 return false;
+            }
 
             try
             {

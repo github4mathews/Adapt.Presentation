@@ -18,7 +18,11 @@ namespace Adapt.Presentation.iOS
         {
             var sourceSize = sourceImage.Size;
             var maxResizeFactor = Math.Max(maxWidth / sourceSize.Width, maxHeight / sourceSize.Height);
-            if (maxResizeFactor > 1) return sourceImage;
+            if (maxResizeFactor > 1)
+            {
+                return sourceImage;
+            }
+
             var width = maxResizeFactor * sourceSize.Width;
             var height = maxResizeFactor * sourceSize.Height;
             UIGraphics.BeginImageContext(new CGSize(width, height));

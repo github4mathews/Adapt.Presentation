@@ -17,7 +17,9 @@ namespace Adapt.Presentation.AndroidPlatform
             RequestId = id;
             IsCanceled = isCanceled;
             if (!IsCanceled && media == null)
+            {
                 throw new ArgumentNullException(nameof(media));
+            }
 
             Media = media;
         }
@@ -51,11 +53,17 @@ namespace Adapt.Presentation.AndroidPlatform
             var tcs = new TaskCompletionSource<MediaFile>();
 
             if (IsCanceled)
+            {
                 tcs.SetResult(null);
+            }
             else if (Error != null)
+            {
                 tcs.SetException(Error);
+            }
             else
+            {
                 tcs.SetResult(Media);
+            }
 
             return tcs.Task;
         }

@@ -112,10 +112,14 @@ namespace Adapt.Presentation.UWP.Geolocator
             var timeoutMilliseconds = timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : Timeout.Infite;
 
             if (timeoutMilliseconds < 0 && timeoutMilliseconds != Timeout.Infite)
+            {
                 throw new ArgumentOutOfRangeException(nameof(timeout));
+            }
 
             if (!cancelToken.HasValue)
+            {
                 cancelToken = CancellationToken.None;
+            }
 
             var pos = GetGeolocator().GetGeopositionAsync(TimeSpan.FromTicks(0), TimeSpan.FromDays(365));
             cancelToken.Value.Register(o => ((IAsyncOperation<Geoposition>)o).Cancel(), pos);
@@ -140,7 +144,9 @@ namespace Adapt.Presentation.UWP.Geolocator
                     case AsyncStatus.Error:
                         var ex = op.ErrorCode;
                         if (ex is UnauthorizedAccessException)
+                        {
                             ex = new GeolocationException(GeolocationError.Unauthorized, ex);
+                        }
 
                         tcs.SetException(ex);
                         break;
@@ -163,7 +169,9 @@ namespace Adapt.Presentation.UWP.Geolocator
         {
 #if !WINDOWS_APP
             if (position == null)
+            {
                 return null;
+            }
 
             var queryResults =
                 await MapLocationFinder.FindLocationsAtAsync(
@@ -182,11 +190,19 @@ namespace Adapt.Presentation.UWP.Geolocator
         {
 
             if (minTime.TotalMilliseconds < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(minTime));
+            }
+
             if (minDistance < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(minDistance));
+            }
+
             if (IsListening)
+            {
                 throw new InvalidOperationException();
+            }
 
             IsListening = true;
 
@@ -205,7 +221,9 @@ namespace Adapt.Presentation.UWP.Geolocator
         public Task<bool> StopListeningAsync()
         {
             if (!IsListening)
+            {
                 return Task.FromResult(true);
+            }
 
             _Locator.PositionChanged -= OnLocatorPositionChanged;
             _Locator.StatusChanged -= OnLocatorStatusChanged;
@@ -284,13 +302,19 @@ namespace Adapt.Presentation.UWP.Geolocator
             };
 
             if (position.Coordinate.Heading != null)
+            {
                 pos.Heading = position.Coordinate.Heading.Value;
+            }
 
             if (position.Coordinate.Speed != null)
+            {
                 pos.Speed = position.Coordinate.Speed.Value;
+            }
 
             if (position.Coordinate.AltitudeAccuracy.HasValue)
+            {
                 pos.AltitudeAccuracy = position.Coordinate.AltitudeAccuracy.Value;
+            }
 
             pos.Altitude = position.Coordinate.Point.Position.Altitude;
 

@@ -50,7 +50,9 @@ namespace Adapt.Presentation.AndroidPlatform
                     var filePath = IoUtil.GetPath(ApplicationContext, uri);
 
                     if (string.IsNullOrEmpty(filePath))
+                    {
                         filePath = uri.Path;
+                    }
 
                     var file = IoUtil.ReadFile(filePath);
 

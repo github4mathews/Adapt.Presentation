@@ -11,17 +11,27 @@ namespace Adapt.Presentation.UWP.Geolocator
         public Timeout(int timeout, Action timesup)
         {
             if (timeout == Infite)
+            {
                 return; // nothing to do
+            }
+
             if (timeout < 0)
+            {
                 throw new ArgumentOutOfRangeException("timeoutMilliseconds");
+            }
+
             if (timesup == null)
+            {
                 throw new ArgumentNullException(nameof(timesup));
+            }
 
             Task.Delay(TimeSpan.FromMilliseconds(timeout), _Canceller.Token)
                 .ContinueWith(t =>
                 {
                     if (!t.IsCanceled)
+                    {
                         timesup();
+                    }
                 });
         }
 

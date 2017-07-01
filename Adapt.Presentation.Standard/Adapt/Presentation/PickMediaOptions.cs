@@ -26,11 +26,17 @@ namespace Adapt.Presentation
             set
             {
                 if (value > 100)
+                {
                     _CustomPhotoSize = 100;
+                }
                 else if (value < 1)
+                {
                     _CustomPhotoSize = 1;
+                }
                 else
+                {
                     _CustomPhotoSize = value;
+                }
             }
         }
 
@@ -46,11 +52,17 @@ namespace Adapt.Presentation
             set
             {
                 if (value > 100)
+                {
                     _Quality = 100;
+                }
                 else if (value < 0)
+                {
                     _Quality = 0;
+                }
                 else
+                {
                     _Quality = value;
+                }
             }
         }
     }

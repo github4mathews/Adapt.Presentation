@@ -53,7 +53,9 @@ namespace Adapt.Presentation.AndroidPlatform
             _IsCameraAvailable = _Context.PackageManager.HasSystemFeature(PackageManager.FeatureCamera);
 
             if (Build.VERSION.SdkInt >= BuildVersionCodes.Gingerbread)
+            {
                 _IsCameraAvailable |= _Context.PackageManager.HasSystemFeature(PackageManager.FeatureCameraFront);
+            }
         }
         #endregion
 
@@ -93,7 +95,9 @@ namespace Adapt.Presentation.AndroidPlatform
             var media = await TakeMediaAsync("image/*", Intent.ActionPick, null);
 
             if (options == null)
+            {
                 options = new PickMediaOptions();
+            }
 
             //check to see if we picked a file, and if so then try to fix orientation and resize
             if (string.IsNullOrWhiteSpace(media?.Path))
@@ -122,7 +126,9 @@ namespace Adapt.Presentation.AndroidPlatform
         public async Task<MediaFile> TakePhotoAsync(StoreCameraMediaOptions options)
         {
             if (!_IsCameraAvailable)
+            {
                 throw new NotSupportedException();
+            }
 
             if (!await RequestStoragePermission())
             {
@@ -135,7 +141,9 @@ namespace Adapt.Presentation.AndroidPlatform
             var media = await TakeMediaAsync("image/*", MediaStore.ActionImageCapture, options);
 
             if (string.IsNullOrWhiteSpace(media?.Path))
+            {
                 return media;
+            }
 
             if (options.SaveToAlbum)
             {
@@ -145,7 +153,9 @@ namespace Adapt.Presentation.AndroidPlatform
                     var publicUri = MediaPickerActivity.GetOutputMediaFile(_Context, options.Directory ?? "temp", fileName, true, true);
                     using (System.IO.Stream input = File.OpenRead(media.Path))
                     using (System.IO.Stream output = File.Create(publicUri.Path))
+                    {
                         input.CopyTo(output);
+                    }
 
                     media.AlbumPath = publicUri.Path;
 
@@ -222,7 +232,9 @@ namespace Adapt.Presentation.AndroidPlatform
         public async Task<MediaFile> TakeVideoAsync(StoreVideoOptions options)
         {
             if (!_IsCameraAvailable)
+            {
                 throw new NotSupportedException();
+            }
 
             if (!await RequestStoragePermission())
             {
@@ -240,7 +252,9 @@ namespace Adapt.Presentation.AndroidPlatform
         public Task<bool> ResizeAsync(string filePath, PhotoSize photoSize, int quality, int customPhotoSize)
         {
             if (string.IsNullOrWhiteSpace(filePath))
+            {
                 return Task.FromResult(false);
+            }
 
             try
             {
@@ -251,7 +265,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
 
                         if (photoSize == PhotoSize.Full)
+                        {
                             return false;
+                        }
 
                         var percent = 1.0f;
                         switch (photoSize)
@@ -337,7 +353,9 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             //We always have permission on anything lower than marshmallow.
             if ((int)Build.VERSION.SdkInt < 23)
+            {
                 return true;
+            }
 
             var status = await CurrentPermissions.CheckPermissionStatusAsync(Permission.Storage);
             if (status == PermissionStatus.Granted)
@@ -359,16 +377,24 @@ namespace Adapt.Presentation.AndroidPlatform
         private void VerifyOptions(StoreMediaOptions options)
         {
             if (options == null)
+            {
                 throw new ArgumentNullException(nameof(options));
+            }
+
             if (System.IO.Path.IsPathRooted(options.Directory))
+            {
                 throw new ArgumentException("options.Directory must be a relative path", nameof(options));
+            }
 
             if (!string.IsNullOrWhiteSpace(options.Name))
+            {
                 options.Name = Regex.Replace(options.Name, IllegalCharacters, string.Empty).Replace(@"\", string.Empty);
-
+            }
 
             if (!string.IsNullOrWhiteSpace(options.Directory))
+            {
                 options.Directory = Regex.Replace(options.Directory, IllegalCharacters, string.Empty).Replace(@"\", string.Empty);
+            }
         }
 
         private Intent CreateMediaIntent(int id, string type, string action, StoreMediaOptions options, bool tasked = true)
@@ -413,9 +439,13 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             var id = _RequestId;
             if (_RequestId == int.MaxValue)
+            {
                 _RequestId = 0;
+            }
             else
+            {
                 _RequestId++;
+            }
 
             return id;
         }
@@ -426,7 +456,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
             var ntcs = new TaskCompletionSource<MediaFile>(id);
             if (Interlocked.CompareExchange(ref _CompletionSource, ntcs, null) != null)
+            {
                 throw new InvalidOperationException("Only one operation can be active at a time");
+            }
 
             _Context.StartActivity(CreateMediaIntent(id, type, action, options));
 
@@ -437,14 +469,22 @@ namespace Adapt.Presentation.AndroidPlatform
                 MediaPickerActivity.MediaPicked -= Handler;
 
                 if (e.RequestId != id)
+                {
                     return;
+                }
 
                 if (e.IsCanceled)
+                {
                     tcs.SetResult(null);
+                }
                 else if (e.Error != null)
+                {
                     tcs.SetException(e.Error);
+                }
                 else
+                {
                     tcs.SetResult(e.Media);
+                }
             }
 
             MediaPickerActivity.MediaPicked += Handler;
@@ -458,7 +498,9 @@ namespace Adapt.Presentation.AndroidPlatform
         private Task<bool> FixOrientationAndResizeAsync(string filePath, PhotoSize photoSize, int quality, int customPhotoSize)
         {
             if (string.IsNullOrWhiteSpace(filePath))
+            {
                 return Task.FromResult(false);
+            }
 
             try
             {
@@ -479,7 +521,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
                         // if we don't need to rotate, aren't resizing, and aren't adjusting quality then simply return
                         if (rotation == 0 && photoSize == PhotoSize.Full && quality == 100)
+                        {
                             return false;
+                        }
 
                         var percent = 1.0f;
                         switch (photoSize)

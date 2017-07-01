@@ -107,7 +107,9 @@ namespace Adapt.Presentation.iOS
         public void DisplayPopover(bool hideFirst = false)
         {
             if (Popover == null)
+            {
                 return;
+            }
 
             var swidth = UIScreen.MainScreen.Bounds.Width;
             var sheight = UIScreen.MainScreen.Bounds.Height;
@@ -134,7 +136,9 @@ namespace Adapt.Presentation.iOS
             }
 
             if (hideFirst && Popover.PopoverVisible)
+            {
                 Popover.Dismiss(false);
+            }
 
             Popover.PresentFromRect(new CGRect(x, y, width, height), View, 0, true);
         }
@@ -189,23 +193,34 @@ namespace Adapt.Presentation.iOS
         {
             var device = (UIDevice)notice.Object;
             if (!IsValidInterfaceOrientation(device.Orientation) || Popover == null)
+            {
                 return;
+            }
+
             if (_Orientation.HasValue && IsSameOrientationKind(_Orientation.Value, device.Orientation))
+            {
                 return;
+            }
 
             if (UIDevice.CurrentDevice.CheckSystemVersion(6, 0))
             {
                 if (!GetShouldRotate6(device.Orientation))
+                {
                     return;
+                }
             }
             else if (!GetShouldRotate(device.Orientation))
+            {
                 return;
+            }
 
             var co = _Orientation;
             _Orientation = device.Orientation;
 
             if (co == null)
+            {
                 return;
+            }
 
             DisplayPopover(true);
         }
@@ -240,7 +255,9 @@ namespace Adapt.Presentation.iOS
         private bool GetShouldRotate6(UIDeviceOrientation orientation)
         {
             if (!_ViewController.ShouldAutorotate())
+            {
                 return false;
+            }
 
             UIInterfaceOrientationMask mask;
             switch (orientation)
@@ -395,14 +412,18 @@ namespace Adapt.Presentation.iOS
             var isPhoto = type == Media.TypeImage;
             var ext = Path.GetExtension(name);
             if (ext == string.Empty)
+            {
                 ext = isPhoto ? ".jpg" : ".mp4";
+            }
 
             name = Path.GetFileNameWithoutExtension(name);
 
             var nname = name + ext;
             var i = 1;
             while (File.Exists(Path.Combine(path, nname)))
+            {
                 nname = name + "_" + i++ + ext;
+            }
 
             return Path.Combine(path, nname);
         }
@@ -419,9 +440,13 @@ namespace Adapt.Presentation.iOS
 
             var timestamp = DateTime.Now.ToString("yyyMMdd_HHmmss", CultureInfo.InvariantCulture);
             if (type == Media.TypeImage)
+            {
                 name = "IMG_" + timestamp + ".jpg";
+            }
             else
+            {
                 name = "VID_" + timestamp + ".mp4";
+            }
 
             return Path.Combine(path, GetUniquePath(type, path, name));
         }

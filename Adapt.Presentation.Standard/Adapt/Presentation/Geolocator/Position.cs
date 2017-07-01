@@ -11,7 +11,9 @@ namespace Adapt.Presentation.Geolocator
         public Position(Position position)
         {
             if (position == null)
+            {
                 throw new ArgumentNullException(nameof(position));
+            }
 
             Timestamp = position.Timestamp;
             Latitude = position.Latitude;

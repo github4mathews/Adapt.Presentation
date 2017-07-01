@@ -34,7 +34,9 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             foreach (var p in providers)
             {
                 if (manager.IsProviderEnabled(p))
+                {
                     _ActiveProviders.Add(p);
+                }
             }
         }
 
@@ -67,22 +69,30 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         public void OnProviderDisabled(string provider)
         {
             if (provider == LocationManager.PassiveProvider)
+            {
                 return;
+            }
 
             lock (_ActiveProviders)
             {
                 if (_ActiveProviders.Remove(provider) && _ActiveProviders.Count == 0)
+                {
                     OnPositionError(new PositionErrorEventArgs(GeolocationError.PositionUnavailable));
+                }
             }
         }
 
         public void OnProviderEnabled(string provider)
         {
             if (provider == LocationManager.PassiveProvider)
+            {
                 return;
+            }
 
             lock (_ActiveProviders)
+            {
                 _ActiveProviders.Add(provider);
+            }
         }
 
         public void OnStatusChanged(string provider, Availability status, Bundle extras)

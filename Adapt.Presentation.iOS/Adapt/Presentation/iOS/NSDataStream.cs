@@ -32,6 +32,8 @@ namespace Adapt.Presentation.iOS
 
         protected override void Dispose(bool disposing)
         {
+            base.Dispose();
+
             if (_TheData == null)
             {
                 return;

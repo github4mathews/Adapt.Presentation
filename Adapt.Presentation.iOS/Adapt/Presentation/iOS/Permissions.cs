@@ -83,7 +83,9 @@ namespace Adapt.Presentation.iOS
             foreach (var permission in permissions)
             {
                 if (results.ContainsKey(permission))
+                {
                     continue;
+                }
 
                 switch (permission)
                 {
@@ -135,7 +137,9 @@ namespace Adapt.Presentation.iOS
                 }
 
                 if (!results.ContainsKey(permission))
+                {
                     results.Add(permission, PermissionStatus.Granted);
+                }
             }
 
             return results;
@@ -185,10 +189,14 @@ namespace Adapt.Presentation.iOS
         {
 
             if (ContactsPermissionStatus != PermissionStatus.Unknown)
+            {
                 return Task.FromResult(ContactsPermissionStatus);
+            }
 
             if (_AddressBook == null)
+            {
                 _AddressBook = new ABAddressBook();
+            }
 
             var tcs = new TaskCompletionSource<PermissionStatus>();
 
@@ -230,7 +238,9 @@ namespace Adapt.Presentation.iOS
             }
 
             if (_EventStore == null)
+            {
                 _EventStore = new EKEventStore();
+            }
 
             var results = await _EventStore.RequestAccessAsync(eventType).ConfigureAwait(false);
 
@@ -244,7 +254,9 @@ namespace Adapt.Presentation.iOS
         {
 
             if (LocationPermissionStatus != PermissionStatus.Unknown)
+            {
                 return Task.FromResult(LocationPermissionStatus);
+            }
 
             if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
             {
@@ -252,7 +264,9 @@ namespace Adapt.Presentation.iOS
             }
 
             if (_LocationManager == null)
+            {
                 _LocationManager = new CLLocationManager();
+            }
 
             EventHandler<CLAuthorizationChangedEventArgs> authCallback = null;
             var tcs = new TaskCompletionSource<PermissionStatus>();
@@ -260,7 +274,9 @@ namespace Adapt.Presentation.iOS
             authCallback = (sender, e) =>
                 {
                     if(e.Status == CLAuthorizationStatus.NotDetermined)
+                    {
                         return;
+                    }
 
                     _LocationManager.AuthorizationChanged -= authCallback;
                     tcs.SetResult(LocationPermissionStatus);
@@ -291,7 +307,9 @@ namespace Adapt.Presentation.iOS
             get
             {
                 if (!CLLocationManager.LocationServicesEnabled)
+                {
                     return PermissionStatus.Disabled;
+                }
 
                 var status = CLLocationManager.Status;
 
@@ -378,7 +396,9 @@ namespace Adapt.Presentation.iOS
         {
 
             if (PhotosPermissionStatus != PermissionStatus.Unknown)
+            {
                 return Task.FromResult(PhotosPermissionStatus);
+            }
 
             var tcs = new TaskCompletionSource<PermissionStatus>();
 
@@ -411,16 +431,22 @@ namespace Adapt.Presentation.iOS
         private async Task<PermissionStatus> RequestSensorsPermission()
         {
             if (CMMotionActivityManager.IsActivityAvailable)
+            {
                 return PermissionStatus.Granted;
+            }
 
             if (_ActivityManager == null)
+            {
                 _ActivityManager = new CMMotionActivityManager();
+            }
 
             try
             {
                 var results = await _ActivityManager.QueryActivityAsync(NSDate.DistantPast, NSDate.DistantFuture, NSOperationQueue.MainQueue).ConfigureAwait(false);
                 if(results != null)
+                {
                     return PermissionStatus.Granted;
+                }
             }
             catch(Exception ex)
             {
@@ -437,8 +463,9 @@ namespace Adapt.Presentation.iOS
         private Task<PermissionStatus> RequestSpeechPermission()
         {
             if (SpeechPermissionStatus != PermissionStatus.Unknown)
+            {
                 return Task.FromResult(SpeechPermissionStatus);
-
+            }
 
             if (!UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
@@ -493,7 +520,9 @@ namespace Adapt.Presentation.iOS
         {
             //Opening settings only open in iOS 8+
             if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+            {
                 return false;
+            }
 
             try
             {

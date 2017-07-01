@@ -74,7 +74,9 @@ namespace Adapt.Presentation.UWP
                     foreach (var device in info)
                     {
                         if (device.IsEnabled)
+                        {
                             _Devices.Add(device.Id);
+                        }
                     }
                 }
             }
@@ -92,7 +94,9 @@ namespace Adapt.Presentation.UWP
             await _InitializeTask;
 
             if (_Devices.Count == 0)
+            {
                 throw new NotSupportedException();
+            }
 
             options.VerifyOptions();
 
@@ -101,12 +105,15 @@ namespace Adapt.Presentation.UWP
             capture.PhotoSettings.MaxResolution = GetMaxResolution(options?.PhotoSize ?? PhotoSize.Full, options?.CustomPhotoSize ?? 100);
             //we can only disable cropping if resolution is set to max
             if (capture.PhotoSettings.MaxResolution == CameraCaptureUIMaxPhotoResolution.HighestAvailable)
+            {
                 capture.PhotoSettings.AllowCropping = options?.AllowCropping ?? true;
-
+            }
 
             var result = await capture.CaptureFileAsync(CameraCaptureUIMode.Photo);
             if (result == null)
+            {
                 return null;
+            }
 
             var folder = ApplicationData.Current.LocalFolder;
 
@@ -114,7 +121,9 @@ namespace Adapt.Presentation.UWP
             var directoryFull = Path.GetDirectoryName(path);
             var newFolder = directoryFull.Replace(folder.Path, string.Empty);
             if (!string.IsNullOrWhiteSpace(newFolder))
+            {
                 await folder.CreateFolderAsync(newFolder, CreationCollisionOption.OpenIfExists);
+            }
 
             folder = await StorageFolder.GetFolderFromPathAsync(directoryFull);
 
@@ -144,13 +153,21 @@ namespace Adapt.Presentation.UWP
             if (photoSize == PhotoSize.Custom)
             {
                 if (customPhotoSize <= 25)
+                {
                     photoSize = PhotoSize.Small;
+                }
                 else if (customPhotoSize <= 50)
+                {
                     photoSize = PhotoSize.Medium;
+                }
                 else if (customPhotoSize <= 75)
+                {
                     photoSize = PhotoSize.Large;
+                }
                 else
+                {
                     photoSize = PhotoSize.Large;
+                }
             }
             switch (photoSize)
             {
@@ -181,11 +198,15 @@ namespace Adapt.Presentation.UWP
             };
 
             foreach (var filter in SupportedImageFileTypes)
+            {
                 picker.FileTypeFilter.Add(filter);
+            }
 
             var result = await picker.PickSingleFileAsync();
             if (result == null)
+            {
                 return null;
+            }
 
             var aPath = result.Path;
             var path = result.Path;
@@ -215,7 +236,9 @@ namespace Adapt.Presentation.UWP
             await _InitializeTask;
 
             if (_Devices.Count == 0)
+            {
                 throw new NotSupportedException();
+            }
 
             options.VerifyOptions();
 
@@ -224,13 +247,17 @@ namespace Adapt.Presentation.UWP
             capture.VideoSettings.AllowTrimming = options?.AllowCropping ?? true;
 
             if (capture.VideoSettings.AllowTrimming)
+            {
                 capture.VideoSettings.MaxDurationInSeconds = (float)options.DesiredLength.TotalSeconds;
+            }
 
             capture.VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
 
             var result = await capture.CaptureFileAsync(CameraCaptureUIMode.Video);
             if (result == null)
+            {
                 return null;
+            }
 
             if (!(options?.SaveToAlbum ?? false))
             {
@@ -265,11 +292,15 @@ namespace Adapt.Presentation.UWP
             };
 
             foreach (var filter in SupportedVideoFileTypes)
+            {
                 picker.FileTypeFilter.Add(filter);
+            }
 
             var result = await picker.PickSingleFileAsync();
             if (result == null)
+            {
                 return null;
+            }
 
             var aPath = result.Path;
             var path = result.Path;
@@ -312,14 +343,20 @@ namespace Adapt.Presentation.UWP
         {
             object value;
             if (!update.Properties.TryGetValue("System.Devices.InterfaceEnabled", out value))
+            {
                 return;
+            }
 
             lock (_Devices)
             {
                 if ((bool)value)
+                {
                     _Devices.Add(update.Id);
+                }
                 else
+                {
                     _Devices.Remove(update.Id);
+                }
             }
         }
 
@@ -334,7 +371,9 @@ namespace Adapt.Presentation.UWP
         private void OnDeviceAdded(DeviceWatcher sender, DeviceInformation device)
         {
             if (!device.IsEnabled)
+            {
                 return;
+            }
 
             lock (_Devices)
             {

@@ -35,9 +35,13 @@ namespace Adapt.Presentation.AndroidPlatform
             var id = _RequestId;
 
             if (_RequestId == int.MaxValue)
+            {
                 _RequestId = 0;
+            }
             else
+            {
                 _RequestId++;
+            }
 
             return id;
         }
@@ -49,7 +53,9 @@ namespace Adapt.Presentation.AndroidPlatform
             var ntcs = new TaskCompletionSource<FileData>(id);
 
             if (Interlocked.CompareExchange(ref _CompletionSource, ntcs, null) != null)
+            {
                 throw new InvalidOperationException("Only one operation can be active at a time");
+            }
 
             try
             {
