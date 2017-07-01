@@ -29,7 +29,7 @@ namespace Adapt.Presentation.iOS
         : UIImagePickerController
     {
 
-        internal MediaPickerController(MediaPickerDelegate mpDelegate)
+        internal MediaPickerController(NSObject mpDelegate)
         {
             base.Delegate = mpDelegate;
         }

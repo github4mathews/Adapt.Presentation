@@ -18,20 +18,21 @@ namespace Adapt.Presentation.iOS.Geolocator
     /// Implementation for Geolocator
     /// </summary>
     [Preserve(AllMembers = true)]
-    public class GeolocatorImplementation : IGeolocator
+    public class Geolocator : IGeolocator
     {
+        #region Fields
         private bool deferringUpdates;
         private readonly CLLocationManager manager;
         private Position position;
         private ListenerSettings listenerSettings;
+        #endregion
 
-        public GeolocatorImplementation()
+        public Geolocator()
         {
             DesiredAccuracy = 100;
             manager = GetManager();
             manager.AuthorizationChanged += OnAuthorizationChanged;
             manager.Failed += OnFailed;
-
 
 #if __IOS__
             if (UIDevice.CurrentDevice.CheckSystemVersion(6, 0))
@@ -55,7 +56,7 @@ namespace Adapt.Presentation.iOS.Geolocator
 
 
 #if __IOS__
-        private bool CanDeferLocationUpdate => CLLocationManager.DeferredLocationUpdatesAvailable && UIDevice.CurrentDevice.CheckSystemVersion(6, 0);
+        private static bool CanDeferLocationUpdate => CLLocationManager.DeferredLocationUpdatesAvailable && UIDevice.CurrentDevice.CheckSystemVersion(6, 0);
 #elif __MACOS__
         bool CanDeferLocationUpdate => CLLocationManager.DeferredLocationUpdatesAvailable;
 #elif __TVOS__

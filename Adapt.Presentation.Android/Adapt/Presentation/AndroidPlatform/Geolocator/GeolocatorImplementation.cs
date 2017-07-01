@@ -19,33 +19,22 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     [Preserve(AllMembers = true)]
     public class GeolocatorImplementation : GeolocatorBase, IGeolocator
     {
+        #region Fields
         private LocationManager locationManager;
-
         private GeolocationContinuousListener listener;
-
         private readonly object positionSync = new object();
         private Position lastPosition;
-
-        /// <summary>
-        /// Default constructor
-        /// </summary>
-        public GeolocatorImplementation(IPermissions currentPermissions) : base(currentPermissions)
-        {
-            DesiredAccuracy = 100;
-        }
-
         private string[] Providers => Manager.GetProviders(false).ToArray();
-        private string[] IgnoredProviders => new string[] { LocationManager.PassiveProvider, "local_database" };
+        private LocationManager Manager => locationManager ?? (locationManager = (LocationManager)app.Application.Context.GetSystemService(Context.LocationService));
+        #endregion
 
-        private LocationManager Manager => locationManager ?? (locationManager = (LocationManager) app.Application.Context.GetSystemService(Context.LocationService));
+        #region Static Fields
+        private static IEnumerable<string> IgnoredProviders => new[] { LocationManager.PassiveProvider, "local_database" };
+        #endregion
 
-        /// <inheritdoc/>
-        public event EventHandler<PositionErrorEventArgs> PositionError;
-        /// <inheritdoc/>
-        public event EventHandler<PositionEventArgs> PositionChanged;
+        #region Public Properties
         /// <inheritdoc/>
         public bool IsListening => listener != null;
-
 
         /// <inheritdoc/>
         public double DesiredAccuracy
@@ -64,7 +53,24 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 
         /// <inheritdoc/>
         public bool IsGeolocationEnabled => Providers.Any(p => !IgnoredProviders.Contains(p) && Manager.IsProviderEnabled(p));
+        #endregion
 
+        #region Public Events
+        /// <inheritdoc/>
+        public event EventHandler<PositionErrorEventArgs> PositionError;
+        /// <inheritdoc/>
+        public event EventHandler<PositionEventArgs> PositionChanged;
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        public GeolocatorImplementation(IPermissions currentPermissions) : base(currentPermissions)
+        {
+            DesiredAccuracy = 100;
+        }
+        #endregion
 
         public async Task<Position> GetLastKnownLocationAsync()
         {
@@ -81,7 +87,6 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             }
 
             return bestLocation?.ToPosition();
-
         }
 
         private async Task<bool> CheckPermissions()
@@ -242,7 +247,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             var looper = Looper.MyLooper() ?? Looper.MainLooper;
             foreach (var provider in providers)
             {
-                Manager.RequestLocationUpdates(provider, (long) minTimeMilliseconds, (float) minDistance, listener, looper);
+                Manager.RequestLocationUpdates(provider, (long)minTimeMilliseconds, (float)minDistance, listener, looper);
             }
 
             return true;

@@ -35,10 +35,9 @@ namespace Adapt.Presentation
         /// <summary>
         /// Path
         /// </summary>
-        public string Path
+        private string Path
         {
             get;
-            private set;
         }
     }
 }

@@ -146,7 +146,7 @@ namespace Adapt.Presentation
         /// <summary>
         /// Get or set for an OverlayViewProvider
         /// </summary>
-        public Func<Object> OverlayViewProvider
+        public Func<object> OverlayViewProvider
         {
             get;
             set;
