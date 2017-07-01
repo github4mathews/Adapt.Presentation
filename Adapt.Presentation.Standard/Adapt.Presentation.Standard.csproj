@@ -78,6 +78,7 @@
     <Compile Include="Adapt\Presentation\MediaFileNotFoundException.cs" />
     <Compile Include="Adapt\Presentation\MediaStoreOptions.cs" />
     <Compile Include="Adapt\Presentation\PermissionEnums.cs" />
+    <Compile Include="Adapt\Presentation\XamlReader.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="project.json" />

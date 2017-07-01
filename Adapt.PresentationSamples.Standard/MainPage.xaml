@@ -5,9 +5,11 @@
             Title="Samples"
              x:Class="Adapt.PresentationSamples.MainPage">
     <!--Pages can be added as references or inline-->
+    
     <ContentPage Title="Camera" >
         <Button Margin="4" Text="Take Photo" x:Name="TakePhotoButton"  />
     </ContentPage>
+    
     <ContentPage Title="DateTimePicker" x:Name="DateTimePickerTab" >
         <Grid>
             <Grid.RowDefinitions>
@@ -35,6 +37,23 @@
             <Entry Text="Something"  />
 
         </controls:WrapLayout>
+    </ContentPage>
+
+
+    <ContentPage Title="Load XAML (Dynamic Rendering)" >
+        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60*" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="40*" />
+            </Grid.RowDefinitions>
+
+            <Editor x:Name="XAMLBox" />
+            <Button Text="Render" Grid.Row="1" x:Name="RenderButton" />
+            <ContentView x:Name="ContentBox" Grid.Row="2" />
+
+        </Grid>
     </ContentPage>
 
 </TabbedPage>
