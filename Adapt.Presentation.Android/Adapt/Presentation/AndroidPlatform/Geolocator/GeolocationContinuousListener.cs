@@ -26,7 +26,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         public event EventHandler<PositionEventArgs> PositionChanged;
         #endregion
 
-        public GeolocationContinuousListener(LocationManager manager, TimeSpan timePeriod, IList<string> providers)
+        public GeolocationContinuousListener(LocationManager manager, TimeSpan timePeriod, IEnumerable<string> providers)
         {
             _Manager = manager;
             _TimePeriod = timePeriod;

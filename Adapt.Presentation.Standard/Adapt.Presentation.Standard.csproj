@@ -64,10 +64,14 @@
     <Compile Include="Adapt\Presentation\FilePickerEventArgs.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\ActivityType.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\Address.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\GeolocationError.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\GeolocationException.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\IGeolocator.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\ListenerSettings.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\GeolocatorBase.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\Position.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\PositionErrorEventArgs.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\PositionEventArgs.cs" />
     <Compile Include="Adapt\Presentation\IFilePicker.cs" />
     <Compile Include="Adapt\Presentation\IMedia.cs" />
     <Compile Include="Adapt\Presentation\IPermissions.cs" />
@@ -78,6 +82,7 @@
     <Compile Include="Adapt\Presentation\MediaFileNotFoundException.cs" />
     <Compile Include="Adapt\Presentation\MediaStoreOptions.cs" />
     <Compile Include="Adapt\Presentation\PermissionEnums.cs" />
+    <Compile Include="Adapt\Presentation\StoreCameraMediaOptions.cs" />
     <Compile Include="Adapt\Presentation\XamlReader.cs" />
   </ItemGroup>
   <ItemGroup>
