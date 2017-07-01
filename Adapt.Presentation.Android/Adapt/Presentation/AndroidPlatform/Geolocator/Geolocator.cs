@@ -17,7 +17,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
     /// Implementation for Feature
     /// </summary>
     [Preserve(AllMembers = true)]
-    public class GeolocatorImplementation : GeolocatorBase, IGeolocator
+    public class Geolocator : GeolocatorBase, IGeolocator
     {
         #region Fields
         private LocationManager _LocationManager;
@@ -66,7 +66,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         /// <summary>
         /// Default constructor
         /// </summary>
-        public GeolocatorImplementation(IPermissions currentPermissions) : base(currentPermissions)
+        public Geolocator(IPermissions currentPermissions) : base(currentPermissions)
         {
             DesiredAccuracy = 100;
         }

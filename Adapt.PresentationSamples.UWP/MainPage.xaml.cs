@@ -1,4 +1,5 @@
 ﻿using Adapt.Presentation.UWP;
+using Adapt.Presentation.UWP.Geolocator;
 using samples = Adapt.PresentationSamples;
 
 namespace XamForms.UWP
@@ -9,7 +10,7 @@ namespace XamForms.UWP
         {
             InitializeComponent();
 
-            var app = new samples.App(new PresentationFactory(), new Permissions());
+            var app = new samples.App(new PresentationFactory(), new Permissions(), new Geolocator());
 
             LoadApplication(app);
         }

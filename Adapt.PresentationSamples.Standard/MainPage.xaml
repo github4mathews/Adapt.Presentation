@@ -56,4 +56,40 @@
         </Grid>
     </ContentPage>
 
+    <ContentPage Title="Geo Location (UWP Tested)" x:Name="GeoLocationTab" >
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="30" />
+                <RowDefinition Height="40" />
+            </Grid.RowDefinitions>
+
+            <StackLayout Orientation="Horizontal" >
+                <Label Text="Longitude: " />
+                <Label Text="{Binding Longitude}" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Grid.Row="1" >
+                <Label Text="Latitude: " />
+                <Label Text="{Binding Latitude}" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Grid.Row="2" >
+                <Label Text="Altitude: " />
+                <Label Text="{Binding Altitude}" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" Grid.Row="3" >
+                <Label Text="Accuracy: " />
+                <Label Text="{Binding Accuracy}" />
+            </StackLayout>
+
+            <Button x:Name="GetLocationButton" Text="Get Location" Grid.Row="4"></Button>
+
+        </Grid>
+    </ContentPage>
+
 </TabbedPage>
