@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Xamarin.Forms;
+using Xamarin.Forms.Xaml;
 
 namespace Adapt.Presentation
 {
@@ -19,7 +20,7 @@ namespace Adapt.Presentation
         private static void Initialise()
         {
             // This is the current situation, where the LoadFromXaml is the only non-public static method.
-            _FirstExtensionsMethods = typeof(Xamarin.Forms.Xaml.Extensions).GetMethods(BindingFlags.Static | BindingFlags.NonPublic).FirstOrDefault() ?? typeof(Xamarin.Forms.Xaml.Extensions).GetMethods(BindingFlags.Static | BindingFlags.Public).FirstOrDefault(m => m.GetParameters().Last().ParameterType == typeof(string));
+            _FirstExtensionsMethods = typeof(Extensions).GetMethods(BindingFlags.Static | BindingFlags.NonPublic).FirstOrDefault() ?? typeof(Xamarin.Forms.Xaml.Extensions).GetMethods(BindingFlags.Static | BindingFlags.Public).FirstOrDefault(m => m.GetParameters().Last().ParameterType == typeof(string));
 
             if (_FirstExtensionsMethods == null)
             {
@@ -31,9 +32,6 @@ namespace Adapt.Presentation
         #endregion
 
         #region Private Static Methods
-        /// <summary>
-        /// Applies the given XAML to the view.
-        /// </summary>
         private static TBindableObject Load<TBindableObject>(this TBindableObject view, string xaml) where TBindableObject : BindableObject
         {
             try
@@ -65,8 +63,11 @@ namespace Adapt.Presentation
 
         #region Public Static Methods
         /// <summary>
-        /// Applies the given XAML to the view.
+        /// Dynamically loads Xamarin Forms xaml in to a BindableObject of the type specified
         /// </summary>
+        /// <typeparam name="TBindableObject">This must be a type that inherits from BindableObject</typeparam>
+        /// <param name="xaml">Xamarin Forms XAML. Note: the root element must be of the same type specified in the <typeparamref name="TBindableObject"/> generic argument.</param>
+        /// <returns>The BindableObject visual tree</returns>
         public static TBindableObject Load<TBindableObject>(string xaml) where TBindableObject : BindableObject
         {
             if (string.IsNullOrEmpty(xaml)) throw new ArgumentNullException(nameof(xaml));
