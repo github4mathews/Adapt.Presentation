@@ -136,7 +136,7 @@ namespace Adapt.Presentation.UWP
             }
 
             var file = await result.CopyAsync(folder, filename, NameCollisionOption.GenerateUniqueName).AsTask();
-            return new MediaFile(file.Path, () => file.OpenStreamForReadAsync().Result, albumPath: aPath);
+            return new MediaFile(file.Path, () => file.OpenStreamForReadAsync().Result, aPath);
         }
 
         public static CameraCaptureUIMaxPhotoResolution GetMaxResolution(PhotoSize photoSize, int customPhotoSize)
@@ -204,7 +204,7 @@ namespace Adapt.Presentation.UWP
                 Debug.WriteLine("unable to save to app directory:" + ex);
             }
 
-            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, albumPath: aPath);
+            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, aPath);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Adapt.Presentation.UWP
             string aPath = null;
             if (!(options?.SaveToAlbum ?? false))
             {
-                return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, albumPath: aPath);
+                return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, aPath);
             }
 
             try
@@ -249,7 +249,7 @@ namespace Adapt.Presentation.UWP
                 Debug.WriteLine("unable to save to album:" + ex);
             }
 
-            return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, albumPath: aPath);
+            return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, aPath);
         }
 
         /// <summary>
@@ -288,7 +288,7 @@ namespace Adapt.Presentation.UWP
                 Debug.WriteLine("unable to save to app directory:" + ex);
             }
 
-            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, albumPath: aPath);
+            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, aPath);
         }
         #endregion
 

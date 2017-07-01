@@ -331,7 +331,7 @@ namespace Adapt.Presentation.iOS
             {
                 if (!options.SaveToAlbum)
                 {
-                    return new MediaFile(path, () => File.OpenRead(path), albumPath: aPath);
+                    return new MediaFile(path, () => File.OpenRead(path), aPath);
                 }
 
                 try
@@ -346,7 +346,7 @@ namespace Adapt.Presentation.iOS
                 }
             }
 
-            return new MediaFile(path, () => File.OpenRead(path), albumPath: aPath);
+            return new MediaFile(path, () => File.OpenRead(path), aPath);
         }
 
 
@@ -372,7 +372,7 @@ namespace Adapt.Presentation.iOS
             {
                 if (!options.SaveToAlbum)
                 {
-                    return new MediaFile(path, () => File.OpenRead(path), albumPath: aPath);
+                    return new MediaFile(path, () => File.OpenRead(path), aPath);
                 }
 
                 try
@@ -387,7 +387,7 @@ namespace Adapt.Presentation.iOS
                 }
             }
 
-            return new MediaFile(path, () => File.OpenRead(path), albumPath: aPath);
+            return new MediaFile(path, () => File.OpenRead(path), aPath);
         }
 
         private static string GetUniquePath(string type, string path, string name)

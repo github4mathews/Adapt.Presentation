@@ -35,7 +35,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             DesiredAccuracy = 100;
         }
 
-        private string[] Providers => Manager.GetProviders(enabledOnly: false).ToArray();
+        private string[] Providers => Manager.GetProviders(false).ToArray();
         private string[] IgnoredProviders => new string[] { LocationManager.PassiveProvider, "local_database" };
 
         private LocationManager Manager => locationManager ?? (locationManager = (LocationManager) app.Application.Context.GetSystemService(Context.LocationService));
@@ -129,7 +129,7 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
                 var providers = Providers;
                 GeolocationSingleListener singleListener = null;
                 singleListener = new GeolocationSingleListener(Manager, (float)DesiredAccuracy, timeoutMilliseconds, providers.Where(Manager.IsProviderEnabled),
-                    finishedCallback: () =>
+                    () =>
                 {
                     for (var i = 0; i < providers.Length; ++i)
                         Manager.RemoveUpdates(singleListener);

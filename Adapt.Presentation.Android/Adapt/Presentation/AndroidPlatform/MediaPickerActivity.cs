@@ -298,7 +298,7 @@ namespace Adapt.Presentation.AndroidPlatform
                     return new MediaPickedEventArgs(requestCode, new MediaFileNotFoundException(originalPath));
                 }
 
-                var mf = new MediaFile(resultPath, () => File.OpenRead(resultPath), albumPath: aPath);
+                var mf = new MediaFile(resultPath, () => File.OpenRead(resultPath), aPath);
                 return new MediaPickedEventArgs(requestCode, false, mf);
             });
         }
