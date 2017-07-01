@@ -44,7 +44,9 @@ namespace Adapt.Presentation
             get
             {
                 if (_IsDisposed)
+                {
                     throw new ObjectDisposedException(null);
+                }
 
                 return _Path;
             }
