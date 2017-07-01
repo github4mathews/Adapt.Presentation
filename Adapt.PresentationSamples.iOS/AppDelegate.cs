@@ -20,7 +20,7 @@ namespace Adapt.Presentation.iOS
 		public override bool FinishedLaunching(UIApplication app, NSDictionary options)
 		{
 			Xamarin.Forms.Forms.Init ();
-			LoadApplication (new App (new PresentationFactory(), new PermissionsImplementation()));
+			LoadApplication (new App (new PresentationFactory(), new Permissions()));
 
 			return base.FinishedLaunching (app, options);
 		}

@@ -18,7 +18,7 @@ namespace Adapt.Presentation.iOS
     /// <summary>
     /// Implementation for Permissions
     /// </summary>
-    public class PermissionsImplementation : IPermissions
+    public class Permissions : IPermissions
     {
         #region Fields
         private CLLocationManager _LocationManager;
