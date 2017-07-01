@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:controls="clr-namespace:Adapt.Presentation.Controls;assembly=Adapt.Presentation.Standard"
+            Title="Samples"
+             x:Class="Adapt.PresentationSamples.MainPage">
+    <!--Pages can be added as references or inline-->
+    <ContentPage Title="Camera" >
+        <Button Margin="4" Text="Take Photo" x:Name="TakePhotoButton"  />
+    </ContentPage>
+    <ContentPage Title="DateTimePicker" x:Name="DateTimePickerTab" >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50*" />
+                <RowDefinition Height="50*" />
+                <RowDefinition Height="50*" />
+            </Grid.RowDefinitions>
+
+            <Label Text="Notice this works with two way binding" />
+
+            <controls:DateTimePicker Value="{Binding TheDateTime}" Grid.Row="1" />
+
+            <Entry Text="{Binding TheDateTime, Mode=TwoWay}" Grid.Row="2" />
+
+        </Grid>
+    </ContentPage>
+
+    <ContentPage Title="WrapLayout" >
+        <controls:WrapLayout>
+
+            <Label Text="Some Text" />
+
+            <controls:DateTimePicker />
+
+            <Entry Text="Something"  />
+
+        </controls:WrapLayout>
+    </ContentPage>
+
+</TabbedPage>
