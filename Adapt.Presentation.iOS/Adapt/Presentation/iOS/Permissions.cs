@@ -78,9 +78,9 @@ namespace Adapt.Presentation.iOS
         /// </summary>
         /// <returns>The permissions and their status.</returns>
         /// <param name="permissions">Permissions to request.</param>
-        public async Task<Dictionary<Permission, PermissionStatus>> RequestPermissionsAsync(params Permission[] permissions)
+        public async Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions)
         {
-            var results = new Dictionary<Permission, PermissionStatus>();
+            var results = new PermissionStatusDictionary();
             foreach (var permission in permissions)
             {
                 if (results.ContainsKey(permission))
