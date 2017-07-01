@@ -1,3 +1,5 @@
+using System;
+
 namespace Adapt.Presentation
 {
     /// <summary>
