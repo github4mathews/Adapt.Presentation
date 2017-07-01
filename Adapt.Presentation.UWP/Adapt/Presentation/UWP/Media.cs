@@ -234,7 +234,7 @@ namespace Adapt.Presentation.UWP
 
             if (!(options?.SaveToAlbum ?? false))
             {
-                return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result);
+                return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, null);
             }
 
             string aPath = null;

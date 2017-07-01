@@ -30,7 +30,7 @@ namespace Adapt.Presentation
         /// <summary>
         /// Constructor
         /// </summary>
-        public MediaFile(string path, Func<Stream> streamGetter, string albumPath = null)
+        public MediaFile(string path, Func<Stream> streamGetter, string albumPath )
         {
             _StreamGetter = streamGetter;
             _Path = path;
@@ -60,14 +60,18 @@ namespace Adapt.Presentation
             get
             {
                 if (_IsDisposed)
+                {
                     throw new ObjectDisposedException(null);
+                }
 
                 return _AlbumPath;
             }
             set
             {
                 if (_IsDisposed)
+                {
                     throw new ObjectDisposedException(null);
+                }
 
                 _AlbumPath = value;
             }
@@ -80,7 +84,9 @@ namespace Adapt.Presentation
         public Stream GetStream()
         {
             if (_IsDisposed)
+            {
                 throw new ObjectDisposedException(null);
+            }
 
             return _StreamGetter();
         }
@@ -101,11 +107,15 @@ namespace Adapt.Presentation
         private void Dispose(bool disposing)
         {
             if (_IsDisposed)
+            {
                 return;
+            }
 
             _IsDisposed = true;
 			if(disposing)
-				_StreamGetter = null;
+            {
+                _StreamGetter = null;
+            }
         }
         /// <summary>
         /// 

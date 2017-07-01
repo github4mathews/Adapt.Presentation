@@ -331,7 +331,7 @@ namespace Adapt.Presentation.iOS
             {
                 if (!_Options.SaveToAlbum)
                 {
-                    return new MediaFile(path, () => File.OpenRead(path));
+                    return new MediaFile(path, () => File.OpenRead(path), null);
                 }
 
                 try
@@ -372,7 +372,7 @@ namespace Adapt.Presentation.iOS
             {
                 if (!_Options.SaveToAlbum)
                 {
-                    return new MediaFile(path, () => File.OpenRead(path));
+                    return new MediaFile(path, () => File.OpenRead(path), null);
                 }
 
                 try

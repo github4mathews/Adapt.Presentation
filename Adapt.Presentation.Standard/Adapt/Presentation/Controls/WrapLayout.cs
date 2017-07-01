@@ -47,14 +47,14 @@ namespace Adapt.Presentation.Controls
         protected override SizeRequest OnSizeRequest(double widthConstraint, double heightConstraint)
         {
 
-            NaiveLayout(widthConstraint, heightConstraint, out double lastX, out double lastY);
+            NaiveLayout(widthConstraint, out double lastX, out double lastY);
 
             return new SizeRequest(new Size(lastX, lastY));
         }
 
         protected override void LayoutChildren(double x, double y, double width, double height)
         {
-            var layout = NaiveLayout(width, height, out double lastX, out double lastY);
+            var layout = NaiveLayout(width, out double lastX, out double lastY);
 
             foreach (var t in layout)
             {
@@ -67,7 +67,7 @@ namespace Adapt.Presentation.Controls
             }
         }
 
-        private List<List<Tuple<View, Rectangle>>> NaiveLayout(double width, double height, out double lastX, out double lastY)
+        private List<List<Tuple<View, Rectangle>>> NaiveLayout(double width, out double lastX, out double lastY)
         {
             double startX = 0;
             double startY = 0;
