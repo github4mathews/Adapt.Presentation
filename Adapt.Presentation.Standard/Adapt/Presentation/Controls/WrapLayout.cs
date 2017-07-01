@@ -17,8 +17,10 @@ namespace Adapt.Presentation.Controls
         /// Backing Storage for the Spacing property
         /// </summary>
         public static readonly BindableProperty SpacingProperty =
+#pragma warning disable CS0618 // Type or member is obsolete
             BindableProperty.Create<WrapLayout, double>(w => w.Spacing, 5,
                 propertyChanged: (bindable, oldvalue, newvalue) => ((WrapLayout)bindable)._LayoutCache.Clear());
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Spacing added between elements (both directions)
@@ -45,17 +47,14 @@ namespace Adapt.Presentation.Controls
         protected override SizeRequest OnSizeRequest(double widthConstraint, double heightConstraint)
         {
 
-            double lastX;
-            double lastY;
-            NaiveLayout(widthConstraint, heightConstraint, out lastX, out lastY);
+            NaiveLayout(widthConstraint, heightConstraint, out double lastX, out double lastY);
 
             return new SizeRequest(new Size(lastX, lastY));
         }
 
         protected override void LayoutChildren(double x, double y, double width, double height)
         {
-            double lastX, lastY;
-            var layout = NaiveLayout(width, height, out lastX, out lastY);
+            var layout = NaiveLayout(width, height, out double lastX, out double lastY);
 
             foreach (var t in layout)
             {
@@ -83,10 +82,9 @@ namespace Adapt.Presentation.Controls
 
             foreach (var child in Children)
             {
-                SizeRequest sizeRequest;
-                if (!_LayoutCache.TryGetValue(child, out sizeRequest))
+                if (!_LayoutCache.TryGetValue(child, out SizeRequest sizeRequest))
                 {
-                    _LayoutCache[child] = sizeRequest = child.GetSizeRequest(double.PositiveInfinity, double.PositiveInfinity);
+                    _LayoutCache[child] = sizeRequest = child.Measure(double.PositiveInfinity, double.PositiveInfinity);
                 }
 
                 var paddedWidth = sizeRequest.Request.Width + Spacing;

@@ -16,6 +16,7 @@ namespace Adapt.Presentation.Controls
 
         #region Bindable Properties
         public static readonly BindableProperty ValueProperty =
+#pragma warning disable CS0618 // Type or member is obsolete
         BindableProperty.Create<DateTimePicker, DateTime>
         (
             p => p.Value,
@@ -23,6 +24,7 @@ namespace Adapt.Presentation.Controls
             BindingMode.TwoWay,
             propertyChanging: ValueChanging
         );
+#pragma warning restore CS0618 // Type or member is obsolete
 
         private static void ValueChanging(BindableObject bindable, DateTime oldValue, DateTime newValue)
         {
