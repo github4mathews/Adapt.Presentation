@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Adapt\Presentation\Behaviours\EditorValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EntryValidationBehaviour.cs" />
+    <Compile Include="Adapt\Presentation\CameraDevice.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
@@ -80,9 +81,14 @@
     <Compile Include="Adapt\Presentation\MediaExtensions.cs" />
     <Compile Include="Adapt\Presentation\MediaFile.cs" />
     <Compile Include="Adapt\Presentation\MediaFileNotFoundException.cs" />
-    <Compile Include="Adapt\Presentation\MediaStoreOptions.cs" />
-    <Compile Include="Adapt\Presentation\PermissionEnums.cs" />
+    <Compile Include="Adapt\Presentation\StoreMediaOptions.cs" />
+    <Compile Include="Adapt\Presentation\Permission.cs" />
+    <Compile Include="Adapt\Presentation\PermissionStatus.cs" />
+    <Compile Include="Adapt\Presentation\PhotoSize.cs" />
+    <Compile Include="Adapt\Presentation\PickMediaOptions.cs" />
     <Compile Include="Adapt\Presentation\StoreCameraMediaOptions.cs" />
+    <Compile Include="Adapt\Presentation\StoreVideoOptions.cs" />
+    <Compile Include="Adapt\Presentation\VideoQuality.cs" />
     <Compile Include="Adapt\Presentation\XamlReader.cs" />
   </ItemGroup>
   <ItemGroup>

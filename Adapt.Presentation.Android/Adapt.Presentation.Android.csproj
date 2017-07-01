@@ -58,11 +58,12 @@
     <Compile Include="Adapt\Presentation\AndroidPlatform\ICurrentActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\IOUtil.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Media.cs" />
-    <Compile Include="Adapt\Presentation\AndroidPlatform\MediaFile.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\MediaFileExtensions.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\MediaPickedEventArgs.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\MediaPickerActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Permissions.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\PresentationFactory.cs" />
-    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Resources\Resource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
