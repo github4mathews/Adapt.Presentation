@@ -25,10 +25,10 @@ namespace Adapt.Presentation.iOS.Geolocator
 
         public GeolocationSingleUpdateDelegate(CLLocationManager manager, double desiredAccuracy, bool includeHeading, int timeout, CancellationToken cancelToken)
         {
-            this._Manager = manager;
+            _Manager = manager;
             _Tcs = new TaskCompletionSource<Position>(manager);
-            this._DesiredAccuracy = desiredAccuracy;
-            this._IncludeHeading = includeHeading;
+            _DesiredAccuracy = desiredAccuracy;
+            _IncludeHeading = includeHeading;
 
             if (timeout != Timeout.Infinite)
             {

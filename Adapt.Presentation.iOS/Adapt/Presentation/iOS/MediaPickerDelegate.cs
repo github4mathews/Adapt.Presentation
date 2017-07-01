@@ -32,9 +32,9 @@ namespace Adapt.Presentation.iOS
     {
         internal MediaPickerDelegate(UIViewController viewController, UIImagePickerControllerSourceType sourceType, StoreCameraMediaOptions options)
         {
-            this._ViewController = viewController;
+            _ViewController = viewController;
             _Source = sourceType;
-            this._Options = options ?? new StoreCameraMediaOptions();
+            _Options = options ?? new StoreCameraMediaOptions();
 
             if (viewController == null)
             {

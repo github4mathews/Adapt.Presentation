@@ -23,8 +23,8 @@ namespace Adapt.Presentation.iOS
     {
         internal MediaPickerPopoverDelegate(MediaPickerDelegate pickerDelegate, UIImagePickerController picker)
         {
-            this._PickerDelegate = pickerDelegate;
-            this._Picker = picker;
+            _PickerDelegate = pickerDelegate;
+            _Picker = picker;
         }
 
         public override bool ShouldDismiss(UIPopoverController popoverController) => true;

@@ -5,18 +5,17 @@ using Android.OS;
 using System.Collections.Generic;
 using Android.Runtime;
 using Adapt.Presentation.Geolocator;
+using lang = Java.Lang;
 
 namespace Adapt.Presentation.AndroidPlatform.Geolocator
 {
     [Preserve(AllMembers = true)]
     internal class GeolocationContinuousListener
-      : Java.Lang.Object, ILocationListener
+      : lang.Object, ILocationListener
     {
         #region Fields
-        private IList<string> _Providers;
         private readonly HashSet<string> _ActiveProviders = new HashSet<string>();
         private readonly LocationManager _Manager;
-
         private string _ActiveProvider;
         private Location _LastLocation;
         private TimeSpan _TimePeriod;
@@ -29,9 +28,8 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 
         public GeolocationContinuousListener(LocationManager manager, TimeSpan timePeriod, IList<string> providers)
         {
-            this._Manager = manager;
-            this._TimePeriod = timePeriod;
-            this._Providers = providers;
+            _Manager = manager;
+            _TimePeriod = timePeriod;
 
             foreach (var p in providers)
             {

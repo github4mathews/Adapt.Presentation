@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Adapt.Presentation.Geolocator
+﻿namespace Adapt.Presentation.Geolocator
 {
     public class Address
     {

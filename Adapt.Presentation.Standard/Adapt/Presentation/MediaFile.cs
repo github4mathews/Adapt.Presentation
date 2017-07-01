@@ -32,9 +32,9 @@ namespace Adapt.Presentation
         /// </summary>
         public MediaFile(string path, Func<Stream> streamGetter, string albumPath = null)
         {
-            this._StreamGetter = streamGetter;
-            this._Path = path;
-            this._AlbumPath = albumPath;
+            _StreamGetter = streamGetter;
+            _Path = path;
+            _AlbumPath = albumPath;
         }
         /// <summary>
         /// Path to file

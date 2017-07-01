@@ -25,10 +25,10 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
 
         public GeolocationSingleListener(LocationManager manager, float desiredAccuracy, int timeout, IEnumerable<string> activeProviders, Action finishedCallback)
         {
-            this._DesiredAccuracy = desiredAccuracy;
-            this._FinishedCallback = finishedCallback;
+            _DesiredAccuracy = desiredAccuracy;
+            _FinishedCallback = finishedCallback;
 
-            this._ActiveProviders = new HashSet<string>(activeProviders);
+            _ActiveProviders = new HashSet<string>(activeProviders);
 
             foreach(var provider in activeProviders)
             {
