@@ -432,7 +432,7 @@ namespace Adapt.Presentation.AndroidPlatform
             var nname = name + ext;
             var i = 1;
             while (File.Exists(Path.Combine(folder, nname)))
-                nname = name + "_" + (i++) + ext;
+                nname = name + "_" + i++ + ext;
 
             return Path.Combine(folder, nname);
         }

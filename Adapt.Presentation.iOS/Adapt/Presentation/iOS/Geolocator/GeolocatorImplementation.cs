@@ -419,7 +419,7 @@ namespace Adapt.Presentation.iOS.Geolocator
             if (e.NewHeading.TrueHeading == -1)
                 return;
 
-            var p = (position == null) ? new Position() : new Position(position);
+            var p = position == null ? new Position() : new Position(position);
 
             p.Heading = e.NewHeading.TrueHeading;
 
@@ -453,7 +453,7 @@ namespace Adapt.Presentation.iOS.Geolocator
 
         private void UpdatePosition(CLLocation location)
         {
-            var p = (position == null) ? new Position() : new Position(position);
+            var p = position == null ? new Position() : new Position(position);
 
             if (location.HorizontalAccuracy > -1)
             {

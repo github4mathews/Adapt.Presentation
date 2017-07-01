@@ -124,13 +124,13 @@ namespace Adapt.Presentation.iOS
             nfloat x, y;
             if (orientation == UIDeviceOrientation.LandscapeLeft || orientation == UIDeviceOrientation.LandscapeRight)
             {
-                y = (swidth / 2) - (height / 2);
-                x = (sheight / 2) - (width / 2);
+                y = swidth / 2 - height / 2;
+                x = sheight / 2 - width / 2;
             }
             else
             {
-                x = (swidth / 2) - (width / 2);
-                y = (sheight / 2) - (height / 2);
+                x = swidth / 2 - width / 2;
+                y = sheight / 2 - height / 2;
             }
 
             if (hideFirst && Popover.PopoverVisible)
@@ -402,7 +402,7 @@ namespace Adapt.Presentation.iOS
             var nname = name + ext;
             var i = 1;
             while (File.Exists(Path.Combine(path, nname)))
-                nname = name + "_" + (i++) + ext;
+                nname = name + "_" + i++ + ext;
 
             return Path.Combine(path, nname);
         }

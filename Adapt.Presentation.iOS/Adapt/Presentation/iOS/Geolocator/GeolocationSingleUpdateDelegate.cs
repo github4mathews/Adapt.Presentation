@@ -122,7 +122,7 @@ namespace Adapt.Presentation.iOS.Geolocator
             }
             haveLocation = true;
 
-            if ((includeHeading && !haveHeading) || !(position.Accuracy <= desiredAccuracy))
+            if (includeHeading && !haveHeading || !(position.Accuracy <= desiredAccuracy))
             {
                 return;
             }

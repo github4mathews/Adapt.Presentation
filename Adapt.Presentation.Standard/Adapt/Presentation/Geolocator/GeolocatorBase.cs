@@ -2,9 +2,9 @@
 {
     public class GeolocatorBase
     {
-        public IPermissions CurrentPermissions { get; private set; }
+        protected IPermissions CurrentPermissions { get; }
 
-        public GeolocatorBase(IPermissions currentPermissions)
+        protected GeolocatorBase(IPermissions currentPermissions)
         {
             CurrentPermissions = currentPermissions;
         }

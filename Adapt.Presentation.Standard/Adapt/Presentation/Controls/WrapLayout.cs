@@ -26,8 +26,8 @@ namespace Adapt.Presentation.Controls
         /// <value>The spacing.</value>
         public double Spacing
         {
-            get { return (double)GetValue(SpacingProperty); }
-            set { SetValue(SpacingProperty, value); }
+            get => (double)GetValue(SpacingProperty);
+            set => SetValue(SpacingProperty, value);
         }
 
         public WrapLayout()

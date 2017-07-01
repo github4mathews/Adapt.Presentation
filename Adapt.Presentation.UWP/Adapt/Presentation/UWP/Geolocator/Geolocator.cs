@@ -83,11 +83,11 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// </summary>
         public double DesiredAccuracy
         {
-            get { return desiredAccuracy; }
+            get => desiredAccuracy;
             set
             {
                 desiredAccuracy = value;
-                GetGeolocator().DesiredAccuracy = (value < 100) ? PositionAccuracy.High : PositionAccuracy.Default;
+                GetGeolocator().DesiredAccuracy = value < 100 ? PositionAccuracy.High : PositionAccuracy.Default;
             }
         }
 

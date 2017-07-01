@@ -65,7 +65,7 @@ namespace Adapt.Presentation.iOS
                 case Permission.Reminders:
                     return Task.FromResult(GetEventPermissionStatus(EKEntityType.Reminder));
                 case Permission.Sensors:
-                    return Task.FromResult((CMMotionActivityManager.IsActivityAvailable ? PermissionStatus.Granted : PermissionStatus.Denied));
+                    return Task.FromResult(CMMotionActivityManager.IsActivityAvailable ? PermissionStatus.Granted : PermissionStatus.Denied);
                 case Permission.Speech:
                     return Task.FromResult(SpeechPermissionStatus);
             }
@@ -94,7 +94,7 @@ namespace Adapt.Presentation.iOS
                         try
                         {
                             var authCamera = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaType.Video).ConfigureAwait(false);
-                            results.Add(permission, (authCamera ? PermissionStatus.Granted : PermissionStatus.Denied));
+                            results.Add(permission, authCamera ? PermissionStatus.Granted : PermissionStatus.Denied);
                         }
                         catch(Exception ex)
                         {
@@ -112,7 +112,7 @@ namespace Adapt.Presentation.iOS
                         try
                         {
                             var authMic = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaType.Audio).ConfigureAwait(false);
-                            results.Add(permission, (authMic ? PermissionStatus.Granted : PermissionStatus.Denied));
+                            results.Add(permission, authMic ? PermissionStatus.Granted : PermissionStatus.Denied);
                         }
                         catch(Exception ex)
                         {
@@ -197,7 +197,7 @@ namespace Adapt.Presentation.iOS
 
             addressBook.RequestAccess((success, error) =>
                 {
-                    tcs.SetResult((success ? PermissionStatus.Granted : PermissionStatus.Denied));
+                    tcs.SetResult(success ? PermissionStatus.Granted : PermissionStatus.Denied);
                 });
 
             return tcs.Task;

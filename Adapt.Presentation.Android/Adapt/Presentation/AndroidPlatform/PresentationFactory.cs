@@ -5,7 +5,8 @@ namespace Adapt.Presentation.AndroidPlatform
     public class PresentationFactory : IPresentationFactory
     {
         #region Public Properties
-        public Context Context { get; private set; }
+
+        private Context Context { get; }
         #endregion
 
         #region Constructor
