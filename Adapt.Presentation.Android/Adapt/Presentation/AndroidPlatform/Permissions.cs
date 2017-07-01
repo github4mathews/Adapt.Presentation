@@ -19,8 +19,8 @@ namespace Adapt.Presentation.AndroidPlatform
         #region Fields
 
         private readonly object _Locker = new object();
-        private TaskCompletionSource<Dictionary<Permission, PermissionStatus>> _Tcs;
-        private Dictionary<Permission, PermissionStatus> _Results;
+        private TaskCompletionSource<PermissionStatusDictionary> _Tcs;
+        private PermissionStatusDictionary _Results;
         private IList<string> _RequestedPermissions;
         #endregion
 
@@ -95,7 +95,7 @@ namespace Adapt.Presentation.AndroidPlatform
         /// </summary>
         /// <returns>The permissions and their status.</returns>
         /// <param name="permissions">Permissions to request.</param>
-        public async Task<Dictionary<Permission, PermissionStatus>> RequestPermissionsAsync(params Permission[] permissions)
+        public async Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions)
         {
             if (_Tcs != null && !_Tcs.Task.IsCompleted)
             {
@@ -104,7 +104,7 @@ namespace Adapt.Presentation.AndroidPlatform
             }
             lock (_Locker)
             {
-                _Results = new Dictionary<Permission, PermissionStatus>();
+                _Results = new PermissionStatusDictionary();
             }
             var activity = CrossCurrentActivity.Current.Activity;
             if (activity == null)
@@ -153,7 +153,7 @@ namespace Adapt.Presentation.AndroidPlatform
             if (permissionsToRequest.Count == 0)
                 return _Results;
 
-            _Tcs = new TaskCompletionSource<Dictionary<Permission, PermissionStatus>>();
+            _Tcs = new TaskCompletionSource<PermissionStatusDictionary>();
 
             ActivityCompat.RequestPermissions(activity, permissionsToRequest.ToArray(), PermissionCode);
 
