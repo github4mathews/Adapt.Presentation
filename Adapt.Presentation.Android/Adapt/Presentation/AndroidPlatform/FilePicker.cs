@@ -75,7 +75,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                     FilePickerActivity.FilePicked -= handler;
 
-                    Stream fileStream = isSave ? File.OpenRead(e.FilePath) : File.OpenWrite(e.FilePath);
+                    var fileStream = isSave ? File.OpenWrite(e.FilePath) : File.OpenRead(e.FilePath);
 
                     tcs?.SetResult(new FileData { FileName = e.FileName, FileStream = fileStream });
                 };
