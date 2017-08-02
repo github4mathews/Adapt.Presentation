@@ -8,17 +8,17 @@ using Android.Webkit;
 
 namespace Adapt.Presentation.AndroidPlatform
 {
-    public class IOUtil
+    public class IoUtil
     {
 
-        public static string getPath (Context context, Android.Net.Uri uri)
+        public static string GetPath (Context context, Android.Net.Uri uri)
         {
             var isKitKat = Build.VERSION.SdkInt >= BuildVersionCodes.Kitkat;
 
             // DocumentProvider
             if (isKitKat && DocumentsContract.IsDocumentUri (context, uri)) {
                 // ExternalStorageProvider
-                if (isExternalStorageDocument (uri)) {
+                if (IsExternalStorageDocument (uri)) {
                     var docId = DocumentsContract.GetDocumentId (uri);
                     var split = docId.Split (':');
                     var type = split [0];
@@ -30,16 +30,16 @@ namespace Adapt.Presentation.AndroidPlatform
                     // TODO handle non-primary volumes
                 }
                 // DownloadsProvider
-                else if (isDownloadsDocument (uri)) {
+                else if (IsDownloadsDocument (uri)) {
 
                     var id = DocumentsContract.GetDocumentId (uri);
                     var contentUri = ContentUris.WithAppendedId (
                             Android.Net.Uri.Parse ("content://downloads/public_downloads"), long.Parse (id));
 
-                    return getDataColumn (context, contentUri, null, null);
+                    return GetDataColumn (context, contentUri, null, null);
                 }
                 // MediaProvider
-                else if (isMediaDocument (uri)) {
+                else if (IsMediaDocument (uri)) {
                     var docId = DocumentsContract.GetDocumentId (uri);
                     var split = docId.Split (':');
                     var type = split [0];
@@ -53,17 +53,17 @@ namespace Adapt.Presentation.AndroidPlatform
                         contentUri = MediaStore.Audio.Media.ExternalContentUri;
                     }
 
-                    var selection = "_id=?";
+                    const string selection = "_id=?";
                     var selectionArgs = new[] {
                         split[1]
                     };
 
-                    return getDataColumn (context, contentUri, selection, selectionArgs);
+                    return GetDataColumn (context, contentUri, selection, selectionArgs);
                 }
             }
             // MediaStore (and general)
             else if ("content".Equals (uri.Scheme, StringComparison.OrdinalIgnoreCase)) {
-                return getDataColumn (context, uri, null, null);
+                return GetDataColumn (context, uri, null, null);
             }
             // File
             else if ("file".Equals (uri.Scheme, StringComparison.OrdinalIgnoreCase)) {
@@ -73,11 +73,11 @@ namespace Adapt.Presentation.AndroidPlatform
             return null;
         }
 
-        private static string getDataColumn (Context context, Android.Net.Uri uri, string selection, string [] selectionArgs)
+        private static string GetDataColumn (Context context, Android.Net.Uri uri, string selection, string [] selectionArgs)
         {
 
             ICursor cursor = null;
-            var column = "_data";
+            const string column = "_data";
             string [] projection = {
                 column
             };
@@ -86,8 +86,8 @@ namespace Adapt.Presentation.AndroidPlatform
                 cursor = context.ContentResolver.Query (uri, projection, selection, selectionArgs,
                         null);
                 if (cursor != null && cursor.MoveToFirst ()) {
-                    var column_index = cursor.GetColumnIndexOrThrow (column);
-                    return cursor.GetString (column_index);
+                    var columnIndex = cursor.GetColumnIndexOrThrow (column);
+                    return cursor.GetString (columnIndex);
                 }
             } finally
             {
@@ -100,7 +100,7 @@ namespace Adapt.Presentation.AndroidPlatform
          * @param uri The Uri to check.
          * @return Whether the Uri authority is ExternalStorageProvider.
          */
-        public static bool isExternalStorageDocument (Android.Net.Uri uri)
+        public static bool IsExternalStorageDocument (Android.Net.Uri uri)
         {
             return "com.android.externalstorage.documents".Equals (uri.Authority);
         }
@@ -109,7 +109,7 @@ namespace Adapt.Presentation.AndroidPlatform
          * @param uri The Uri to check.
          * @return Whether the Uri authority is DownloadsProvider.
          */
-        public static bool isDownloadsDocument (Android.Net.Uri uri)
+        public static bool IsDownloadsDocument (Android.Net.Uri uri)
         {
             return "com.android.providers.downloads.documents".Equals (uri.Authority);
         }
@@ -118,22 +118,22 @@ namespace Adapt.Presentation.AndroidPlatform
          * @param uri The Uri to check.
          * @return Whether the Uri authority is MediaProvider.
          */
-        public static bool isMediaDocument (Android.Net.Uri uri)
+        public static bool IsMediaDocument (Android.Net.Uri uri)
         {
             return "com.android.providers.media.documents".Equals (uri.Authority);
         }
 
-        public static byte [] readFile (string file)
+        public static byte [] ReadFile (string file)
         {
             try {
-                return readFile (new File (file));
+                return ReadFile (new File (file));
             } catch (Exception ex) {
                 System.Diagnostics.Debug.Write (ex);
                 return new byte [0];
             }
         }
 
-        public static byte [] readFile (File file)
+        public static byte [] ReadFile (File file)
         {
             // Open file
             var f = new RandomAccessFile (file, "r");
@@ -144,7 +144,9 @@ namespace Adapt.Presentation.AndroidPlatform
                 var length = (int)longlength;
 
                 if (length != longlength)
+                {
                     throw new IOException ("Filesize exceeds allowed size");
+                }
                 // Read file and return data
                 var data = new byte [length];
                 f.ReadFully (data);

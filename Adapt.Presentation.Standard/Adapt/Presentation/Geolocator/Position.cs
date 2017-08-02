@@ -11,7 +11,9 @@ namespace Adapt.Presentation.Geolocator
         public Position(Position position)
         {
             if (position == null)
+            {
                 throw new ArgumentNullException(nameof(position));
+            }
 
             Timestamp = position.Timestamp;
             Latitude = position.Latitude;
@@ -94,107 +96,5 @@ namespace Adapt.Presentation.Geolocator
             get;
             set;
         }
-    }
-
-    /// <summary>
-    /// Position args
-    /// </summary>
-    public class PositionEventArgs
-      : EventArgs
-    {
-        /// <summary>
-        /// Position args
-        /// </summary>
-        public PositionEventArgs(Position position)
-        {
-            Position = position ?? throw new ArgumentNullException(nameof(position));
-        }
-
-        /// <summary>
-        /// The Position
-        /// </summary>
-        public Position Position
-        {
-            get;
-        }
-    }
-
-    /// <summary>
-    /// Location exception
-    /// </summary>
-    public class GeolocationException
-      : Exception
-    {
-        /// <summary>
-        /// Location exception
-        /// </summary>
-        public GeolocationException(GeolocationError error)
-          : base("A geolocation error occured: " + error)
-        {
-            if (!Enum.IsDefined(typeof(GeolocationError), error))
-                throw new ArgumentException("error is not a valid GelocationError member", nameof(error));
-
-            Error = error;
-        }
-
-        /// <summary>
-        /// Geolocation error
-        /// </summary>
-        public GeolocationException(GeolocationError error, Exception innerException)
-          : base("A geolocation error occured: " + error, innerException)
-        {
-            if (!Enum.IsDefined(typeof(GeolocationError), error))
-                throw new ArgumentException("error is not a valid GelocationError member", nameof(error));
-
-            Error = error;
-        }
-
-        //The error
-        public GeolocationError Error
-        {
-            get;
-            private set;
-        }
-    }
-
-    /// <summary>
-    /// Error ARgs
-    /// </summary>
-    public class PositionErrorEventArgs
-      : EventArgs
-    {
-        /// <summary>
-        /// Constructor for event error args
-        /// </summary>
-        /// <param name="error"></param>
-        public PositionErrorEventArgs(GeolocationError error)
-        {
-            Error = error;
-        }
-
-        /// <summary>
-        /// The Error
-        /// </summary>
-        public GeolocationError Error
-        {
-            get;
-            private set;
-        }
-    }
-
-    /// <summary>
-    /// Error for geolocator
-    /// </summary>
-    public enum GeolocationError
-    {
-        /// <summary>
-        /// The provider was unable to retrieve any position data.
-        /// </summary>
-        PositionUnavailable,
-
-        /// <summary>
-        /// The app is not, or no longer, authorized to receive location data.
-        /// </summary>
-        Unauthorized
     }
 }

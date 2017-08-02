@@ -21,7 +21,7 @@ namespace Adapt.Presentation.UWP
         #endregion
 
         #region Private Fields
-        private Task InitializeTask;
+        private readonly Task _InitializeTask;
         private readonly HashSet<string> _Devices = new HashSet<string>();
         #endregion
 
@@ -46,7 +46,7 @@ namespace Adapt.Presentation.UWP
         /// </summary>
         public Media()
         {
-            InitializeTask = InitializeAsync();
+            _InitializeTask = InitializeAsync();
 
             var watcher = DeviceInformation.CreateWatcher(DeviceClass.VideoCapture);
             watcher.Added += OnDeviceAdded;
@@ -59,7 +59,7 @@ namespace Adapt.Presentation.UWP
         #region Public Methods
         public async Task<bool> GetIsCameraAvailable()
         {
-            await InitializeTask;
+            await _InitializeTask;
             return _Devices.Count > 0;
         }
 
@@ -74,7 +74,9 @@ namespace Adapt.Presentation.UWP
                     foreach (var device in info)
                     {
                         if (device.IsEnabled)
+                        {
                             _Devices.Add(device.Id);
+                        }
                     }
                 }
             }
@@ -89,10 +91,12 @@ namespace Adapt.Presentation.UWP
         /// </summary>
         public async Task<MediaFile> TakePhotoAsync(StoreCameraMediaOptions options)
         {
-            await InitializeTask;
+            await _InitializeTask;
 
             if (_Devices.Count == 0)
+            {
                 throw new NotSupportedException();
+            }
 
             options.VerifyOptions();
 
@@ -101,12 +105,15 @@ namespace Adapt.Presentation.UWP
             capture.PhotoSettings.MaxResolution = GetMaxResolution(options?.PhotoSize ?? PhotoSize.Full, options?.CustomPhotoSize ?? 100);
             //we can only disable cropping if resolution is set to max
             if (capture.PhotoSettings.MaxResolution == CameraCaptureUIMaxPhotoResolution.HighestAvailable)
+            {
                 capture.PhotoSettings.AllowCropping = options?.AllowCropping ?? true;
-
+            }
 
             var result = await capture.CaptureFileAsync(CameraCaptureUIMode.Photo);
             if (result == null)
+            {
                 return null;
+            }
 
             var folder = ApplicationData.Current.LocalFolder;
 
@@ -114,7 +121,9 @@ namespace Adapt.Presentation.UWP
             var directoryFull = Path.GetDirectoryName(path);
             var newFolder = directoryFull.Replace(folder.Path, string.Empty);
             if (!string.IsNullOrWhiteSpace(newFolder))
+            {
                 await folder.CreateFolderAsync(newFolder, CreationCollisionOption.OpenIfExists);
+            }
 
             folder = await StorageFolder.GetFolderFromPathAsync(directoryFull);
 
@@ -136,7 +145,7 @@ namespace Adapt.Presentation.UWP
             }
 
             var file = await result.CopyAsync(folder, filename, NameCollisionOption.GenerateUniqueName).AsTask();
-            return new MediaFile(file.Path, () => file.OpenStreamForReadAsync().Result, albumPath: aPath);
+            return new MediaFile(file.Path, () => file.OpenStreamForReadAsync().Result, aPath);
         }
 
         public static CameraCaptureUIMaxPhotoResolution GetMaxResolution(PhotoSize photoSize, int customPhotoSize)
@@ -144,13 +153,21 @@ namespace Adapt.Presentation.UWP
             if (photoSize == PhotoSize.Custom)
             {
                 if (customPhotoSize <= 25)
+                {
                     photoSize = PhotoSize.Small;
+                }
                 else if (customPhotoSize <= 50)
+                {
                     photoSize = PhotoSize.Medium;
+                }
                 else if (customPhotoSize <= 75)
+                {
                     photoSize = PhotoSize.Large;
+                }
                 else
+                {
                     photoSize = PhotoSize.Large;
+                }
             }
             switch (photoSize)
             {
@@ -181,11 +198,15 @@ namespace Adapt.Presentation.UWP
             };
 
             foreach (var filter in SupportedImageFileTypes)
+            {
                 picker.FileTypeFilter.Add(filter);
+            }
 
             var result = await picker.PickSingleFileAsync();
             if (result == null)
+            {
                 return null;
+            }
 
             var aPath = result.Path;
             var path = result.Path;
@@ -204,7 +225,7 @@ namespace Adapt.Presentation.UWP
                 Debug.WriteLine("unable to save to app directory:" + ex);
             }
 
-            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, albumPath: aPath);
+            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, aPath);
         }
 
         /// <summary>
@@ -212,10 +233,12 @@ namespace Adapt.Presentation.UWP
         /// </summary>
         public async Task<MediaFile> TakeVideoAsync(StoreVideoOptions options)
         {
-            await InitializeTask;
+            await _InitializeTask;
 
             if (_Devices.Count == 0)
+            {
                 throw new NotSupportedException();
+            }
 
             options.VerifyOptions();
 
@@ -224,20 +247,24 @@ namespace Adapt.Presentation.UWP
             capture.VideoSettings.AllowTrimming = options?.AllowCropping ?? true;
 
             if (capture.VideoSettings.AllowTrimming)
+            {
                 capture.VideoSettings.MaxDurationInSeconds = (float)options.DesiredLength.TotalSeconds;
+            }
 
             capture.VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
 
             var result = await capture.CaptureFileAsync(CameraCaptureUIMode.Video);
             if (result == null)
-                return null;
-
-            string aPath = null;
-            if (!(options?.SaveToAlbum ?? false))
             {
-                return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, albumPath: aPath);
+                return null;
             }
 
+            if (!(options?.SaveToAlbum ?? false))
+            {
+                return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, null);
+            }
+
+            string aPath = null;
             try
             {
                 var fileNameNoEx = Path.GetFileNameWithoutExtension(result.Path);
@@ -249,7 +276,7 @@ namespace Adapt.Presentation.UWP
                 Debug.WriteLine("unable to save to album:" + ex);
             }
 
-            return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, albumPath: aPath);
+            return new MediaFile(result.Path, () => result.OpenStreamForReadAsync().Result, aPath);
         }
 
         /// <summary>
@@ -265,11 +292,15 @@ namespace Adapt.Presentation.UWP
             };
 
             foreach (var filter in SupportedVideoFileTypes)
+            {
                 picker.FileTypeFilter.Add(filter);
+            }
 
             var result = await picker.PickSingleFileAsync();
             if (result == null)
+            {
                 return null;
+            }
 
             var aPath = result.Path;
             var path = result.Path;
@@ -288,7 +319,7 @@ namespace Adapt.Presentation.UWP
                 Debug.WriteLine("unable to save to app directory:" + ex);
             }
 
-            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, albumPath: aPath);
+            return new MediaFile(path, () => copy != null ? copy.OpenStreamForReadAsync().Result : result.OpenStreamForReadAsync().Result, aPath);
         }
         #endregion
 
@@ -312,14 +343,20 @@ namespace Adapt.Presentation.UWP
         {
             object value;
             if (!update.Properties.TryGetValue("System.Devices.InterfaceEnabled", out value))
+            {
                 return;
+            }
 
             lock (_Devices)
             {
                 if ((bool)value)
+                {
                     _Devices.Add(update.Id);
+                }
                 else
+                {
                     _Devices.Remove(update.Id);
+                }
             }
         }
 
@@ -334,7 +371,9 @@ namespace Adapt.Presentation.UWP
         private void OnDeviceAdded(DeviceWatcher sender, DeviceInformation device)
         {
             if (!device.IsEnabled)
+            {
                 return;
+            }
 
             lock (_Devices)
             {

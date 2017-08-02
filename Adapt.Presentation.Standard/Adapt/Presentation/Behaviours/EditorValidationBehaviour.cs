@@ -23,7 +23,7 @@ namespace Adapt.Presentation.Behaviours
             view.SetValue(AttachBehaviorProperty, value);
         }
 
-        static void OnAttachBehaviorChanged(BindableObject view, object oldValue, object newValue)
+        private static void OnAttachBehaviorChanged(BindableObject view, object oldValue, object newValue)
         {
             var editor = view as Editor;
             if (editor == null)
@@ -43,12 +43,10 @@ namespace Adapt.Presentation.Behaviours
 
             editor.BindingContextChanged += Editor_BindingContextChanged;
 
-            var notifyDataErrorInfo = editor.BindingContext as INotifyDataErrorInfo;
-            if (notifyDataErrorInfo != null)
+            if (editor.BindingContext is INotifyDataErrorInfo notifyDataErrorInfo)
             {
                 notifyDataErrorInfo.ErrorsChanged += NotifyDataErrorInfo_ErrorsChanged;
             }
-
         }
 
         private static void Editor_BindingContextChanged(object sender, System.EventArgs e)
@@ -61,31 +59,31 @@ namespace Adapt.Presentation.Behaviours
             Refresh(sender);
         }
 
-        static void OnEditorTextChanged(object sender, TextChangedEventArgs args)
+        private static void OnEditorTextChanged(object sender, TextChangedEventArgs args)
         {
             Refresh(sender);
         }
 
         private static void Refresh(object sender)
         {
-            var Editor = sender as Editor;
-            if (Editor == null)
+            var editor = sender as Editor;
+            if (editor == null)
             {
                 return;
             }
 
-            DoBackgroundColour(Editor);
+            DoBackgroundColour(editor);
         }
 
-        private static void DoBackgroundColour(Editor Editor)
+        private static void DoBackgroundColour(VisualElement visualElement)
         {
-            var notifyDataErrorInfo = Editor.BindingContext as INotifyDataErrorInfo;
+            var notifyDataErrorInfo = visualElement.BindingContext as INotifyDataErrorInfo;
             if (notifyDataErrorInfo == null)
             {
                 return;
             }
 
-            Editor.BackgroundColor = notifyDataErrorInfo.HasErrors ? Color.Red : Color.Default;
+            visualElement.BackgroundColor = notifyDataErrorInfo.HasErrors ? Color.Red : Color.Default;
         }
     }
 }

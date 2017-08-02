@@ -9,15 +9,46 @@ using Xamarin.Forms.Xaml;
 namespace Adapt.PresentationSamples
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPage : TabbedPage
+    public partial class MainPage
     {
         public MainPage()
         {
             InitializeComponent();
 
             TakePhotoButton.Clicked += TakePhotoButton_Clicked;
+            RenderButton.Clicked += RenderButton_Clicked;
+            GetLocationButton.Clicked += GetLocationButton_Clicked;
+            ChooseFileButton.Clicked += ChooseFileButton_Clicked;
 
             DateTimePickerTab.BindingContext = new DateTimeModel { TheDateTime = DateTime.Now };
+
+            XAMLBox.Text = "<?xml version=\"1.0\" encoding=\"UTF - 8\"?>\r\n<ContentView xmlns = \"http://xamarin.com/schemas/2014/forms\" xmlns:x = \"http://schemas.microsoft.com/winfx/2009/xaml\" >\r\n\t<ContentView.Content>\r\n\t\t<StackLayout VerticalOptions=\"Center\" HorizontalOptions=\"Center\" BackgroundColor=\"LightBlue\">\r\n\t\t\t<Label Text=\"Hello Xamarin.Forms!\" />\r\n\t\t</StackLayout>\r\n\t</ContentView.Content>\r\n</ContentView>";
+        }
+
+        private async void ChooseFileButton_Clicked(object sender, EventArgs e)
+        {
+            var filePicker = App.PresentationFactory.CreateFilePicker();
+            using (var fileData = await filePicker.PickAndOpenFileForReading())
+            {
+                if (fileData == null)
+                {
+                    await DisplayAlert("No File Selected", "No File Selected", "OK");
+                    return;
+                }
+
+                await DisplayAlert("File Selected", $"File Name: {fileData.FileName}\r\nFile Size: {fileData.FileStream.Length}", "OK");
+            }
+        }
+
+        private async void GetLocationButton_Clicked(object sender, EventArgs e)
+        {
+            var position = await App.Geolocator.GetPositionAsync(null, null, false);
+            GeoLocationTab.BindingContext = position;
+        }
+
+        private void RenderButton_Clicked(object sender, EventArgs e)
+        {
+            ContentBox.Content = XamlReader.Load<ContentView>(XAMLBox.Text);
         }
 
         private async void TakePhotoButton_Clicked(object sender, EventArgs e)
@@ -43,7 +74,7 @@ namespace Adapt.PresentationSamples
             {
                 using (var readFileStream = mediaFile.GetStream())
                 {
-                    var fileTypes = new Dictionary<string, IList<string>> { { "Jpeg Image", new List<string> { ".jpg" } } };
+                    FileSelectionDictionary fileTypes = new FileSelectionDictionary { { "Jpeg Image", new List<string> { ".jpg" } } };
 
                     using (var fileData = await filePicker.PickAndOpenFileForWriting(fileTypes, defaultFileName))
                     {

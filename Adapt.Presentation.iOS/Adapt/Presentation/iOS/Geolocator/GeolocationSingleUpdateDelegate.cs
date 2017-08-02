@@ -11,36 +11,38 @@ namespace Adapt.Presentation.iOS.Geolocator
     [Preserve(AllMembers = true)]
     internal class GeolocationSingleUpdateDelegate : CLLocationManagerDelegate
     {
-
-
-        bool haveHeading;
-        bool haveLocation;
-        readonly Position position = new Position();
+        private bool _HaveHeading;
+        private bool _HaveLocation;
+        private readonly Position _Position = new Position();
 #if __IOS__
-        CLHeading bestHeading;
+        private CLHeading _BestHeading;
 #endif
 
-        readonly double desiredAccuracy;
-        readonly bool includeHeading;
-        readonly TaskCompletionSource<Position> tcs;
-        readonly CLLocationManager manager;
+        private readonly double _DesiredAccuracy;
+        private readonly bool _IncludeHeading;
+        private readonly TaskCompletionSource<Position> _Tcs;
+        private readonly CLLocationManager _Manager;
 
         public GeolocationSingleUpdateDelegate(CLLocationManager manager, double desiredAccuracy, bool includeHeading, int timeout, CancellationToken cancelToken)
         {
-            this.manager = manager;
-            tcs = new TaskCompletionSource<Position>(manager);
-            this.desiredAccuracy = desiredAccuracy;
-            this.includeHeading = includeHeading;
+            _Manager = manager;
+            _Tcs = new TaskCompletionSource<Position>(manager);
+            _DesiredAccuracy = desiredAccuracy;
+            _IncludeHeading = includeHeading;
 
             if (timeout != Timeout.Infinite)
             {
                 Timer t = null;
                 t = new Timer(s =>
                 {
-                    if (haveLocation)
-                        tcs.TrySetResult(new Position(position));
+                    if (_HaveLocation)
+                    {
+                        _Tcs.TrySetResult(new Position(_Position));
+                    }
                     else
-                        tcs.TrySetCanceled();
+                    {
+                        _Tcs.TrySetCanceled();
+                    }
 
                     StopListening();
                     t.Dispose();
@@ -50,11 +52,11 @@ namespace Adapt.Presentation.iOS.Geolocator
             cancelToken.Register(() =>
             {
                 StopListening();
-                tcs.TrySetCanceled();
+                _Tcs.TrySetCanceled();
             });
         }
 
-        public Task<Position> Task => tcs?.Task;
+        public Task<Position> Task => _Tcs?.Task;
 
 
         public override void AuthorizationChanged(CLLocationManager manager, CLAuthorizationStatus status)
@@ -66,7 +68,7 @@ namespace Adapt.Presentation.iOS.Geolocator
             }
 
             StopListening();
-            tcs.TrySetException(new GeolocationException(GeolocationError.Unauthorized));
+            _Tcs.TrySetException(new GeolocationException(GeolocationError.Unauthorized));
         }
 
         public override void Failed(CLLocationManager manager, NSError error)
@@ -75,18 +77,21 @@ namespace Adapt.Presentation.iOS.Geolocator
             {
                 case CLError.Network:
                     StopListening();
-                    tcs.SetException(new GeolocationException(GeolocationError.PositionUnavailable));
+                    _Tcs.SetException(new GeolocationException(GeolocationError.PositionUnavailable));
                     break;
                 case CLError.LocationUnknown:
                     StopListening();
-                    tcs.TrySetException(new GeolocationException(GeolocationError.PositionUnavailable));
+                    _Tcs.TrySetException(new GeolocationException(GeolocationError.PositionUnavailable));
                     break;
             }
         }
 
 
 #if __IOS__
-        public override bool ShouldDisplayHeadingCalibration(CLLocationManager manager) => true;
+        public override bool ShouldDisplayHeadingCalibration(CLLocationManager manager)
+        {
+            return true;
+        }
 #endif
 
 #if __TVOS__
@@ -101,35 +106,40 @@ namespace Adapt.Presentation.iOS.Geolocator
         {
 #endif
             if (newLocation.HorizontalAccuracy < 0)
+            {
                 return;
+            }
 
-            if (haveLocation && newLocation.HorizontalAccuracy > position.Accuracy)
+            if (_HaveLocation && newLocation.HorizontalAccuracy > _Position.Accuracy)
+            {
                 return;
+            }
 
-            position.Accuracy = newLocation.HorizontalAccuracy;
-            position.Altitude = newLocation.Altitude;
-            position.AltitudeAccuracy = newLocation.VerticalAccuracy;
-            position.Latitude = newLocation.Coordinate.Latitude;
-            position.Longitude = newLocation.Coordinate.Longitude;
+            _Position.Accuracy = newLocation.HorizontalAccuracy;
+            _Position.Altitude = newLocation.Altitude;
+            _Position.AltitudeAccuracy = newLocation.VerticalAccuracy;
+            _Position.Latitude = newLocation.Coordinate.Latitude;
+            _Position.Longitude = newLocation.Coordinate.Longitude;
 #if __IOS__ || __MACOS__
-            position.Speed = newLocation.Speed;
+            _Position.Speed = newLocation.Speed;
 #endif
             try
             {
-                position.Timestamp = new DateTimeOffset(newLocation.Timestamp.ToDateTime());
+                _Position.Timestamp = new DateTimeOffset(newLocation.Timestamp.ToDateTime());
             }
-            catch(Exception ex)
+            catch
             {
-                position.Timestamp = DateTimeOffset.UtcNow;
+                //TODO: Error swallowed
+                _Position.Timestamp = DateTimeOffset.UtcNow;
             }
-            haveLocation = true;
+            _HaveLocation = true;
 
-            if ((includeHeading && !haveHeading) || !(position.Accuracy <= desiredAccuracy))
+            if (_IncludeHeading && !_HaveHeading || !(_Position.Accuracy <= _DesiredAccuracy))
             {
                 return;
             }
 
-            tcs.TrySetResult(new Position(position));
+            _Tcs.TrySetResult(new Position(_Position));
             StopListening();
         }
 
@@ -137,20 +147,25 @@ namespace Adapt.Presentation.iOS.Geolocator
         public override void UpdatedHeading(CLLocationManager manager, CLHeading newHeading)
         {
             if (newHeading.HeadingAccuracy < 0)
-                return;
-            if (bestHeading != null && newHeading.HeadingAccuracy >= bestHeading.HeadingAccuracy)
-                return;
-
-            bestHeading = newHeading;
-            position.Heading = newHeading.TrueHeading;
-            haveHeading = true;
-
-            if (!haveLocation || !(position.Accuracy <= desiredAccuracy))
             {
                 return;
             }
 
-            tcs.TrySetResult(new Position(position));
+            if (_BestHeading != null && newHeading.HeadingAccuracy >= _BestHeading.HeadingAccuracy)
+            {
+                return;
+            }
+
+            _BestHeading = newHeading;
+            _Position.Heading = newHeading.TrueHeading;
+            _HaveHeading = true;
+
+            if (!_HaveLocation || !(_Position.Accuracy <= _DesiredAccuracy))
+            {
+                return;
+            }
+
+            _Tcs.TrySetResult(new Position(_Position));
             StopListening();
         }
 #endif
@@ -160,10 +175,12 @@ namespace Adapt.Presentation.iOS.Geolocator
         {
 #if __IOS__
             if (CLLocationManager.HeadingAvailable)
-                manager.StopUpdatingHeading();
+            {
+                _Manager.StopUpdatingHeading();
+            }
 #endif
 
-            manager.StopUpdatingLocation();
+            _Manager.StopUpdatingLocation();
         }
     }
 }

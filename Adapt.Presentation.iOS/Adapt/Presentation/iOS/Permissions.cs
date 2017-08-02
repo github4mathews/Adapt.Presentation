@@ -8,7 +8,6 @@ using Foundation;
 using Photos;
 using Speech;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using UIKit;
@@ -18,13 +17,14 @@ namespace Adapt.Presentation.iOS
     /// <summary>
     /// Implementation for Permissions
     /// </summary>
-    public class PermissionsImplementation : IPermissions
+    public class Permissions : IPermissions
     {
-        CLLocationManager locationManager;
-        ABAddressBook addressBook;
-        EKEventStore eventStore;
-        CMMotionActivityManager activityManager;
-
+        #region Fields
+        private CLLocationManager _LocationManager;
+        private ABAddressBook _AddressBook;
+        private EKEventStore _EventStore;
+        private CMMotionActivityManager _ActivityManager;
+        #endregion
 
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission
@@ -49,13 +49,13 @@ namespace Adapt.Presentation.iOS
                 case Permission.Calendar:
                     return Task.FromResult(GetEventPermissionStatus(EKEntityType.Event));
                 case Permission.Camera:
-                    return Task.FromResult(GetAVPermissionStatus(AVMediaType.Video));
+                    return Task.FromResult(GetAvPermissionStatus(AVMediaType.Video));
                 case Permission.Contacts:
                     return Task.FromResult(ContactsPermissionStatus);
                 case Permission.Location:
                     return Task.FromResult(LocationPermissionStatus);
                 case Permission.Microphone:
-                    return Task.FromResult(GetAVPermissionStatus(AVMediaType.Audio));
+                    return Task.FromResult(GetAvPermissionStatus(AVMediaType.Audio));
                 //case Permission.NotificationsLocal:
                 //    break;
                 //case Permission.NotificationsRemote:
@@ -65,7 +65,7 @@ namespace Adapt.Presentation.iOS
                 case Permission.Reminders:
                     return Task.FromResult(GetEventPermissionStatus(EKEntityType.Reminder));
                 case Permission.Sensors:
-                    return Task.FromResult((CMMotionActivityManager.IsActivityAvailable ? PermissionStatus.Granted : PermissionStatus.Denied));
+                    return Task.FromResult(CMMotionActivityManager.IsActivityAvailable ? PermissionStatus.Granted : PermissionStatus.Denied);
                 case Permission.Speech:
                     return Task.FromResult(SpeechPermissionStatus);
             }
@@ -77,13 +77,15 @@ namespace Adapt.Presentation.iOS
         /// </summary>
         /// <returns>The permissions and their status.</returns>
         /// <param name="permissions">Permissions to request.</param>
-        public async Task<Dictionary<Permission, PermissionStatus>> RequestPermissionsAsync(params Permission[] permissions)
+        public async Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions)
         {
-            var results = new Dictionary<Permission, PermissionStatus>();
+            var results = new PermissionStatusDictionary();
             foreach (var permission in permissions)
             {
                 if (results.ContainsKey(permission))
+                {
                     continue;
+                }
 
                 switch (permission)
                 {
@@ -94,7 +96,7 @@ namespace Adapt.Presentation.iOS
                         try
                         {
                             var authCamera = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaType.Video).ConfigureAwait(false);
-                            results.Add(permission, (authCamera ? PermissionStatus.Granted : PermissionStatus.Denied));
+                            results.Add(permission, authCamera ? PermissionStatus.Granted : PermissionStatus.Denied);
                         }
                         catch(Exception ex)
                         {
@@ -112,7 +114,7 @@ namespace Adapt.Presentation.iOS
                         try
                         {
                             var authMic = await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVMediaType.Audio).ConfigureAwait(false);
-                            results.Add(permission, (authMic ? PermissionStatus.Granted : PermissionStatus.Denied));
+                            results.Add(permission, authMic ? PermissionStatus.Granted : PermissionStatus.Denied);
                         }
                         catch(Exception ex)
                         {
@@ -135,17 +137,17 @@ namespace Adapt.Presentation.iOS
                 }
 
                 if (!results.ContainsKey(permission))
+                {
                     results.Add(permission, PermissionStatus.Granted);
+                }
             }
 
             return results;
         }
 
-
-
         #region AV: Camera and Microphone
 
-        PermissionStatus GetAVPermissionStatus(NSString mediaType)
+        private PermissionStatus GetAvPermissionStatus(NSString mediaType)
         {
             var status = AVCaptureDevice.GetAuthorizationStatus(mediaType);
             switch (status)
@@ -163,7 +165,8 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Contacts
-        PermissionStatus ContactsPermissionStatus
+
+        private PermissionStatus ContactsPermissionStatus
         {
             get
             {
@@ -182,21 +185,25 @@ namespace Adapt.Presentation.iOS
             }
         }
 
-        Task<PermissionStatus> RequestContactsPermission()
+        private Task<PermissionStatus> RequestContactsPermission()
         {
 
             if (ContactsPermissionStatus != PermissionStatus.Unknown)
+            {
                 return Task.FromResult(ContactsPermissionStatus);
+            }
 
-            if (addressBook == null)
-                addressBook = new ABAddressBook();
+            if (_AddressBook == null)
+            {
+                _AddressBook = new ABAddressBook();
+            }
 
             var tcs = new TaskCompletionSource<PermissionStatus>();
 
 
-            addressBook.RequestAccess((success, error) =>
+            _AddressBook.RequestAccess((success, error) =>
                 {
-                    tcs.SetResult((success ? PermissionStatus.Granted : PermissionStatus.Denied));
+                    tcs.SetResult(success ? PermissionStatus.Granted : PermissionStatus.Denied);
                 });
 
             return tcs.Task;
@@ -204,7 +211,8 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Events and Reminders
-        PermissionStatus GetEventPermissionStatus(EKEntityType eventType)
+
+        private PermissionStatus GetEventPermissionStatus(EKEntityType eventType)
         {
             var status = EKEventStore.GetAuthorizationStatus(eventType);
             switch (status)
@@ -221,16 +229,20 @@ namespace Adapt.Presentation.iOS
 
         }
 
-        async Task<PermissionStatus> RequestEventPermission(EKEntityType eventType)
+        private async Task<PermissionStatus> RequestEventPermission(EKEntityType eventType)
         {
 
             if (GetEventPermissionStatus(eventType) == PermissionStatus.Granted)
+            {
                 return PermissionStatus.Granted;
+            }
 
-            if (eventStore == null)
-                eventStore = new EKEventStore();
+            if (_EventStore == null)
+            {
+                _EventStore = new EKEventStore();
+            }
 
-            var results = await eventStore.RequestAccessAsync(eventType).ConfigureAwait(false);
+            var results = await _EventStore.RequestAccessAsync(eventType).ConfigureAwait(false);
 
             return results.Item1 ? PermissionStatus.Granted : PermissionStatus.Denied;
         }
@@ -238,19 +250,23 @@ namespace Adapt.Presentation.iOS
 
         #region Location
 
-        Task<PermissionStatus> RequestLocationPermission()
+        private Task<PermissionStatus> RequestLocationPermission()
         {
 
             if (LocationPermissionStatus != PermissionStatus.Unknown)
+            {
                 return Task.FromResult(LocationPermissionStatus);
+            }
 
             if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
             {
                 return Task.FromResult(PermissionStatus.Unknown);
             }
 
-            if (locationManager == null)
-                locationManager = new CLLocationManager();
+            if (_LocationManager == null)
+            {
+                _LocationManager = new CLLocationManager();
+            }
 
             EventHandler<CLAuthorizationChangedEventArgs> authCallback = null;
             var tcs = new TaskCompletionSource<PermissionStatus>();
@@ -258,33 +274,42 @@ namespace Adapt.Presentation.iOS
             authCallback = (sender, e) =>
                 {
                     if(e.Status == CLAuthorizationStatus.NotDetermined)
+                    {
                         return;
+                    }
 
-                    locationManager.AuthorizationChanged -= authCallback;
+                    _LocationManager.AuthorizationChanged -= authCallback;
                     tcs.SetResult(LocationPermissionStatus);
                 };
 
-            locationManager.AuthorizationChanged += authCallback;
+            _LocationManager.AuthorizationChanged += authCallback;
 
 
             var info = NSBundle.MainBundle.InfoDictionary;
             if (info.ContainsKey(new NSString("NSLocationAlwaysUsageDescription")))
-                locationManager.RequestAlwaysAuthorization();
+            {
+                _LocationManager.RequestAlwaysAuthorization();
+            }
             else if (info.ContainsKey(new NSString("NSLocationWhenInUseUsageDescription")))
-                locationManager.RequestWhenInUseAuthorization();
+            {
+                _LocationManager.RequestWhenInUseAuthorization();
+            }
             else
+            {
                 throw new UnauthorizedAccessException("On iOS 8.0 and higher you must set either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in your Info.plist file to enable Authorization Requests for Location updates!");
-
+            }
 
             return tcs.Task;
         }
 
-        PermissionStatus LocationPermissionStatus
+        private PermissionStatus LocationPermissionStatus
         {
             get
             {
                 if (!CLLocationManager.LocationServicesEnabled)
+                {
                     return PermissionStatus.Disabled;
+                }
 
                 var status = CLLocationManager.Status;
 
@@ -347,7 +372,8 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Photos
-        PermissionStatus PhotosPermissionStatus
+
+        private PermissionStatus PhotosPermissionStatus
         {
             get
             {
@@ -366,11 +392,13 @@ namespace Adapt.Presentation.iOS
             }
         }
 
-        Task<PermissionStatus> RequestPhotosPermission()
+        private Task<PermissionStatus> RequestPhotosPermission()
         {
 
             if (PhotosPermissionStatus != PermissionStatus.Unknown)
+            {
                 return Task.FromResult(PhotosPermissionStatus);
+            }
 
             var tcs = new TaskCompletionSource<PermissionStatus>();
 
@@ -399,19 +427,26 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Sensors
-        async Task<PermissionStatus> RequestSensorsPermission()
+
+        private async Task<PermissionStatus> RequestSensorsPermission()
         {
             if (CMMotionActivityManager.IsActivityAvailable)
+            {
                 return PermissionStatus.Granted;
+            }
 
-            if (activityManager == null)
-                activityManager = new CMMotionActivityManager();
+            if (_ActivityManager == null)
+            {
+                _ActivityManager = new CMMotionActivityManager();
+            }
 
             try
             {
-                var results = await activityManager.QueryActivityAsync(NSDate.DistantPast, NSDate.DistantFuture, NSOperationQueue.MainQueue).ConfigureAwait(false);
+                var results = await _ActivityManager.QueryActivityAsync(NSDate.DistantPast, NSDate.DistantFuture, NSOperationQueue.MainQueue).ConfigureAwait(false);
                 if(results != null)
+                {
                     return PermissionStatus.Granted;
+                }
             }
             catch(Exception ex)
             {
@@ -424,11 +459,13 @@ namespace Adapt.Presentation.iOS
         #endregion
 
         #region Speech
-        Task<PermissionStatus> RequestSpeechPermission()
+
+        private Task<PermissionStatus> RequestSpeechPermission()
         {
             if (SpeechPermissionStatus != PermissionStatus.Unknown)
+            {
                 return Task.FromResult(SpeechPermissionStatus);
-
+            }
 
             if (!UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
@@ -458,9 +495,8 @@ namespace Adapt.Presentation.iOS
             return tcs.Task;
         }
 
-        
 
-        PermissionStatus SpeechPermissionStatus
+        private PermissionStatus SpeechPermissionStatus
         {
             get
             {
@@ -484,7 +520,9 @@ namespace Adapt.Presentation.iOS
         {
             //Opening settings only open in iOS 8+
             if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+            {
                 return false;
+            }
 
             try
             {

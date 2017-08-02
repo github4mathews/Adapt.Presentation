@@ -1,5 +1,4 @@
 using Android;
-using Android.App;
 using app = Android.App;
 using Android.Support.V4.App;
 using Android.Support.V4.Content;
@@ -19,10 +18,18 @@ namespace Adapt.Presentation.AndroidPlatform
     {
         #region Fields
 
-        private readonly object locker = new object();
-        private TaskCompletionSource<Dictionary<Permission, PermissionStatus>> tcs;
-        private Dictionary<Permission, PermissionStatus> results;
-        private IList<string> requestedPermissions;
+        private readonly object _Locker = new object();
+        private TaskCompletionSource<PermissionStatusDictionary> _Tcs;
+        private PermissionStatusDictionary _Results;
+        private IList<string> _RequestedPermissions;
+        private app.Activity _Activity;
+        #endregion
+
+        #region Constructor
+        public Permissions(app.Activity activity)
+        {
+            _Activity = activity;
+        }
         #endregion
 
         /// <summary>
@@ -33,8 +40,7 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <param name="permission">Permission to check.</param>
         public Task<bool> ShouldShowRequestPermissionRationaleAsync(Permission permission)
         {
-            var activity = CrossCurrentActivity.Current.Activity;
-            if (activity == null)
+            if (_Activity == null)
             {
                 Debug.WriteLine("Unable to detect current Activity. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
                 return Task.FromResult(false);
@@ -51,7 +57,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
             if (names.Count != 0)
             {
-                return Task.FromResult(Enumerable.Any(names, name => ActivityCompat.ShouldShowRequestPermissionRationale(activity, name)));
+                return Task.FromResult(names.Any(name => ActivityCompat.ShouldShowRequestPermissionRationale(_Activity, name)));
             }
 
             Debug.WriteLine("No permissions found in manifest for: " + permission + " no need to show request rationale");
@@ -81,10 +87,10 @@ namespace Adapt.Presentation.AndroidPlatform
                 return Task.FromResult(PermissionStatus.Unknown);
             }
 
-            var context = CrossCurrentActivity.Current.Activity ?? Application.Context;
+            var context = _Activity ?? app.Application.Context;
             if (context != null)
             {
-                return Task.FromResult(Enumerable.Any(names, name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted);
+                return Task.FromResult(names.Any(name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted);
             }
 
             Debug.WriteLine("Unable to detect current Activity or App Context. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
@@ -96,30 +102,31 @@ namespace Adapt.Presentation.AndroidPlatform
         /// </summary>
         /// <returns>The permissions and their status.</returns>
         /// <param name="permissions">Permissions to request.</param>
-        public async Task<Dictionary<Permission, PermissionStatus>> RequestPermissionsAsync(params Permission[] permissions)
+        public async Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions)
         {
-            if (tcs != null && !tcs.Task.IsCompleted)
+            if (_Tcs != null && !_Tcs.Task.IsCompleted)
             {
-                tcs.SetCanceled();
-                tcs = null;
+                _Tcs.SetCanceled();
+                _Tcs = null;
             }
-            lock (locker)
+            lock (_Locker)
             {
-                results = new Dictionary<Permission, PermissionStatus>();
+                _Results = new PermissionStatusDictionary();
             }
-            var activity = CrossCurrentActivity.Current.Activity;
-            if (activity == null)
+            if (_Activity == null)
             {
                 Debug.WriteLine("Unable to detect current Activity. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
                 foreach (var permission in permissions)
                 {
-                    if (results.ContainsKey(permission))
+                    if (_Results.ContainsKey(permission))
+                    {
                         continue;
+                    }
 
-                    results.Add(permission, PermissionStatus.Unknown);
+                    _Results.Add(permission, PermissionStatus.Unknown);
                 }
 
-                return results;
+                return _Results;
             }
             var permissionsToRequest = new List<string>();
             foreach (var permission in permissions)
@@ -132,9 +139,9 @@ namespace Adapt.Presentation.AndroidPlatform
                     //if we can't add as unknown and continue
                     if ((names?.Count ?? 0) == 0)
                     {
-                        lock (locker)
+                        lock (_Locker)
                         {
-                            results.Add(permission, PermissionStatus.Unknown);
+                            _Results.Add(permission, PermissionStatus.Unknown);
                         }
                         continue;
                     }
@@ -144,21 +151,23 @@ namespace Adapt.Presentation.AndroidPlatform
                 else
                 {
                     //if we are granted you are good!
-                    lock (locker)
+                    lock (_Locker)
                     {
-                        results.Add(permission, PermissionStatus.Granted);
+                        _Results.Add(permission, PermissionStatus.Granted);
                     }
                 }
             }
 
             if (permissionsToRequest.Count == 0)
-                return results;
+            {
+                return _Results;
+            }
 
-            tcs = new TaskCompletionSource<Dictionary<Permission, PermissionStatus>>();
+            _Tcs = new TaskCompletionSource<PermissionStatusDictionary>();
 
-            ActivityCompat.RequestPermissions(activity, permissionsToRequest.ToArray(), PermissionCode);
+            ActivityCompat.RequestPermissions(_Activity, permissionsToRequest.ToArray(), PermissionCode);
 
-            return await tcs.Task.ConfigureAwait(false);
+            return await _Tcs.Task.ConfigureAwait(false);
         }
 
         private const int PermissionCode = 25;
@@ -171,32 +180,44 @@ namespace Adapt.Presentation.AndroidPlatform
         public void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
         {
             if (requestCode != PermissionCode)
+            {
                 return;
+            }
 
-            if (tcs == null)
+            if (_Tcs == null)
+            {
                 return;
+            }
 
             for (var i = 0; i < permissions.Length; i++)
             {
-                if (tcs.Task.Status == TaskStatus.Canceled)
+                if (_Tcs.Task.Status == TaskStatus.Canceled)
+                {
                     return;
+                }
 
                 var permission = GetPermissionForManifestName(permissions[i]);
                 if (permission == Permission.Unknown)
+                {
                     continue;
+                }
 
-                lock (locker)
+                lock (_Locker)
                 {
                     if (permission == Permission.Microphone)
                     {
-                        if (!results.ContainsKey(Permission.Speech))
-                            results.Add(Permission.Speech, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                        if (!_Results.ContainsKey(Permission.Speech))
+                        {
+                            _Results.Add(Permission.Speech, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                        }
                     }
-                    if (!results.ContainsKey(permission))
-                        results.Add(permission, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                    if (!_Results.ContainsKey(permission))
+                    {
+                        _Results.Add(permission, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                    }
                 }
             }
-            tcs.SetResult(results);
+            _Tcs.SetResult(_Results);
         }
 
         private static Permission GetPermissionForManifestName(string permission)
@@ -249,102 +270,149 @@ namespace Adapt.Presentation.AndroidPlatform
                 case Permission.Calendar:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.ReadCalendar))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadCalendar);
+                        }
+
                         if (HasPermissionInManifest(Manifest.Permission.WriteCalendar))
+                        {
                             permissionNames.Add(Manifest.Permission.WriteCalendar);
+                        }
                     }
                     break;
                 case Permission.Camera:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.Camera))
+                        {
                             permissionNames.Add(Manifest.Permission.Camera);
+                        }
                     }
                     break;
                 case Permission.Contacts:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.ReadContacts))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadContacts);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.WriteContacts))
+                        {
                             permissionNames.Add(Manifest.Permission.WriteContacts);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.GetAccounts))
+                        {
                             permissionNames.Add(Manifest.Permission.GetAccounts);
+                        }
                     }
                     break;
                 case Permission.Location:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.AccessCoarseLocation))
+                        {
                             permissionNames.Add(Manifest.Permission.AccessCoarseLocation);
-
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.AccessFineLocation))
+                        {
                             permissionNames.Add(Manifest.Permission.AccessFineLocation);
+                        }
                     }
                     break;
                 case Permission.Speech:
                 case Permission.Microphone:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.RecordAudio))
+                        {
                             permissionNames.Add(Manifest.Permission.RecordAudio);
-
+                        }
                     }
                     break;
                 case Permission.Phone:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.ReadPhoneState))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadPhoneState);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.CallPhone))
+                        {
                             permissionNames.Add(Manifest.Permission.CallPhone);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReadCallLog))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadCallLog);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.WriteCallLog))
+                        {
                             permissionNames.Add(Manifest.Permission.WriteCallLog);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.AddVoicemail))
+                        {
                             permissionNames.Add(Manifest.Permission.AddVoicemail);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.UseSip))
+                        {
                             permissionNames.Add(Manifest.Permission.UseSip);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ProcessOutgoingCalls))
+                        {
                             permissionNames.Add(Manifest.Permission.ProcessOutgoingCalls);
+                        }
                     }
                     break;
                 case Permission.Sensors:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.BodySensors))
+                        {
                             permissionNames.Add(Manifest.Permission.BodySensors);
+                        }
                     }
                     break;
                 case Permission.Sms:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.SendSms))
+                        {
                             permissionNames.Add(Manifest.Permission.SendSms);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReceiveSms))
+                        {
                             permissionNames.Add(Manifest.Permission.ReceiveSms);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReadSms))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadSms);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReceiveWapPush))
+                        {
                             permissionNames.Add(Manifest.Permission.ReceiveWapPush);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.ReceiveMms))
+                        {
                             permissionNames.Add(Manifest.Permission.ReceiveMms);
+                        }
                     }
                     break;
                 case Permission.Storage:
                     {
                         if (HasPermissionInManifest(Manifest.Permission.ReadExternalStorage))
+                        {
                             permissionNames.Add(Manifest.Permission.ReadExternalStorage);
+                        }
 
                         if (HasPermissionInManifest(Manifest.Permission.WriteExternalStorage))
+                        {
                             permissionNames.Add(Manifest.Permission.WriteExternalStorage);
+                        }
                     }
                     break;
                 default:
@@ -358,11 +426,13 @@ namespace Adapt.Presentation.AndroidPlatform
         {
             try
             {
-                if (requestedPermissions != null)
-                    return requestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
+                if (_RequestedPermissions != null)
+                {
+                    return _RequestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
+                }
 
                 //try to use current activity else application context
-                var context = CrossCurrentActivity.Current.Activity ?? Application.Context;
+                var context = _Activity ?? app.Application.Context;
 
                 if (context == null)
                 {
@@ -378,11 +448,11 @@ namespace Adapt.Presentation.AndroidPlatform
                     return false;
                 }
 
-                requestedPermissions = info.RequestedPermissions;
+                _RequestedPermissions = info.RequestedPermissions;
 
-                if (requestedPermissions != null)
+                if (_RequestedPermissions != null)
                 {
-                    return requestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
+                    return _RequestedPermissions.Any(r => r.Equals(permission, StringComparison.InvariantCultureIgnoreCase));
                 }
 
                 Debug.WriteLine("There are no requested permissions, please check to ensure you have marked permissions you want to request.");
@@ -398,20 +468,21 @@ namespace Adapt.Presentation.AndroidPlatform
         public bool OpenAppSettings()
         {
 
-            var context = CrossCurrentActivity.Current.Activity;
-            if (context == null)
+            if (_Activity == null)
+            {
                 return false;
+            }
 
             try
             {
                 var settingsIntent = new Intent();
                 settingsIntent.SetAction(Android.Provider.Settings.ActionApplicationDetailsSettings);
                 settingsIntent.AddCategory(Intent.CategoryDefault);
-                settingsIntent.SetData(Android.Net.Uri.Parse("package:" + context.PackageName));
+                settingsIntent.SetData(Android.Net.Uri.Parse("package:" + _Activity.PackageName));
                 settingsIntent.AddFlags(ActivityFlags.NewTask);
                 settingsIntent.AddFlags(ActivityFlags.NoHistory);
                 settingsIntent.AddFlags(ActivityFlags.ExcludeFromRecents);
-                context.StartActivity(settingsIntent);
+                _Activity.StartActivity(settingsIntent);
                 return true;
             }
             catch

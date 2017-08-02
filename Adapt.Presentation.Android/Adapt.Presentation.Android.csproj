@@ -14,8 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
-    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
-    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
+    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,22 +47,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapt\Presentation\AndroidPlatform\CrossCurrentActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\CurrentActivityImplementation.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\FilePicker.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\FilePickerActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Geolocator\GeolocationContinuousListener.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Geolocator\GeolocationSingleListener.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Geolocator\GeolocationUtils.cs" />
-    <Compile Include="Adapt\Presentation\AndroidPlatform\Geolocator\GeolocatorImplementation.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\Geolocator\Geolocator.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\ICurrentActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\IOUtil.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Media.cs" />
-    <Compile Include="Adapt\Presentation\AndroidPlatform\MediaFile.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\MediaFileExtensions.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\MediaPickedEventArgs.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\MediaPickerActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Permissions.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\PresentationFactory.cs" />
-    <Compile Include="Resources\Resource.Designer.cs" />
+    <Compile Include="Resources\Resource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

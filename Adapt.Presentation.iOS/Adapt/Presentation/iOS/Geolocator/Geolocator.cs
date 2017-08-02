@@ -18,44 +18,52 @@ namespace Adapt.Presentation.iOS.Geolocator
     /// Implementation for Geolocator
     /// </summary>
     [Preserve(AllMembers = true)]
-    public class GeolocatorImplementation : IGeolocator
+    public class Geolocator : IGeolocator
     {
-        bool deferringUpdates;
-        readonly CLLocationManager manager;
-        Position position;
-        ListenerSettings listenerSettings;
+        #region Fields
+        private bool _DeferringUpdates;
+        private readonly CLLocationManager _Manager;
+        private Position _Position;
+        private ListenerSettings _ListenerSettings;
+        #endregion
 
-        public GeolocatorImplementation()
+        public Geolocator()
         {
             DesiredAccuracy = 100;
-            manager = GetManager();
-            manager.AuthorizationChanged += OnAuthorizationChanged;
-            manager.Failed += OnFailed;
-
+            _Manager = GetManager();
+            _Manager.AuthorizationChanged += OnAuthorizationChanged;
+            _Manager.Failed += OnFailed;
 
 #if __IOS__
             if (UIDevice.CurrentDevice.CheckSystemVersion(6, 0))
-                manager.LocationsUpdated += OnLocationsUpdated;
+            {
+                _Manager.LocationsUpdated += OnLocationsUpdated;
+            }
             else
-                manager.UpdatedLocation += OnUpdatedLocation;
+            {
+                _Manager.UpdatedLocation += OnUpdatedLocation;
+            }
 
-            manager.UpdatedHeading += OnUpdatedHeading;
+            _Manager.UpdatedHeading += OnUpdatedHeading;
 #elif __MACOS__ || __TVOS__
             manager.LocationsUpdated += OnLocationsUpdated;
 #endif
 
 #if __IOS__ || __MACOS__
-            manager.DeferredUpdatesFinished += OnDeferredUpdatedFinished;
+            _Manager.DeferredUpdatesFinished += OnDeferredUpdatedFinished;
 #endif
 
             RequestAuthorization();
         }
 
-        void OnDeferredUpdatedFinished(object sender, NSErrorEventArgs e) => deferringUpdates = false;
+        private void OnDeferredUpdatedFinished(object sender, NSErrorEventArgs e)
+        {
+            _DeferringUpdates = false;
+        }
 
 
 #if __IOS__
-        bool CanDeferLocationUpdate => CLLocationManager.DeferredLocationUpdatesAvailable && UIDevice.CurrentDevice.CheckSystemVersion(6, 0);
+        private static bool CanDeferLocationUpdate => CLLocationManager.DeferredLocationUpdatesAvailable && UIDevice.CurrentDevice.CheckSystemVersion(6, 0);
 #elif __MACOS__
         bool CanDeferLocationUpdate => CLLocationManager.DeferredLocationUpdatesAvailable;
 #elif __TVOS__
@@ -83,7 +91,7 @@ namespace Adapt.Presentation.iOS.Geolocator
 
         /// <summary>
         /// Gets if you are listening for location changes
-        ///
+        /// </summary>
         public bool IsListening { get; private set; }
 
 #if __IOS__ || __MACOS__
@@ -125,7 +133,7 @@ namespace Adapt.Presentation.iOS.Geolocator
             }
         }
 
-        void RequestAuthorization()
+        private void RequestAuthorization()
         {
 #if __IOS__
             var info = NSBundle.MainBundle.InfoDictionary;
@@ -136,11 +144,17 @@ namespace Adapt.Presentation.iOS.Geolocator
             }
 
             if (info.ContainsKey(new NSString("NSLocationAlwaysUsageDescription")))
-                manager.RequestAlwaysAuthorization();
+            {
+                _Manager.RequestAlwaysAuthorization();
+            }
             else if (info.ContainsKey(new NSString("NSLocationWhenInUseUsageDescription")))
-                manager.RequestWhenInUseAuthorization();
+            {
+                _Manager.RequestWhenInUseAuthorization();
+            }
             else
+            {
                 throw new UnauthorizedAccessException("On iOS 8.0 and higher you must set either NSLocationWhenInUseUsageDescription or NSLocationAlwaysUsageDescription in your Info.plist file to enable Authorization Requests for Location updates!");
+            }
 #elif __MACOS__
             //nothing to do here.
 #elif __TVOS__
@@ -167,7 +181,9 @@ namespace Adapt.Presentation.iOS.Geolocator
             var newLocation = m?.Location;
 
             if (newLocation == null)
+            {
                 return null;
+            }
 
             var position = new Position
             {
@@ -186,8 +202,9 @@ namespace Adapt.Presentation.iOS.Geolocator
             {
                 position.Timestamp = new DateTimeOffset(newLocation.Timestamp.ToDateTime());
             }
-            catch (Exception ex)
+            catch 
             {
+                //TODO: Error swallowed
                 position.Timestamp = DateTimeOffset.UtcNow;
             }
 
@@ -206,10 +223,14 @@ namespace Adapt.Presentation.iOS.Geolocator
             var timeoutMilliseconds = timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : Timeout.Infinite;
 
             if (timeoutMilliseconds <= 0 && timeoutMilliseconds != Timeout.Infinite)
+            {
                 throw new ArgumentOutOfRangeException(nameof(timeout), "Timeout must be positive or Timeout.Infinite");
+            }
 
             if (!cancelToken.HasValue)
+            {
                 cancelToken = CancellationToken.None;
+            }
 
             TaskCompletionSource<Position> tcs;
             if (!IsListening)
@@ -226,10 +247,12 @@ namespace Adapt.Presentation.iOS.Geolocator
 
                 // always prevent location update pausing since we're only listening for a single update.
                 if (UIDevice.CurrentDevice.CheckSystemVersion(6, 0))
+                {
                     m.PausesLocationUpdatesAutomatically = false;
+                }
 #endif
 
-                tcs = new TaskCompletionSource<Position>(m);
+                new TaskCompletionSource<Position>(m);
                 var singleListener = new GeolocationSingleUpdateDelegate(m, DesiredAccuracy, includeHeading, timeoutMilliseconds, cancelToken.Value);
                 m.Delegate = singleListener;
 
@@ -242,7 +265,9 @@ namespace Adapt.Presentation.iOS.Geolocator
 
 #if __IOS__
                 if (includeHeading && SupportsHeading)
+                {
                     m.StartUpdatingHeading();
+                }
 #endif
 
                 return singleListener.Task;
@@ -250,7 +275,7 @@ namespace Adapt.Presentation.iOS.Geolocator
 
 
             tcs = new TaskCompletionSource<Position>();
-            if (position == null)
+            if (_Position == null)
             {
                 if (cancelToken != CancellationToken.None)
                 {
@@ -274,8 +299,9 @@ namespace Adapt.Presentation.iOS.Geolocator
                 PositionChanged += GotPosition;
             }
             else
-                tcs.SetResult(position);
-
+            {
+                tcs.SetResult(_Position);
+            }
 
             return tcs.Task;
         }
@@ -288,7 +314,9 @@ namespace Adapt.Presentation.iOS.Geolocator
         public async Task<IEnumerable<Address>> GetAddressesForPositionAsync(Position location)
         {
             if (location == null)
+            {
                 return null;
+            }
 
             var geocoder = new CLGeocoder();
             var addressList = await geocoder.ReverseGeocodeLocationAsync(new CLLocation(location.Latitude, location.Longitude));
@@ -301,44 +329,53 @@ namespace Adapt.Presentation.iOS.Geolocator
         public Task<bool> StartListeningAsync(TimeSpan minTime, double minDistance, bool includeHeading = false, ListenerSettings settings = null)
         {
             if (minDistance < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(minDistance));
+            }
+
             if (IsListening)
+            {
                 throw new InvalidOperationException("Already listening");
+            }
 
             // if no settings were passed in, instantiate the default settings. need to check this and create default settings since
             // previous calls to StartListeningAsync might have already configured the location manager in a non-default way that the
             // caller of this method might not be expecting. the caller should expect the defaults if they pass no settings.
             if (settings == null)
+            {
                 settings = new ListenerSettings();
+            }
 
             // keep reference to settings so that we can stop the listener appropriately later
-            listenerSettings = settings;
+            _ListenerSettings = settings;
 
             var desiredAccuracy = DesiredAccuracy;
 
 // set background flag
 #if __IOS__
             if (UIDevice.CurrentDevice.CheckSystemVersion(9, 0))
-                manager.AllowsBackgroundLocationUpdates = settings.AllowBackgroundUpdates;
+            {
+                _Manager.AllowsBackgroundLocationUpdates = settings.AllowBackgroundUpdates;
+            }
 
             // configure location update pausing
             if (UIDevice.CurrentDevice.CheckSystemVersion(6, 0))
             {
-                manager.PausesLocationUpdatesAutomatically = settings.PauseLocationUpdatesAutomatically;
+                _Manager.PausesLocationUpdatesAutomatically = settings.PauseLocationUpdatesAutomatically;
 
                 switch(settings.ActivityType)
                 {
                     case ActivityType.AutomotiveNavigation:
-                        manager.ActivityType = CLActivityType.AutomotiveNavigation;
+                        _Manager.ActivityType = CLActivityType.AutomotiveNavigation;
                         break;
                     case ActivityType.Fitness:
-                        manager.ActivityType = CLActivityType.Fitness;
+                        _Manager.ActivityType = CLActivityType.Fitness;
                         break;
                     case ActivityType.OtherNavigation:
-                        manager.ActivityType = CLActivityType.OtherNavigation;
+                        _Manager.ActivityType = CLActivityType.OtherNavigation;
                         break;
                     default:
-                        manager.ActivityType = CLActivityType.Other;
+                        _Manager.ActivityType = CLActivityType.Other;
                         break;
                 }
             }
@@ -353,21 +390,27 @@ namespace Adapt.Presentation.iOS.Geolocator
             }
 
             IsListening = true;
-            manager.DesiredAccuracy = desiredAccuracy;
-            manager.DistanceFilter = minDistance;
+            _Manager.DesiredAccuracy = desiredAccuracy;
+            _Manager.DistanceFilter = minDistance;
 
 #if __IOS__ || __MACOS__
             if (settings.ListenForSignificantChanges)
-                manager.StartMonitoringSignificantLocationChanges();
+            {
+                _Manager.StartMonitoringSignificantLocationChanges();
+            }
             else
-                manager.StartUpdatingLocation();
+            {
+                _Manager.StartUpdatingLocation();
+            }
 #elif __TVOS__
             //not supported
 #endif
 
 #if __IOS__
             if (includeHeading && CLLocationManager.HeadingAvailable)
-                manager.StartUpdatingHeading();
+            {
+                _Manager.StartUpdatingHeading();
+            }
 #endif
 
             return Task.FromResult(true);
@@ -379,33 +422,43 @@ namespace Adapt.Presentation.iOS.Geolocator
         public Task<bool> StopListeningAsync()
         {
             if (!IsListening)
+            {
                 return Task.FromResult(true);
+            }
 
             IsListening = false;
 #if __IOS__
             if (CLLocationManager.HeadingAvailable)
-                manager.StopUpdatingHeading();
+            {
+                _Manager.StopUpdatingHeading();
+            }
 
             // it looks like deferred location updates can apply to the standard service or significant change service. disallow deferral in either case.
-            if ((listenerSettings?.DeferLocationUpdates ?? false) && CanDeferLocationUpdate)
-                manager.DisallowDeferredLocationUpdates();
+            if ((_ListenerSettings?.DeferLocationUpdates ?? false) && CanDeferLocationUpdate)
+            {
+                _Manager.DisallowDeferredLocationUpdates();
+            }
 #endif
 
 
 #if __IOS__ || __MACOS__
-            if (listenerSettings?.ListenForSignificantChanges ?? false)
-                manager.StopMonitoringSignificantLocationChanges();
+            if (_ListenerSettings?.ListenForSignificantChanges ?? false)
+            {
+                _Manager.StopMonitoringSignificantLocationChanges();
+            }
             else
-                manager.StopUpdatingLocation();
+            {
+                _Manager.StopUpdatingLocation();
+            }
 #endif
 
-            listenerSettings = null;
-            position = null;
+            _ListenerSettings = null;
+            _Position = null;
 
             return Task.FromResult(true);
         }
 
-        CLLocationManager GetManager()
+        private CLLocationManager GetManager()
         {
             CLLocationManager m = null;
             new NSObject().InvokeOnMainThread(() => m = new CLLocationManager());
@@ -413,16 +466,19 @@ namespace Adapt.Presentation.iOS.Geolocator
         }
 
 #if __IOS__
-        void OnUpdatedHeading(object sender, CLHeadingUpdatedEventArgs e)
+
+        private void OnUpdatedHeading(object sender, CLHeadingUpdatedEventArgs e)
         {
             if (e.NewHeading.TrueHeading == -1)
+            {
                 return;
+            }
 
-            var p = (position == null) ? new Position() : new Position(position);
+            var p = _Position == null ? new Position() : new Position(_Position);
 
             p.Heading = e.NewHeading.TrueHeading;
 
-            position = p;
+            _Position = p;
 
             OnPositionChanged(new PositionEventArgs(p));
         }
@@ -431,28 +487,33 @@ namespace Adapt.Presentation.iOS.Geolocator
         private void OnLocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
         {
             foreach (var location in e.Locations)
+            {
                 UpdatePosition(location);
+            }
 
             // defer future location updates if requested
-            if ((listenerSettings?.DeferLocationUpdates ?? false) && !deferringUpdates && CanDeferLocationUpdate)
+            if ((_ListenerSettings?.DeferLocationUpdates ?? false) && !_DeferringUpdates && CanDeferLocationUpdate)
             {
 #if __IOS__
-                manager.AllowDeferredLocationUpdatesUntil(listenerSettings.DeferralDistanceMeters == null ? CLLocationDistance.MaxDistance : listenerSettings.DeferralDistanceMeters.GetValueOrDefault(),
-                    listenerSettings.DeferralTime == null ? CLLocationManager.MaxTimeInterval : listenerSettings.DeferralTime.GetValueOrDefault().TotalSeconds);
+                _Manager.AllowDeferredLocationUpdatesUntil(_ListenerSettings.DeferralDistanceMeters == null ? CLLocationDistance.MaxDistance : _ListenerSettings.DeferralDistanceMeters.GetValueOrDefault(),
+                    _ListenerSettings.DeferralTime == null ? CLLocationManager.MaxTimeInterval : _ListenerSettings.DeferralTime.GetValueOrDefault().TotalSeconds);
 #endif
 
-                deferringUpdates = true;
+                _DeferringUpdates = true;
             }
         }
 
 #if __IOS__ || __MACOS__
-        void OnUpdatedLocation(object sender, CLLocationUpdatedEventArgs e) => UpdatePosition(e.NewLocation);
+        private void OnUpdatedLocation(object sender, CLLocationUpdatedEventArgs e)
+        {
+            UpdatePosition(e.NewLocation);
+        }
 #endif
 
 
-        void UpdatePosition(CLLocation location)
+        private void UpdatePosition(CLLocation location)
         {
-            var p = (position == null) ? new Position() : new Position(position);
+            var p = _Position == null ? new Position() : new Position(_Position);
 
             if (location.HorizontalAccuracy > -1)
             {
@@ -469,7 +530,9 @@ namespace Adapt.Presentation.iOS.Geolocator
 
 #if __IOS__ || __MACOS__
             if (location.Speed > -1)
+            {
                 p.Speed = location.Speed;
+            }
 #endif
 
             try
@@ -477,13 +540,14 @@ namespace Adapt.Presentation.iOS.Geolocator
                 var date = location.Timestamp.ToDateTime();
                 p.Timestamp = new DateTimeOffset(date);
             }
-            catch (Exception ex)
+            catch
             {
+                //TODO: Error swallowed
                 p.Timestamp = DateTimeOffset.UtcNow;
             }
             
 
-            position = p;
+            _Position = p;
 
             OnPositionChanged(new PositionEventArgs(p));
 
@@ -491,27 +555,31 @@ namespace Adapt.Presentation.iOS.Geolocator
         }
 
 
-        
+        private void OnPositionChanged(PositionEventArgs e)
+        {
+            PositionChanged?.Invoke(this, e);
+        }
 
-        void OnPositionChanged(PositionEventArgs e) => PositionChanged?.Invoke(this, e);
-
-
-        async void OnPositionError(PositionErrorEventArgs e)
+        private async void OnPositionError(PositionErrorEventArgs e)
         {
             await StopListeningAsync();
             PositionError?.Invoke(this, e);
         }
 
-            void OnFailed(object sender, NSErrorEventArgs e)
+        private void OnFailed(object sender, NSErrorEventArgs e)
         {
             if ((CLError)(int)e.Error.Code == CLError.Network)
+            {
                 OnPositionError(new PositionErrorEventArgs(GeolocationError.PositionUnavailable));
+            }
         }
 
-        void OnAuthorizationChanged(object sender, CLAuthorizationChangedEventArgs e)
+        private void OnAuthorizationChanged(object sender, CLAuthorizationChangedEventArgs e)
         {
             if (e.Status == CLAuthorizationStatus.Denied || e.Status == CLAuthorizationStatus.Restricted)
+            {
                 OnPositionError(new PositionErrorEventArgs(GeolocationError.Unauthorized));
+            }
         }
 
      }

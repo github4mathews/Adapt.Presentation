@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>dbc98916-4e18-40ff-833d-af318da6a1d0</ProjectGuid>
+    <ProjectGuid>{DBC98916-4E18-40FF-833D-AF318DA6A1D0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>
     </RootNamespace>
@@ -12,7 +12,7 @@
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
-    <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion>15.0</MinimumVisualStudioVersion>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
@@ -25,6 +25,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CodeAnalysisRuleSet>Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -33,6 +35,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CodeAnalysisRuleSet>Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -41,9 +44,9 @@
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\..\..\AES\Code Rules - Level 1.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -52,22 +55,28 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Adapt\Presentation\Behaviours\EditorValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EntryValidationBehaviour.cs" />
+    <Compile Include="Adapt\Presentation\CameraDevice.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
     <Compile Include="Adapt\Presentation\FilePickerEventArgs.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\ActivityType.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\Address.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\GeolocationError.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\GeolocationException.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\IGeolocator.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\ListenerSettings.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\GeolocatorBase.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\Position.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\PositionErrorEventArgs.cs" />
+    <Compile Include="Adapt\Presentation\Geolocator\PositionEventArgs.cs" />
+    <Compile Include="Adapt\Presentation\FileSelectionDictionary.cs" />
     <Compile Include="Adapt\Presentation\IFilePicker.cs" />
     <Compile Include="Adapt\Presentation\IMedia.cs" />
     <Compile Include="Adapt\Presentation\IPermissions.cs" />
@@ -76,10 +85,23 @@
     <Compile Include="Adapt\Presentation\MediaExtensions.cs" />
     <Compile Include="Adapt\Presentation\MediaFile.cs" />
     <Compile Include="Adapt\Presentation\MediaFileNotFoundException.cs" />
-    <Compile Include="Adapt\Presentation\MediaStoreOptions.cs" />
-    <Compile Include="Adapt\Presentation\PermissionEnums.cs" />
+    <Compile Include="Adapt\Presentation\StoreMediaOptions.cs" />
+    <Compile Include="Adapt\Presentation\Permission.cs" />
+    <Compile Include="Adapt\Presentation\PermissionStatus.cs" />
+    <Compile Include="Adapt\Presentation\PhotoSize.cs" />
+    <Compile Include="Adapt\Presentation\PickMediaOptions.cs" />
+    <Compile Include="Adapt\Presentation\StoreCameraMediaOptions.cs" />
+    <Compile Include="Adapt\Presentation\StoreVideoOptions.cs" />
+    <Compile Include="Adapt\Presentation\VideoQuality.cs" />
+    <Compile Include="Adapt\Presentation\XamlReader.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Adapt\Presentation\PermissionStatusDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
+    <CodeAnalysisDictionary Include="CodeRulesDictionary.xml" />
     <Content Include="project.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Adapt.Presentation.Standard.ruleset" />
   </ItemGroup>
 </Project>

@@ -1,29 +1,7 @@
-﻿using System;
-
-namespace Adapt.Presentation.Geolocator
+﻿namespace Adapt.Presentation.Geolocator
 {
     public class Address
     {
-        public Address()
-        {
-        }
-
-        public Address(Address address)
-        {
-            if (address == null)
-                throw new ArgumentNullException(nameof(address));
-
-            CountryCode = address.CountryCode;
-            CountryName = address.CountryName;
-            Latitude = address.Latitude;
-            Longitude = address.Longitude;
-            FeatureName = address.FeatureName;
-            PostalCode = address.PostalCode;
-            SubLocality = address.SubLocality;
-            Thoroughfare = address.Thoroughfare;
-            SubThoroughfare = address.SubThoroughfare;
-        }
-
         /// <summary>
         /// Gets or sets the latitude.
         /// </summary>

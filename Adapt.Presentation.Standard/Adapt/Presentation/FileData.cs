@@ -11,7 +11,7 @@ namespace Adapt.Presentation
         public Stream  FileStream { get; set; }
         public string FileName { get; set; }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             FileStream?.Dispose();
         }

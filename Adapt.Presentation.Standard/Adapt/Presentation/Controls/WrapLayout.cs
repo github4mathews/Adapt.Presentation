@@ -11,14 +11,16 @@ namespace Adapt.Presentation.Controls
     /// <author>Jason Smith</author>
     public class WrapLayout : Layout<View>
     {
-        readonly Dictionary<View, SizeRequest> layoutCache = new Dictionary<View, SizeRequest>();
+        private readonly Dictionary<View, SizeRequest> _LayoutCache = new Dictionary<View, SizeRequest>();
 
         /// <summary>
         /// Backing Storage for the Spacing property
         /// </summary>
         public static readonly BindableProperty SpacingProperty =
+#pragma warning disable CS0618 // Type or member is obsolete
             BindableProperty.Create<WrapLayout, double>(w => w.Spacing, 5,
-                propertyChanged: (bindable, oldvalue, newvalue) => ((WrapLayout)bindable).layoutCache.Clear());
+                propertyChanged: (bindable, oldvalue, newvalue) => ((WrapLayout)bindable)._LayoutCache.Clear());
+#pragma warning restore CS0618 // Type or member is obsolete
 
         /// <summary>
         /// Spacing added between elements (both directions)
@@ -26,8 +28,8 @@ namespace Adapt.Presentation.Controls
         /// <value>The spacing.</value>
         public double Spacing
         {
-            get { return (double)GetValue(SpacingProperty); }
-            set { SetValue(SpacingProperty, value); }
+            get => (double)GetValue(SpacingProperty);
+            set => SetValue(SpacingProperty, value);
         }
 
         public WrapLayout()
@@ -38,24 +40,21 @@ namespace Adapt.Presentation.Controls
         protected override void OnChildMeasureInvalidated()
         {
             base.OnChildMeasureInvalidated();
-            layoutCache.Clear();
+            _LayoutCache.Clear();
         }
 
         [Obsolete]
         protected override SizeRequest OnSizeRequest(double widthConstraint, double heightConstraint)
         {
 
-            double lastX;
-            double lastY;
-            NaiveLayout(widthConstraint, heightConstraint, out lastX, out lastY);
+            NaiveLayout(widthConstraint, out double lastX, out double lastY);
 
             return new SizeRequest(new Size(lastX, lastY));
         }
 
         protected override void LayoutChildren(double x, double y, double width, double height)
         {
-            double lastX, lastY;
-            var layout = NaiveLayout(width, height, out lastX, out lastY);
+            var layout = NaiveLayout(width, out double lastX, out double lastY);
 
             foreach (var t in layout)
             {
@@ -68,7 +67,7 @@ namespace Adapt.Presentation.Controls
             }
         }
 
-        private List<List<Tuple<View, Rectangle>>> NaiveLayout(double width, double height, out double lastX, out double lastY)
+        private List<List<Tuple<View, Rectangle>>> NaiveLayout(double width, out double lastX, out double lastY)
         {
             double startX = 0;
             double startY = 0;
@@ -83,10 +82,11 @@ namespace Adapt.Presentation.Controls
 
             foreach (var child in Children)
             {
-                SizeRequest sizeRequest;
-                if (!layoutCache.TryGetValue(child, out sizeRequest))
+                if (!_LayoutCache.TryGetValue(child, out SizeRequest sizeRequest))
                 {
-                    layoutCache[child] = sizeRequest = child.GetSizeRequest(double.PositiveInfinity, double.PositiveInfinity);
+#pragma warning disable CS0618 // Type or member is obsolete
+                    _LayoutCache[child] = sizeRequest = child.GetSizeRequest(double.PositiveInfinity, double.PositiveInfinity);
+#pragma warning restore CS0618 // Type or member is obsolete
                 }
 
                 var paddedWidth = sizeRequest.Request.Width + Spacing;

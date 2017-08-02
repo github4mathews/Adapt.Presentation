@@ -45,16 +45,18 @@ namespace Adapt.Presentation.AndroidPlatform
                 System.Diagnostics.Debug.Write(data.Data);
                 try
                 {
-                    var _uri = data.Data;
+                    var uri = data.Data;
 
-                    var filePath = IOUtil.getPath(ApplicationContext, _uri);
+                    var filePath = IoUtil.GetPath(ApplicationContext, uri);
 
                     if (string.IsNullOrEmpty(filePath))
-                        filePath = _uri.Path;
+                    {
+                        filePath = uri.Path;
+                    }
 
-                    var file = IOUtil.readFile(filePath);
+                    var file = IoUtil.ReadFile(filePath);
 
-                    var fileName = GetFileName(ApplicationContext, _uri);
+                    var fileName = GetFileName(ApplicationContext, uri);
 
                     OnFilePicked(new FilePickerEventArgs(file, fileName, filePath));
                 }

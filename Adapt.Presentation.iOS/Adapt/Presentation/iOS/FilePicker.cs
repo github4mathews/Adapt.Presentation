@@ -1,7 +1,6 @@
 using Foundation;
 using MobileCoreServices;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -15,8 +14,8 @@ namespace Adapt.Presentation.iOS
     /// </summary>
     public class FilePicker : NSObject, IUIDocumentMenuDelegate, IFilePicker
     {
-        private int _requestId;
-        private TaskCompletionSource<FileData> _completionSource;
+        private int _RequestId;
+        private TaskCompletionSource<FileData> _CompletionSource;
 
         /// <summary>
         /// Event which is invoked when a file was picked
@@ -81,7 +80,7 @@ namespace Adapt.Presentation.iOS
         public void DocumentPicker_WasCancelled(object sender, EventArgs e)
         {
             {
-                var tcs = Interlocked.Exchange(ref _completionSource, null);
+                var tcs = Interlocked.Exchange(ref _CompletionSource, null);
                 tcs.SetResult(null);
             }
         }
@@ -104,8 +103,10 @@ namespace Adapt.Presentation.iOS
 
             var ntcs = new TaskCompletionSource<FileData>(id);
 
-            if (Interlocked.CompareExchange(ref _completionSource, ntcs, null) != null)
+            if (Interlocked.CompareExchange(ref _CompletionSource, ntcs, null) != null)
+            {
                 throw new InvalidOperationException("Only one operation can be active at a time");
+            }
 
             var allowedUtis = new string[] {
                 UTType.UTF8PlainText,
@@ -140,50 +141,37 @@ namespace Adapt.Presentation.iOS
 
             Handler = (s, e) =>
             {
-                var tcs = Interlocked.Exchange(ref _completionSource, null);
+                var tcs = Interlocked.Exchange(ref _CompletionSource, null);
 
                 tcs?.SetResult(new FileData { FileName = e.FileName, FileStream = File.OpenRead(e.FilePath) });
             };
 
-            return _completionSource.Task;
+            return _CompletionSource.Task;
         }
 
         public void WasCancelled(UIDocumentMenuViewController documentMenu)
         {
-            var tcs = Interlocked.Exchange(ref _completionSource, null);
+            var tcs = Interlocked.Exchange(ref _CompletionSource, null);
 
             tcs?.SetResult(null);
         }
 
         private int GetRequestId()
         {
-            var id = _requestId;
+            var id = _RequestId;
 
-            if (_requestId == int.MaxValue)
-                _requestId = 0;
+            if (_RequestId == int.MaxValue)
+            {
+                _RequestId = 0;
+            }
             else
-                _requestId++;
+            {
+                _RequestId++;
+            }
 
             return id;
         }
 
-        //public async Task<bool> SaveFile(FileData fileToSave)
-        //{
-        //    try
-        //    {
-        //        var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        //        var fileName = Path.Combine(documents, fileToSave.FileName);
-
-        //        File.WriteAllBytes(fileName, fileToSave.DataArray);
-
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Debug.WriteLine(ex.Message);
-        //        return false;
-        //    }
-        //}
 
         public void OpenFile(NSUrl fileUrl)
         {
@@ -212,7 +200,9 @@ namespace Adapt.Presentation.iOS
             OpenFile(url);
         }
 
-        public async Task<FileData> PickAndOpenFileForWriting(IDictionary<string, IList<string>> fileTypes, string fileName)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task<FileData> PickAndOpenFileForWriting(FileSelectionDictionary fileTypes, string fileName)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var filePath = Path.Combine(documents, fileName);

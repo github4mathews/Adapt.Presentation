@@ -22,6 +22,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
+    <CodeAnalysisRuleSet>..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -44,7 +46,7 @@
     <Compile Include="Adapt\Presentation\iOS\FilePicker.cs" />
     <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocationSingleUpdateDelegate.cs" />
     <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocationUtils.cs" />
-    <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocatorImplementation.cs" />
+    <Compile Include="Adapt\Presentation\iOS\Geolocator\Geolocator.cs" />
     <Compile Include="Adapt\Presentation\iOS\Media.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerController.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerDelegate.cs" />
@@ -53,6 +55,7 @@
     <Compile Include="Adapt\Presentation\iOS\Permissions.cs" />
     <Compile Include="Adapt\Presentation\iOS\PresentationFactory.cs" />
     <Compile Include="Adapt\Presentation\iOS\UIImageExtensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -60,6 +63,11 @@
       <Project>{dbc98916-4e18-40ff-833d-af318da6a1d0}</Project>
       <Name>Adapt.Presentation.Standard</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <CodeAnalysisDictionary Include="..\Adapt.Presentation.Standard\CodeRulesDictionary.xml">
+      <Link>CodeRulesDictionary.xml</Link>
+    </CodeAnalysisDictionary>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>

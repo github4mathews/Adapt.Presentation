@@ -11,13 +11,12 @@ namespace Adapt.Presentation.Controls
         #region Fields
         private readonly DatePicker _Date;
         private readonly TimePicker _Time;
-        private readonly Button _ClearButton;
-        private readonly Button _NowButton;
         private bool _IsChanging;
         #endregion
 
         #region Bindable Properties
         public static readonly BindableProperty ValueProperty =
+#pragma warning disable CS0618 // Type or member is obsolete
         BindableProperty.Create<DateTimePicker, DateTime>
         (
             p => p.Value,
@@ -25,6 +24,7 @@ namespace Adapt.Presentation.Controls
             BindingMode.TwoWay,
             propertyChanging: ValueChanging
         );
+#pragma warning restore CS0618 // Type or member is obsolete
 
         private static void ValueChanging(BindableObject bindable, DateTime oldValue, DateTime newValue)
         {
@@ -50,16 +50,16 @@ namespace Adapt.Presentation.Controls
             Padding = 2;
             _Date = new DatePicker { Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern };
             _Time = new TimePicker { Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern };
-            _ClearButton = new Button { Text = "Clear" };
-            _NowButton = new Button { Text = "Now" };
-            Children.Add(_ClearButton);
-            Children.Add(_NowButton);
+            var clearButton = new Button { Text = "Clear" };
+            var nowButton = new Button { Text = "Now" };
+            Children.Add(clearButton);
+            Children.Add(nowButton);
             Children.Add(_Date);
             Children.Add(_Time);
             _Date.PropertyChanged += DateOrTimePropertyChanged;
             _Time.PropertyChanged += DateOrTimePropertyChanged;
-            _ClearButton.Clicked += ClearButton_Clicked;
-            _NowButton.Clicked += NowButton_Clicked;
+            clearButton.Clicked += ClearButton_Clicked;
+            nowButton.Clicked += NowButton_Clicked;
             _Date.Date = new DateTime();
             _Time.Time = new DateTime().TimeOfDay;
         }

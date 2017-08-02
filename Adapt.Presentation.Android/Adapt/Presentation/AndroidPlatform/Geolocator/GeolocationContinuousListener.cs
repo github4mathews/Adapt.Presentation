@@ -5,58 +5,62 @@ using Android.OS;
 using System.Collections.Generic;
 using Android.Runtime;
 using Adapt.Presentation.Geolocator;
+using lang = Java.Lang;
 
 namespace Adapt.Presentation.AndroidPlatform.Geolocator
 {
     [Preserve(AllMembers = true)]
     internal class GeolocationContinuousListener
-      : Java.Lang.Object, ILocationListener
+      : lang.Object, ILocationListener
     {
-        IList<string> providers;
-        readonly HashSet<string> activeProviders = new HashSet<string>();
-        readonly LocationManager manager;
+        #region Fields
+        private readonly HashSet<string> _ActiveProviders = new HashSet<string>();
+        private readonly LocationManager _Manager;
+        private string _ActiveProvider;
+        private Location _LastLocation;
+        private TimeSpan _TimePeriod;
+        #endregion
 
-        string activeProvider;
-        Location lastLocation;
-        TimeSpan timePeriod;
+        #region Events
+        public event EventHandler<PositionErrorEventArgs> PositionError;
+        public event EventHandler<PositionEventArgs> PositionChanged;
+        #endregion
 
-        public GeolocationContinuousListener(LocationManager manager, TimeSpan timePeriod, IList<string> providers)
+        public GeolocationContinuousListener(LocationManager manager, TimeSpan timePeriod, IEnumerable<string> providers)
         {
-            this.manager = manager;
-            this.timePeriod = timePeriod;
-            this.providers = providers;
+            _Manager = manager;
+            _TimePeriod = timePeriod;
 
             foreach (var p in providers)
             {
                 if (manager.IsProviderEnabled(p))
-                    activeProviders.Add(p);
+                {
+                    _ActiveProviders.Add(p);
+                }
             }
         }
 
-        public event EventHandler<PositionErrorEventArgs> PositionError;
-        public event EventHandler<PositionEventArgs> PositionChanged;
-
         public void OnLocationChanged(Location location)
         {
-            if (location.Provider != activeProvider)
+            if (location.Provider != _ActiveProvider)
             {
-                if (activeProvider != null && manager.IsProviderEnabled(activeProvider))
+                if (_ActiveProvider != null && _Manager.IsProviderEnabled(_ActiveProvider))
                 {
-                    var pr = manager.GetProvider(location.Provider);
-                    var lapsed = GetTimeSpan(location.Time) - GetTimeSpan(lastLocation.Time);
+                    var pr = _Manager.GetProvider(location.Provider);
+                    var lapsed = GetTimeSpan(location.Time) - GetTimeSpan(_LastLocation.Time);
 
-                    if (pr.Accuracy > manager.GetProvider(activeProvider).Accuracy
-                      && lapsed < timePeriod.Add(timePeriod))
+                    if (pr.Accuracy > _Manager.GetProvider(_ActiveProvider).Accuracy
+                      && lapsed < _TimePeriod.Add(_TimePeriod))
                     {
                         location.Dispose();
                         return;
                     }
                 }
 
-                activeProvider = location.Provider;
+                _ActiveProvider = location.Provider;
             }
 
-            var previous = Interlocked.Exchange(ref lastLocation, location);
+            var previous = Interlocked.Exchange(ref _LastLocation, location);
             previous?.Dispose();
 
             PositionChanged?.Invoke(this, new PositionEventArgs(location.ToPosition()));
@@ -65,22 +69,30 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
         public void OnProviderDisabled(string provider)
         {
             if (provider == LocationManager.PassiveProvider)
-                return;
-
-            lock (activeProviders)
             {
-                if (activeProviders.Remove(provider) && activeProviders.Count == 0)
+                return;
+            }
+
+            lock (_ActiveProviders)
+            {
+                if (_ActiveProviders.Remove(provider) && _ActiveProviders.Count == 0)
+                {
                     OnPositionError(new PositionErrorEventArgs(GeolocationError.PositionUnavailable));
+                }
             }
         }
 
         public void OnProviderEnabled(string provider)
         {
             if (provider == LocationManager.PassiveProvider)
+            {
                 return;
+            }
 
-            lock (activeProviders)
-              activeProviders.Add(provider);
+            lock (_ActiveProviders)
+            {
+                _ActiveProviders.Add(provider);
+            }
         }
 
         public void OnStatusChanged(string provider, Availability status, Bundle extras)
@@ -97,10 +109,14 @@ namespace Adapt.Presentation.AndroidPlatform.Geolocator
             }
         }
 
-        private TimeSpan GetTimeSpan(long time) =>  new TimeSpan(TimeSpan.TicksPerMillisecond * time);
-        
+        private static TimeSpan GetTimeSpan(long time)
+        {
+            return new TimeSpan(TimeSpan.TicksPerMillisecond * time);
+        }
 
-        private void OnPositionError(PositionErrorEventArgs e) => PositionError?.Invoke(this, e);
-        
+        private void OnPositionError(PositionErrorEventArgs e)
+        {
+            PositionError?.Invoke(this, e);
+        }
     }
 }

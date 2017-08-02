@@ -46,6 +46,8 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <PlatformTarget>x86</PlatformTarget>
@@ -107,13 +109,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Adapt\Presentation\UWP\FilePicker.cs" />
-    <Compile Include="Adapt\Presentation\UWP\Geolocator\Extensions.cs" />
     <Compile Include="Adapt\Presentation\UWP\Geolocator\Geolocator.cs" />
     <Compile Include="Adapt\Presentation\UWP\Geolocator\GeolocatorUtils.cs" />
     <Compile Include="Adapt\Presentation\UWP\Geolocator\Timeout.cs" />
     <Compile Include="Adapt\Presentation\UWP\Media.cs" />
     <Compile Include="Adapt\Presentation\UWP\Permissions.cs" />
     <Compile Include="Adapt\Presentation\UWP\PresentationFactory.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Adapt.Presentation.UWP.rd.xml" />
   </ItemGroup>

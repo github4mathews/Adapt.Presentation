@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Adapt.Presentation
 {
@@ -28,7 +27,7 @@ namespace Adapt.Presentation
         /// </summary>
         /// <returns>The permissions and their status.</returns>
         /// <param name="permissions">Permissions to request.</param>
-        Task<Dictionary<Permission, PermissionStatus>> RequestPermissionsAsync(params Permission[] permissions);
+        Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions);
 
 
         /// <summary>

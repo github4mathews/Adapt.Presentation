@@ -17,27 +17,33 @@ namespace Adapt.Presentation.AndroidPlatform
     public class FilePicker : IFilePicker
     {
         #region Fields
-        private int _requestId;
-        private TaskCompletionSource<FileData> _completionSource;
+        private int _RequestId;
+        private TaskCompletionSource<FileData> _CompletionSource;
         private readonly Context _Context;
+        private Permissions _Permission;
         #endregion
 
         #region Constructor
-        public FilePicker(Context context)
+        public FilePicker(Context context, Permissions permission)
         {
             _Context = context;
+            _Permission = permission;
         }
         #endregion
 
         #region Private Methods
         private int GetRequestId()
         {
-            var id = _requestId;
+            var id = _RequestId;
 
-            if (_requestId == int.MaxValue)
-                _requestId = 0;
+            if (_RequestId == int.MaxValue)
+            {
+                _RequestId = 0;
+            }
             else
-                _requestId++;
+            {
+                _RequestId++;
+            }
 
             return id;
         }
@@ -48,8 +54,10 @@ namespace Adapt.Presentation.AndroidPlatform
 
             var ntcs = new TaskCompletionSource<FileData>(id);
 
-            if (Interlocked.CompareExchange(ref _completionSource, ntcs, null) != null)
+            if (Interlocked.CompareExchange(ref _CompletionSource, ntcs, null) != null)
+            {
                 throw new InvalidOperationException("Only one operation can be active at a time");
+            }
 
             try
             {
@@ -63,18 +71,18 @@ namespace Adapt.Presentation.AndroidPlatform
 
                 handler = (s, e) =>
                 {
-                    var tcs = Interlocked.Exchange(ref _completionSource, null);
+                    var tcs = Interlocked.Exchange(ref _CompletionSource, null);
 
                     FilePickerActivity.FilePicked -= handler;
 
-                    Stream fileStream = isSave ? File.OpenRead(e.FilePath) : File.OpenWrite(e.FilePath);
+                    var fileStream = isSave ? File.OpenWrite(e.FilePath) : File.OpenRead(e.FilePath);
 
                     tcs?.SetResult(new FileData { FileName = e.FileName, FileStream = fileStream });
                 };
 
                 cancelledHandler = (s, e) =>
                 {
-                    var tcs = Interlocked.Exchange(ref _completionSource, null);
+                    var tcs = Interlocked.Exchange(ref _CompletionSource, null);
 
                     FilePickerActivity.FilePickCancelled -= cancelledHandler;
 
@@ -89,18 +97,29 @@ namespace Adapt.Presentation.AndroidPlatform
                 Debug.Write(exAct);
             }
 
-            return _completionSource.Task;
+            return _CompletionSource.Task;
         }
 
         #endregion
 
         #region Public Methods (Implementation)
-        public Task<FileData> PickAndOpenFileForReading()
+        public async Task<FileData> PickAndOpenFileForReading()
         {
-            return PickAndOpenFile(false);
+            var permissionStatus = await _Permission.CheckPermissionStatusAsync(Permission.Storage);
+
+            if (permissionStatus != PermissionStatus.Granted)
+            {
+                var permissionStatusDictionary = await _Permission.RequestPermissionsAsync(Permission.Storage);
+                if (permissionStatusDictionary.ContainsKey(Permission.Storage) && permissionStatusDictionary[Permission.Storage] != PermissionStatus.Granted)
+                {
+                    return null;
+                }
+            }
+
+            return await PickAndOpenFile(false);
         }
 
-        public async Task<FileData> PickAndOpenFileForWriting(IDictionary<string, IList<string>> fileTypes, string fileName)
+        public async Task<FileData> PickAndOpenFileForWriting(FileSelectionDictionary fileTypes, string fileName)
         {
             var directory = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, Android.OS.Environment.DirectoryDownloads);
 

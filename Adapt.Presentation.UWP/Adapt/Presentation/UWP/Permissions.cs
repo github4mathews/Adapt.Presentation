@@ -13,7 +13,7 @@ namespace Adapt.Presentation.UWP
     /// </summary>
     public class Permissions : IPermissions
     {
-        private readonly Guid ActivitySensorClassId = new Guid("9D9E0118-1807-4F2E-96E4-2CE57142E196");
+        private readonly Guid _ActivitySensorClassId = new Guid("9D9E0118-1807-4F2E-96E4-2CE57142E196");
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission
         /// Only on Android
@@ -57,8 +57,8 @@ namespace Adapt.Presentation.UWP
                 case Permission.Sensors:
                     {
                         // Determine if the user has allowed access to activity sensors
-                        var deviceAccessInfo = DeviceAccessInformation.CreateFromDeviceClassId(ActivitySensorClassId);
-                        switch(deviceAccessInfo.CurrentStatus)
+                        var deviceAccessInfo = DeviceAccessInformation.CreateFromDeviceClassId(_ActivitySensorClassId);
+                        switch (deviceAccessInfo.CurrentStatus)
                         {
                             case DeviceAccessStatus.Allowed:
                                 return Task.FromResult(PermissionStatus.Granted);
@@ -79,19 +79,19 @@ namespace Adapt.Presentation.UWP
             return Task.FromResult(PermissionStatus.Granted);
         }
 
-        private async Task<PermissionStatus> CheckContactsAsync()
+        private static async Task<PermissionStatus> CheckContactsAsync()
         {
             var accessStatus = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
 
             return accessStatus == null ? PermissionStatus.Denied : PermissionStatus.Granted;
         }
 
-        private async Task<PermissionStatus> CheckLocationAsync()
+        private static async Task<PermissionStatus> CheckLocationAsync()
         {
 
             var accessStatus = await wingeo.Geolocator.RequestAccessAsync();
 
-            switch(accessStatus)
+            switch (accessStatus)
             {
                 case wingeo.GeolocationAccessStatus.Allowed:
                     return PermissionStatus.Granted;
@@ -108,10 +108,17 @@ namespace Adapt.Presentation.UWP
         /// </summary>
         /// <returns>The permissions and their status.</returns>
         /// <param name="permissions">Permissions to request.</param>
-        public Task<Dictionary<Permission, PermissionStatus>> RequestPermissionsAsync(params Permission[] permissions)
+        public Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions)
         {
             var results = permissions.ToDictionary(permission => permission, permission => PermissionStatus.Granted);
-            return Task.FromResult(results);
+
+            var retVal = new PermissionStatusDictionary();
+            foreach (var key in results.Keys)
+            {
+                retVal.Add(key, results[key]);
+            }
+
+            return Task.FromResult(retVal);
         }
 
         public bool OpenAppSettings()

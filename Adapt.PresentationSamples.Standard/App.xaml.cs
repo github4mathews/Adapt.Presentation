@@ -1,24 +1,22 @@
 ﻿using Adapt.Presentation;
-using Xamarin.Forms;
+using Adapt.Presentation.Geolocator;
 
 namespace Adapt.PresentationSamples
 {
     public partial class App
     {
-        #region Fields
-        private ContentPage _MainPage;
-        #endregion
-
         #region Public Static Properties
         public static IPresentationFactory PresentationFactory { get; private set; }
         public static IPermissions CurrentPermissions { get; private set; }
+        public static IGeolocator Geolocator { get; private set; }
         #endregion
 
         #region Constructor
-        public App(IPresentationFactory presentationFactory, IPermissions currentPermissions)
+        public App(IPresentationFactory presentationFactory, IPermissions currentPermissions, IGeolocator geolocator)
         {
             PresentationFactory = presentationFactory;
             CurrentPermissions = currentPermissions;
+            Geolocator = geolocator;
 
             var mainPage = new MainPage();
 

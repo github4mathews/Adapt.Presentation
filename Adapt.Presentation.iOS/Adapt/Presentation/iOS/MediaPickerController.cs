@@ -29,7 +29,7 @@ namespace Adapt.Presentation.iOS
         : UIImagePickerController
     {
 
-        internal MediaPickerController(MediaPickerDelegate mpDelegate)
+        internal MediaPickerController(NSObject mpDelegate)
         {
             base.Delegate = mpDelegate;
         }
@@ -43,9 +43,13 @@ namespace Adapt.Presentation.iOS
             set
             {
                 if (value == null)
-                    base.Delegate = value;
+                {
+                    base.Delegate = null;
+                }
                 else
+                {
                     throw new NotSupportedException();
+                }
             }
         }
 
@@ -53,7 +57,9 @@ namespace Adapt.Presentation.iOS
         /// Gets result of picker
         /// </summary>
         /// <returns></returns>
-        public Task<MediaFile> GetResultAsync() =>
-            ((MediaPickerDelegate)Delegate).Task;
+        public Task<MediaFile> GetResultAsync()
+        {
+            return ((MediaPickerDelegate)Delegate).Task;
+        }
     }
 }

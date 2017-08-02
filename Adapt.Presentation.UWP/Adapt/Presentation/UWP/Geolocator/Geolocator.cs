@@ -5,6 +5,7 @@ using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using System.Threading;
 using Adapt.Presentation.Geolocator;
+using windowsgeolocator = Windows.Devices.Geolocation.Geolocator;
 #if !WINDOWS_APP
 using Windows.Services.Maps;
 #endif
@@ -16,14 +17,10 @@ namespace Adapt.Presentation.UWP.Geolocator
     /// </summary>
     public class Geolocator : IGeolocator
     {
-        double desiredAccuracy;
-        Windows.Devices.Geolocation.Geolocator locator = new Windows.Devices.Geolocation.Geolocator();
-
-
-        public Geolocator()
-        {
-            DesiredAccuracy = 100;
-        }
+        #region Fields
+        private double _DesiredAccuracy = 100;
+        private windowsgeolocator _Locator = new windowsgeolocator();
+        #endregion
 
         /// <summary>
         /// Position error event handler
@@ -83,11 +80,11 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// </summary>
         public double DesiredAccuracy
         {
-            get { return desiredAccuracy; }
+            get => _DesiredAccuracy;
             set
             {
-                desiredAccuracy = value;
-                GetGeolocator().DesiredAccuracy = (value < 100) ? PositionAccuracy.High : PositionAccuracy.Default;
+                _DesiredAccuracy = value;
+                GetGeolocator().DesiredAccuracy = value < 100 ? PositionAccuracy.High : PositionAccuracy.Default;
             }
         }
 
@@ -104,25 +101,25 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// <returns>Best and most recent location or null if none found</returns>
         public Task<Position> GetLastKnownLocationAsync()
         {
-            return Task.Factory.StartNew<Position>(()=> null);
+            return Task.Factory.StartNew<Position>(() => null);
         }
 
         /// <summary>
         /// Gets position async with specified parameters
         /// </summary>
-        /// <param name="timeout">Timeout to wait, Default Infinite</param>
-        /// <param name="token">Cancelation token</param>
-        /// <param name="includeHeading">If you would like to include heading</param>
-        /// <returns>Position</returns>
-        public Task<Position> GetPositionAsync(TimeSpan? timeout, CancellationToken? cancelToken = null, bool includeHeading = false)
+        public Task<Position> GetPositionAsync(TimeSpan? timeout, CancellationToken? cancelToken, bool includeHeading)
         {
             var timeoutMilliseconds = timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : Timeout.Infite;
 
             if (timeoutMilliseconds < 0 && timeoutMilliseconds != Timeout.Infite)
+            {
                 throw new ArgumentOutOfRangeException(nameof(timeout));
+            }
 
             if (!cancelToken.HasValue)
+            {
                 cancelToken = CancellationToken.None;
+            }
 
             var pos = GetGeolocator().GetGeopositionAsync(TimeSpan.FromTicks(0), TimeSpan.FromDays(365));
             cancelToken.Value.Register(o => ((IAsyncOperation<Geoposition>)o).Cancel(), pos);
@@ -147,7 +144,9 @@ namespace Adapt.Presentation.UWP.Geolocator
                     case AsyncStatus.Error:
                         var ex = op.ErrorCode;
                         if (ex is UnauthorizedAccessException)
+                        {
                             ex = new GeolocationException(GeolocationError.Unauthorized, ex);
+                        }
 
                         tcs.SetException(ex);
                         break;
@@ -170,7 +169,9 @@ namespace Adapt.Presentation.UWP.Geolocator
         {
 #if !WINDOWS_APP
             if (position == null)
+            {
                 return null;
+            }
 
             var queryResults =
                 await MapLocationFinder.FindLocationsAtAsync(
@@ -185,19 +186,23 @@ namespace Adapt.Presentation.UWP.Geolocator
         /// <summary>
 		/// Start listening for changes
 		/// </summary>
-		/// <param name="minimumTime">Time</param>
-		/// <param name="minimumDistance">Distance</param>
-		/// <param name="includeHeading">Include heading or not</param>
-		/// <param name="listenerSettings">Optional settings (iOS only)</param>
 		public Task<bool> StartListeningAsync(TimeSpan minTime, double minDistance, bool includeHeading = false, ListenerSettings settings = null)
         {
 
             if (minTime.TotalMilliseconds < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(minTime));
+            }
+
             if (minDistance < 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(minDistance));
+            }
+
             if (IsListening)
+            {
                 throw new InvalidOperationException();
+            }
 
             IsListening = true;
 
@@ -216,17 +221,19 @@ namespace Adapt.Presentation.UWP.Geolocator
         public Task<bool> StopListeningAsync()
         {
             if (!IsListening)
+            {
                 return Task.FromResult(true);
+            }
 
-            locator.PositionChanged -= OnLocatorPositionChanged;
-            locator.StatusChanged -= OnLocatorStatusChanged;
+            _Locator.PositionChanged -= OnLocatorPositionChanged;
+            _Locator.StatusChanged -= OnLocatorStatusChanged;
             IsListening = false;
 
             return Task.FromResult(true);
         }
 
 
-        private async void OnLocatorStatusChanged(Windows.Devices.Geolocation.Geolocator sender, StatusChangedEventArgs e)
+        private async void OnLocatorStatusChanged(windowsgeolocator sender, StatusChangedEventArgs e)
         {
             GeolocationError error;
             switch (e.Status)
@@ -249,31 +256,35 @@ namespace Adapt.Presentation.UWP.Geolocator
                 OnPositionError(new PositionErrorEventArgs(error));
             }
 
-            locator = null;
+            _Locator = null;
         }
 
-        private void OnLocatorPositionChanged(Windows.Devices.Geolocation.Geolocator sender, PositionChangedEventArgs e)
+        private void OnLocatorPositionChanged(windowsgeolocator sender, PositionChangedEventArgs e)
         {
             OnPositionChanged(new PositionEventArgs(GetPosition(e.Position)));
         }
 
-        private void OnPositionChanged(PositionEventArgs e) => PositionChanged?.Invoke(this, e);
-
-
-        private void OnPositionError(PositionErrorEventArgs e) => PositionError?.Invoke(this, e);
-
-
-        private Windows.Devices.Geolocation.Geolocator GetGeolocator()
+        private void OnPositionChanged(PositionEventArgs e)
         {
-            var loc = locator;
+            PositionChanged?.Invoke(this, e);
+        }
+
+        private void OnPositionError(PositionErrorEventArgs e)
+        {
+            PositionError?.Invoke(this, e);
+        }
+
+        private windowsgeolocator GetGeolocator()
+        {
+            var loc = _Locator;
             if (loc != null)
             {
                 return loc;
             }
 
-            locator = new Windows.Devices.Geolocation.Geolocator();
-            locator.StatusChanged += OnLocatorStatusChanged;
-            loc = locator;
+            _Locator = new windowsgeolocator();
+            _Locator.StatusChanged += OnLocatorStatusChanged;
+            loc = _Locator;
 
             return loc;
         }
@@ -295,13 +306,19 @@ namespace Adapt.Presentation.UWP.Geolocator
             };
 
             if (position.Coordinate.Heading != null)
+            {
                 pos.Heading = position.Coordinate.Heading.Value;
+            }
 
             if (position.Coordinate.Speed != null)
+            {
                 pos.Speed = position.Coordinate.Speed.Value;
+            }
 
             if (position.Coordinate.AltitudeAccuracy.HasValue)
+            {
                 pos.AltitudeAccuracy = position.Coordinate.AltitudeAccuracy.Value;
+            }
 
             pos.Altitude = position.Coordinate.Point.Position.Altitude;
 

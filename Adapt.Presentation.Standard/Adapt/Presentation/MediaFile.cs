@@ -30,11 +30,11 @@ namespace Adapt.Presentation
         /// <summary>
         /// Constructor
         /// </summary>
-        public MediaFile(string path, Func<Stream> streamGetter, string albumPath = null)
+        public MediaFile(string path, Func<Stream> streamGetter, string albumPath )
         {
-            this.streamGetter = streamGetter;
-            this.path = path;
-            this.albumPath = albumPath;
+            _StreamGetter = streamGetter;
+            _Path = path;
+            _AlbumPath = albumPath;
         }
         /// <summary>
         /// Path to file
@@ -43,10 +43,12 @@ namespace Adapt.Presentation
         {
             get
             {
-                if (isDisposed)
+                if (_IsDisposed)
+                {
                     throw new ObjectDisposedException(null);
+                }
 
-                return path;
+                return _Path;
             }
         }
 
@@ -57,17 +59,21 @@ namespace Adapt.Presentation
         {
             get
             {
-                if (isDisposed)
+                if (_IsDisposed)
+                {
                     throw new ObjectDisposedException(null);
+                }
 
-                return albumPath;
+                return _AlbumPath;
             }
             set
             {
-                if (isDisposed)
+                if (_IsDisposed)
+                {
                     throw new ObjectDisposedException(null);
+                }
 
-                albumPath = value;
+                _AlbumPath = value;
             }
         }
 
@@ -77,10 +83,12 @@ namespace Adapt.Presentation
         /// <returns></returns>
         public Stream GetStream()
         {
-            if (isDisposed)
+            if (_IsDisposed)
+            {
                 throw new ObjectDisposedException(null);
+            }
 
-            return streamGetter();
+            return _StreamGetter();
         }
         /// <summary>
         /// 
@@ -91,19 +99,23 @@ namespace Adapt.Presentation
             GC.SuppressFinalize(this);
         }
 
-		bool isDisposed;
-		Func<Stream> streamGetter;
-        readonly string path;
-        string albumPath;
+        private bool _IsDisposed;
+        private Func<Stream> _StreamGetter;
+        private readonly string _Path;
+        private string _AlbumPath;
 
-        void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
-            if (isDisposed)
+            if (_IsDisposed)
+            {
                 return;
+            }
 
-            isDisposed = true;
+            _IsDisposed = true;
 			if(disposing)
-				streamGetter = null;
+            {
+                _StreamGetter = null;
+            }
         }
         /// <summary>
         /// 
