@@ -9,7 +9,11 @@
     <ContentPage Title="Camera" >
         <Button Margin="4" Text="Take Photo" x:Name="TakePhotoButton"  />
     </ContentPage>
-    
+
+    <ContentPage Title="Choose File" >
+        <Button Margin="4" Text="Choose File" x:Name="ChooseFileButton"  />
+    </ContentPage>
+
     <ContentPage Title="DateTimePicker" x:Name="DateTimePickerTab" >
         <Grid>
             <Grid.RowDefinitions>
