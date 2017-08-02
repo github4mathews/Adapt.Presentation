@@ -624,7 +624,7 @@ namespace Adapt.Presentation.AndroidPlatform
             catch (Exception ex)
             {
 #if DEBUG
-                throw ex;
+                throw;
 #else
                 return Task.FromResult(false);
 #endif
