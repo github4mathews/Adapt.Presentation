@@ -18,9 +18,9 @@ namespace XamForms.Droid
 
             xf.Forms.Init(this, bundle);
 
-            var permissions = new Permissions();
+            var permissions = new Permissions(this);
 
-            LoadApplication(new samples.App(new PresentationFactory(ApplicationContext), permissions, new Geolocator(permissions)));
+            LoadApplication(new samples.App(new PresentationFactory(ApplicationContext, permissions), permissions, new Geolocator(permissions)));
         }
     }
 }

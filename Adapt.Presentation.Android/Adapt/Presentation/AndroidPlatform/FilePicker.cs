@@ -20,12 +20,14 @@ namespace Adapt.Presentation.AndroidPlatform
         private int _RequestId;
         private TaskCompletionSource<FileData> _CompletionSource;
         private readonly Context _Context;
+        private Permissions _Permission;
         #endregion
 
         #region Constructor
-        public FilePicker(Context context)
+        public FilePicker(Context context, Permissions permission)
         {
             _Context = context;
+            _Permission = permission;
         }
         #endregion
 
@@ -101,9 +103,20 @@ namespace Adapt.Presentation.AndroidPlatform
         #endregion
 
         #region Public Methods (Implementation)
-        public Task<FileData> PickAndOpenFileForReading()
+        public async Task<FileData> PickAndOpenFileForReading()
         {
-            return PickAndOpenFile(false);
+            var permissionStatus = await _Permission.CheckPermissionStatusAsync(Permission.Storage);
+
+            if (permissionStatus != PermissionStatus.Granted)
+            {
+                var permissionStatusDictionary = await _Permission.RequestPermissionsAsync(Permission.Storage);
+                if (permissionStatusDictionary.ContainsKey(Permission.Storage) && permissionStatusDictionary[Permission.Storage] != PermissionStatus.Granted)
+                {
+                    return null;
+                }
+            }
+
+            return await PickAndOpenFile(false);
         }
 
         public async Task<FileData> PickAndOpenFileForWriting(FileSelectionDictionary fileTypes, string fileName)

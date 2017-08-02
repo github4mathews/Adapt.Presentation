@@ -47,7 +47,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Adapt\Presentation\AndroidPlatform\CrossCurrentActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\CurrentActivityImplementation.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\FilePicker.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\FilePickerActivity.cs" />

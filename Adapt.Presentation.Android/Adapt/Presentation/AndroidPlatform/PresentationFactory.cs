@@ -7,19 +7,21 @@ namespace Adapt.Presentation.AndroidPlatform
         #region Public Properties
 
         private Context Context { get; }
+        private Permissions _Permissions;
         #endregion
 
         #region Constructor
-        public PresentationFactory(Context context)
+        public PresentationFactory(Context context, Permissions permissions)
         {
             Context = context;
+            _Permissions = permissions;
         }
         #endregion
 
         #region Implementation
         public IFilePicker CreateFilePicker()
         {
-            return new FilePicker(Context);
+            return new FilePicker(Context, _Permissions);
         }
 
         public IMedia CreateMedia(IPermissions currentPermissions)

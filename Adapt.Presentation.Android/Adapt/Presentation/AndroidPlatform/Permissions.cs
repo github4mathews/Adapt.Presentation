@@ -22,6 +22,14 @@ namespace Adapt.Presentation.AndroidPlatform
         private TaskCompletionSource<PermissionStatusDictionary> _Tcs;
         private PermissionStatusDictionary _Results;
         private IList<string> _RequestedPermissions;
+        private app.Activity _Activity;
+        #endregion
+
+        #region Constructor
+        public Permissions(app.Activity activity)
+        {
+            _Activity = activity;
+        }
         #endregion
 
         /// <summary>
@@ -32,8 +40,7 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <param name="permission">Permission to check.</param>
         public Task<bool> ShouldShowRequestPermissionRationaleAsync(Permission permission)
         {
-            var activity = CrossCurrentActivity.Current.Activity;
-            if (activity == null)
+            if (_Activity == null)
             {
                 Debug.WriteLine("Unable to detect current Activity. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
                 return Task.FromResult(false);
@@ -50,7 +57,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
             if (names.Count != 0)
             {
-                return Task.FromResult(names.Any(name => ActivityCompat.ShouldShowRequestPermissionRationale(activity, name)));
+                return Task.FromResult(names.Any(name => ActivityCompat.ShouldShowRequestPermissionRationale(_Activity, name)));
             }
 
             Debug.WriteLine("No permissions found in manifest for: " + permission + " no need to show request rationale");
@@ -80,7 +87,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 return Task.FromResult(PermissionStatus.Unknown);
             }
 
-            var context = CrossCurrentActivity.Current.Activity ?? app.Application.Context;
+            var context = _Activity ?? app.Application.Context;
             if (context != null)
             {
                 return Task.FromResult(names.Any(name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted);
@@ -106,8 +113,7 @@ namespace Adapt.Presentation.AndroidPlatform
             {
                 _Results = new PermissionStatusDictionary();
             }
-            var activity = CrossCurrentActivity.Current.Activity;
-            if (activity == null)
+            if (_Activity == null)
             {
                 Debug.WriteLine("Unable to detect current Activity. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
                 foreach (var permission in permissions)
@@ -159,7 +165,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
             _Tcs = new TaskCompletionSource<PermissionStatusDictionary>();
 
-            ActivityCompat.RequestPermissions(activity, permissionsToRequest.ToArray(), PermissionCode);
+            ActivityCompat.RequestPermissions(_Activity, permissionsToRequest.ToArray(), PermissionCode);
 
             return await _Tcs.Task.ConfigureAwait(false);
         }
@@ -426,7 +432,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 }
 
                 //try to use current activity else application context
-                var context = CrossCurrentActivity.Current.Activity ?? app.Application.Context;
+                var context = _Activity ?? app.Application.Context;
 
                 if (context == null)
                 {
@@ -462,8 +468,7 @@ namespace Adapt.Presentation.AndroidPlatform
         public bool OpenAppSettings()
         {
 
-            var context = CrossCurrentActivity.Current.Activity;
-            if (context == null)
+            if (_Activity == null)
             {
                 return false;
             }
@@ -473,11 +478,11 @@ namespace Adapt.Presentation.AndroidPlatform
                 var settingsIntent = new Intent();
                 settingsIntent.SetAction(Android.Provider.Settings.ActionApplicationDetailsSettings);
                 settingsIntent.AddCategory(Intent.CategoryDefault);
-                settingsIntent.SetData(Android.Net.Uri.Parse("package:" + context.PackageName));
+                settingsIntent.SetData(Android.Net.Uri.Parse("package:" + _Activity.PackageName));
                 settingsIntent.AddFlags(ActivityFlags.NewTask);
                 settingsIntent.AddFlags(ActivityFlags.NoHistory);
                 settingsIntent.AddFlags(ActivityFlags.ExcludeFromRecents);
-                context.StartActivity(settingsIntent);
+                _Activity.StartActivity(settingsIntent);
                 return true;
             }
             catch
