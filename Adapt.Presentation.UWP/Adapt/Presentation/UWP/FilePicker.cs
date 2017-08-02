@@ -67,6 +67,7 @@ namespace Adapt.Presentation.UWP
             var file = await picker.PickSingleFileAsync();
 
             var retVal = new FileData();
+            retVal.FileName = file.Name;
 
             var randomAccessStream = await file.OpenReadAsync();
 
