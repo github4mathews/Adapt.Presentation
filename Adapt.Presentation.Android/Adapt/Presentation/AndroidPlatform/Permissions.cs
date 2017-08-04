@@ -1,14 +1,14 @@
 using Android;
-using app = Android.App;
+using Android.Content;
 using Android.Support.V4.App;
 using Android.Support.V4.Content;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using Android.Content;
 using System.Linq;
+using System.Threading.Tasks;
 using acp = Android.Content.PM;
+using app = Android.App;
 
 namespace Adapt.Presentation.AndroidPlatform
 {
@@ -66,9 +66,7 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <summary>
         /// Determines whether this instance has permission the specified permission.
         /// </summary>
-        /// <returns><c>true</c> if this instance has permission the specified permission; otherwise, <c>false</c>.</returns>
-        /// <param name="permission">Permission to check.</param>
-        public Task<PermissionStatus> CheckPermissionStatusAsync(Permission permission)
+        public async Task<PermissionStatus> CheckPermissionStatusAsync(Permission permission)
         {
             var names = GetManifestNames(permission);
 
@@ -76,24 +74,24 @@ namespace Adapt.Presentation.AndroidPlatform
             if (names == null)
             {
                 Debug.WriteLine("No android specific permissions needed for: " + permission);
-                return Task.FromResult(PermissionStatus.Granted);
+                return PermissionStatus.Granted;
             }
 
             //if no permissions were found then there is an issue and persmission is not set in Android manifest
             if (names.Count == 0)
             {
                 Debug.WriteLine("No permissions found in manifest for: " + permission);
-                return Task.FromResult(PermissionStatus.Unknown);
+                return PermissionStatus.Unknown;
             }
 
             var context = _Activity ?? app.Application.Context;
             if (context != null)
             {
-                return Task.FromResult(names.Any(name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted);
+                return names.Any(name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted;
             }
 
             Debug.WriteLine("Unable to detect current Activity or App Context. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
-            return Task.FromResult(PermissionStatus.Unknown);
+            return PermissionStatus.Unknown;
         }
 
         /// <summary>
@@ -203,12 +201,12 @@ namespace Adapt.Presentation.AndroidPlatform
                     {
                         if (!_Results.ContainsKey(Permission.Speech))
                         {
-                            _Results.Add(Permission.Speech, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                            _Results.Add(Permission.Speech, grantResults[i] == acp.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
                         }
                     }
                     if (!_Results.ContainsKey(permission))
                     {
-                        _Results.Add(permission, grantResults[i] == Android.Content.PM.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
+                        _Results.Add(permission, grantResults[i] == acp.Permission.Granted ? PermissionStatus.Granted : PermissionStatus.Denied);
                     }
                 }
             }

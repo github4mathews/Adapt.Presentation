@@ -23,7 +23,6 @@ namespace Adapt.Presentation
         /// </summary>
         Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions);
 
-
         /// <summary>
         /// Attempts to open the app settings to adjust the permissions.
         /// </summary>

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using wingeo = Windows.Devices.Geolocation;
@@ -13,24 +12,27 @@ namespace Adapt.Presentation.UWP
     /// </summary>
     public class Permissions : IPermissions
     {
+        #region Fields
         private readonly Guid _ActivitySensorClassId = new Guid("9D9E0118-1807-4F2E-96E4-2CE57142E196");
+        #endregion
+
+        #region Public Methods
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission
         /// Only on Android
         /// </summary>
-        /// <returns>True or false to show rationale</returns>
-        /// <param name="permission">Permission to check.</param>
-        public Task<bool> ShouldShowRequestPermissionRationaleAsync(Permission permission)
+        public async Task<bool> ShouldShowRequestPermissionRationaleAsync(Permission permission)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            return Task.FromResult(false);
+            return true;
         }
 
         /// <summary>
         /// Determines whether this instance has permission the specified permission.
         /// </summary>
-        /// <returns><c>true</c> if this instance has permission the specified permission; otherwise, <c>false</c>.</returns>
-        /// <param name="permission">Permission to check.</param>
-        public Task<PermissionStatus> CheckPermissionStatusAsync(Permission permission)
+        public async Task<PermissionStatus> CheckPermissionStatusAsync(Permission permission)
         {
             switch (permission)
             {
@@ -39,15 +41,11 @@ namespace Adapt.Presentation.UWP
                 case Permission.Camera:
                     break;
                 case Permission.Contacts:
-                    return CheckContactsAsync();
+                    return await CheckContactsAsync();
                 case Permission.Location:
-                    return CheckLocationAsync();
+                    return await CheckLocationAsync();
                 case Permission.Microphone:
                     break;
-                //case Permission.NotificationsLocal:
-                //    break;
-                //case Permission.NotificationsRemote:
-                //    break;
                 case Permission.Phone:
                     break;
                 case Permission.Photos:
@@ -61,12 +59,15 @@ namespace Adapt.Presentation.UWP
                         switch (deviceAccessInfo.CurrentStatus)
                         {
                             case DeviceAccessStatus.Allowed:
-                                return Task.FromResult(PermissionStatus.Granted);
+                                return PermissionStatus.Granted;
                             case DeviceAccessStatus.DeniedBySystem:
+                                return PermissionStatus.Denied;
                             case DeviceAccessStatus.DeniedByUser:
-                                return Task.FromResult(PermissionStatus.Denied);
+                                return PermissionStatus.Denied;
+                            case DeviceAccessStatus.Unspecified:
+                                return PermissionStatus.Unknown;
                             default:
-                                return Task.FromResult(PermissionStatus.Unknown);
+                                return PermissionStatus.Unknown;
                         }
                     }
                 case Permission.Sms:
@@ -75,14 +76,18 @@ namespace Adapt.Presentation.UWP
                     break;
                 case Permission.Speech:
                     break;
+                case Permission.Unknown:
+                    break;
+                default:
+                    return PermissionStatus.Granted;
             }
-            return Task.FromResult(PermissionStatus.Granted);
+            return PermissionStatus.Granted;
         }
+        #endregion
 
         private static async Task<PermissionStatus> CheckContactsAsync()
         {
             var accessStatus = await ContactManager.RequestStoreAsync(ContactStoreAccessType.AppContactsReadWrite);
-
             return accessStatus == null ? PermissionStatus.Denied : PermissionStatus.Granted;
         }
 
@@ -97,10 +102,11 @@ namespace Adapt.Presentation.UWP
                     return PermissionStatus.Granted;
                 case wingeo.GeolocationAccessStatus.Unspecified:
                     return PermissionStatus.Unknown;
-
+                case wingeo.GeolocationAccessStatus.Denied:
+                    return PermissionStatus.Denied;
+                default:
+                    return PermissionStatus.Denied;
             }
-
-            return PermissionStatus.Denied;
         }
 
         /// <summary>
