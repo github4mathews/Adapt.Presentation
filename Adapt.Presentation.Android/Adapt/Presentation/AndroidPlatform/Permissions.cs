@@ -23,6 +23,7 @@ namespace Adapt.Presentation.AndroidPlatform
         private PermissionStatusDictionary _Results;
         private IList<string> _RequestedPermissions;
         private app.Activity _Activity;
+        private IRequestPermissionsActivity _RequestPermissionsActivity;
         private const int PermissionCode = 25;
         #endregion
 
@@ -30,9 +31,18 @@ namespace Adapt.Presentation.AndroidPlatform
         public Permissions(app.Activity activity)
         {
             _Activity = activity;
+
+            _RequestPermissionsActivity = _Activity as IRequestPermissionsActivity;
+            if (_RequestPermissionsActivity == null)
+            {
+                throw new Exception($"The Activity must implement the {typeof(IRequestPermissionsActivity).FullName} interface, and this Activity must raise the {nameof(IRequestPermissionsActivity.PermissionsRequestCompleted)} event when the OnRequestPermissionsResult callback is made. OnRequestPermissionsResult must be overriden in the Activity for this to work.");
+            }
+
+            _RequestPermissionsActivity.PermissionsRequestCompleted += RequestPermissionsActivity_PermissionsRequestCompleted;
         }
         #endregion
 
+        #region Public Methods
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission
         /// Only on Android
@@ -87,7 +97,7 @@ namespace Adapt.Presentation.AndroidPlatform
             var context = _Activity ?? app.Application.Context;
             if (context != null)
             {
-                return names.Any(name => ContextCompat.CheckSelfPermission(context, name) == Android.Content.PM.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted;
+                return names.Any(name => ContextCompat.CheckSelfPermission(context, name) == acp.Permission.Denied) ? PermissionStatus.Denied : PermissionStatus.Granted;
             }
 
             Debug.WriteLine("Unable to detect current Activity or App Context. Please ensure Plugin.CurrentActivity is installed in your Android project and your Application class is registering with Application.IActivityLifecycleCallbacks.");
@@ -166,11 +176,13 @@ namespace Adapt.Presentation.AndroidPlatform
 
             return await _Tcs.Task.ConfigureAwait(true);
         }
+        #endregion
 
+        #region Event Handlers
         /// <summary>
         /// Callback that must be set when request permissions has finished
         /// </summary>
-        public void OnRequestPermissionsResult(int requestCode, string[] permissions, acp.Permission[] grantResults)
+        private void RequestPermissionsActivity_PermissionsRequestCompleted(int requestCode, string[] permissions, acp.Permission[] grantResults)
         {
             if (requestCode != PermissionCode)
             {
@@ -212,7 +224,9 @@ namespace Adapt.Presentation.AndroidPlatform
             }
             _Tcs.SetResult(_Results);
         }
+        #endregion
 
+        #region Private Static Methods
         private static Permission GetPermissionForManifestName(string permission)
         {
             switch (permission)
@@ -483,5 +497,6 @@ namespace Adapt.Presentation.AndroidPlatform
                 return false;
             }
         }
+        #endregion
     }
 }

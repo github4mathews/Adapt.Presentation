@@ -56,6 +56,7 @@
     <Compile Include="Adapt\Presentation\AndroidPlatform\Geolocator\Geolocator.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\ICurrentActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\IOUtil.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\IRequestPermissionsActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Media.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\MediaFileExtensions.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\MediaPickedEventArgs.cs" />
