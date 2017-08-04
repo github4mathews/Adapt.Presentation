@@ -15,7 +15,7 @@ namespace Adapt.Presentation.AndroidPlatform
     /// <summary>
     /// Implementation for Feature
     /// </summary>
-    public class Permissions : IPermissions
+    public class Permissions : IPermissions, IDisposable
     {
         #region Fields
         private readonly object _Locker = new object();
@@ -176,6 +176,17 @@ namespace Adapt.Presentation.AndroidPlatform
 
             return await _Tcs.Task.ConfigureAwait(true);
         }
+
+        public void Dispose()
+        {
+            if (_RequestPermissionsActivity != null)
+            {
+                _RequestPermissionsActivity.PermissionsRequestCompleted -= RequestPermissionsActivity_PermissionsRequestCompleted;
+            }
+
+            _Tcs?.Task?.Dispose();
+        }
+
         #endregion
 
         #region Event Handlers
@@ -497,6 +508,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 return false;
             }
         }
+
         #endregion
     }
 }

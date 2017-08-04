@@ -1,8 +1,9 @@
 ﻿using Android.Content;
+using System;
 
 namespace Adapt.Presentation.AndroidPlatform
 {
-    public class PresentationFactory : IPresentationFactory
+    public class PresentationFactory : IPresentationFactory, IDisposable
     {
         #region Public Properties
 
@@ -27,6 +28,11 @@ namespace Adapt.Presentation.AndroidPlatform
         public IMedia CreateMedia(IPermissions currentPermissions)
         {
             return new Media(currentPermissions);
+        }
+
+        public void Dispose()
+        {
+            _Permissions?.Dispose();
         }
         #endregion
     }

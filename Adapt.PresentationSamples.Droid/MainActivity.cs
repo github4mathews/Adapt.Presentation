@@ -13,6 +13,10 @@ namespace XamForms.Droid
     [Activity(Label = "Adapt.Presentation Samples", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : xf.Platform.Android.FormsApplicationActivity, IRequestPermissionsActivity
     {
+        #region Fields
+        private PresentationFactory _PresentationFactory;
+        #endregion
+
         #region Events
         public event PermissionsRequestCompletedHander PermissionsRequestCompleted;
         #endregion
@@ -20,10 +24,11 @@ namespace XamForms.Droid
         #region Protected Overrides
         protected override void OnCreate(Bundle bundle)
         {
+            var permissions = new Permissions(this);
+            _PresentationFactory = new PresentationFactory(ApplicationContext, permissions);
             base.OnCreate(bundle);
             xf.Forms.Init(this, bundle);
-            var permissions = new Permissions(this);
-            LoadApplication(new samples.App(new PresentationFactory(ApplicationContext, permissions), permissions, new Geolocator(permissions)));
+            LoadApplication(new samples.App(_PresentationFactory, permissions, new Geolocator(permissions)));
         }
         #endregion
 
@@ -33,6 +38,14 @@ namespace XamForms.Droid
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             PermissionsRequestCompleted?.Invoke(requestCode, permissions, grantResults);
         }
+
+        protected override void OnStop()
+        {
+            base.OnStop();
+            //TODO: We should dispose when the app shuts down, but for some reason this event fires even when the app is not shutting down
+            //_PresentationFactory.Dispose();
+        }
+
         #endregion
     }
 }
