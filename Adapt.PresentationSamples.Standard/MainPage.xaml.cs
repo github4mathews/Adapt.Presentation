@@ -36,6 +36,12 @@ namespace Adapt.PresentationSamples
                     return;
                 }
 
+                if (!fileData.IsPermissionGranted)
+                {
+                    await DisplayAlert("Permissions", "You must give this app permission to access files", "OK");
+                    return;
+                }
+
                 await DisplayAlert("File Selected", $"File Name: {fileData.FileName}\r\nFile Size: {fileData.FileStream.Length}", "OK");
             }
         }

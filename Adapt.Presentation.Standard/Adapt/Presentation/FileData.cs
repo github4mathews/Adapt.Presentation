@@ -10,6 +10,7 @@ namespace Adapt.Presentation
     {
         public Stream  FileStream { get; set; }
         public string FileName { get; set; }
+        public bool IsPermissionGranted { get; set; }
 
         public virtual void Dispose()
         {

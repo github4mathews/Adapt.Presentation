@@ -76,7 +76,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                     var fileStream = isSave ? File.OpenWrite(e.FilePath) : File.OpenRead(e.FilePath);
 
-                    tcs?.SetResult(new FileData { FileName = e.FileName, FileStream = fileStream });
+                    tcs?.SetResult(new FileData { FileName = e.FileName, FileStream = fileStream, IsPermissionGranted = true });
                 };
 
                 cancelledHandler = (s, e) =>
@@ -111,7 +111,7 @@ namespace Adapt.Presentation.AndroidPlatform
                 var permissionStatusDictionary = await _Permission.RequestPermissionsAsync(Permission.Storage);
                 if (permissionStatusDictionary.ContainsKey(Permission.Storage) && permissionStatusDictionary[Permission.Storage] != PermissionStatus.Granted)
                 {
-                    return null;
+                    return new FileData { IsPermissionGranted = false };
                 }
             }
 
