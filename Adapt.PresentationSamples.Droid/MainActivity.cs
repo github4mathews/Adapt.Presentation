@@ -9,7 +9,7 @@ using xf = Xamarin.Forms;
 
 namespace XamForms.Droid
 {
-    [Activity(Label = "XamForms", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "Adapt.Presentation Samples", Icon = "@drawable/icon", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : xf.Platform.Android.FormsApplicationActivity
     {
         protected override void OnCreate(Bundle bundle)

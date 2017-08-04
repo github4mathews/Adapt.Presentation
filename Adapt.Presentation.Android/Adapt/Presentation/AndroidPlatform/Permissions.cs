@@ -18,12 +18,12 @@ namespace Adapt.Presentation.AndroidPlatform
     public class Permissions : IPermissions
     {
         #region Fields
-
         private readonly object _Locker = new object();
         private TaskCompletionSource<PermissionStatusDictionary> _Tcs;
         private PermissionStatusDictionary _Results;
         private IList<string> _RequestedPermissions;
         private app.Activity _Activity;
+        private const int PermissionCode = 25;
         #endregion
 
         #region Constructor
@@ -37,8 +37,6 @@ namespace Adapt.Presentation.AndroidPlatform
         /// Request to see if you should show a rationale for requesting permission
         /// Only on Android
         /// </summary>
-        /// <returns>True or false to show rationale</returns>
-        /// <param name="permission">Permission to check.</param>
         public Task<bool> ShouldShowRequestPermissionRationaleAsync(Permission permission)
         {
             if (_Activity == null)
@@ -127,7 +125,9 @@ namespace Adapt.Presentation.AndroidPlatform
 
                 return _Results;
             }
+
             var permissionsToRequest = new List<string>();
+
             foreach (var permission in permissions)
             {
                 var result = await CheckPermissionStatusAsync(permission).ConfigureAwait(false);
@@ -169,7 +169,6 @@ namespace Adapt.Presentation.AndroidPlatform
             return await _Tcs.Task.ConfigureAwait(true);
         }
 
-        private const int PermissionCode = 25;
         /// <summary>
         /// Callback that must be set when request permissions has finished
         /// </summary>
@@ -485,8 +484,6 @@ namespace Adapt.Presentation.AndroidPlatform
             {
                 return false;
             }
-
-
         }
     }
 }
