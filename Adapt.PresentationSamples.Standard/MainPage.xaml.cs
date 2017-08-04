@@ -28,7 +28,13 @@ namespace Adapt.PresentationSamples
 
         private async void RequestPermissionButton_Clicked(object sender, EventArgs e)
         {
-            var permissionStatusDictionary = await App.CurrentPermissions.RequestPermissionsAsync(Permission.Camera);
+            var permissionStatusDictionary = await App.CurrentPermissions.RequestPermissionsAsync(Permission.Storage);
+            if (permissionStatusDictionary.ContainsKey(Permission.Storage) && permissionStatusDictionary[Permission.Storage] != PermissionStatus.Granted)
+            {
+                await DisplayAlert("No Permission", "Permission to storage not granted", "OK");
+            }
+
+            await DisplayAlert("Permission", "Permission to storage granted", "OK");
         }
 
         private async void ChooseFileButton_Clicked(object sender, EventArgs e)
