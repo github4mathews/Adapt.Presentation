@@ -35,7 +35,7 @@ namespace Adapt.Presentation.AndroidPlatform
             _RequestPermissionsActivity = _Activity as IRequestPermissionsActivity;
             if (_RequestPermissionsActivity == null)
             {
-                throw new Exception($"The Activity must implement the {typeof(IRequestPermissionsActivity).FullName} interface, and this Activity must raise the {nameof(IRequestPermissionsActivity.PermissionsRequestCompleted)} event when the OnRequestPermissionsResult callback is made. OnRequestPermissionsResult must be overriden in the Activity for this to work.");
+                throw new Exception($"The Activity must implement the {typeof(IRequestPermissionsActivity).FullName} interface, and this Activity must raise the {nameof(IRequestPermissionsActivity.PermissionsRequestCompleted)} event when the OnRequestPermissionsResult callback is made. OnRequestPermissionsResult must be overriden in the Activity for this to work. See XML documentation in the interface for more information.");
             }
 
             _RequestPermissionsActivity.PermissionsRequestCompleted += RequestPermissionsActivity_PermissionsRequestCompleted;
