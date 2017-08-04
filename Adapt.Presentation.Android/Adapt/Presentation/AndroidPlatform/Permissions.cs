@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Android.Content;
 using System.Linq;
+using acp = Android.Content.PM;
 
 namespace Adapt.Presentation.AndroidPlatform
 {
@@ -100,8 +101,6 @@ namespace Adapt.Presentation.AndroidPlatform
         /// <summary>
         /// Requests the permissions from the users
         /// </summary>
-        /// <returns>The permissions and their status.</returns>
-        /// <param name="permissions">Permissions to request.</param>
         public async Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions)
         {
             if (_Tcs != null && !_Tcs.Task.IsCompleted)
@@ -167,17 +166,14 @@ namespace Adapt.Presentation.AndroidPlatform
 
             ActivityCompat.RequestPermissions(_Activity, permissionsToRequest.ToArray(), PermissionCode);
 
-            return await _Tcs.Task.ConfigureAwait(false);
+            return await _Tcs.Task.ConfigureAwait(true);
         }
 
         private const int PermissionCode = 25;
         /// <summary>
         /// Callback that must be set when request permissions has finished
         /// </summary>
-        /// <param name="requestCode"></param>
-        /// <param name="permissions"></param>
-        /// <param name="grantResults"></param>
-        public void OnRequestPermissionsResult(int requestCode, string[] permissions, Android.Content.PM.Permission[] grantResults)
+        public void OnRequestPermissionsResult(int requestCode, string[] permissions, acp.Permission[] grantResults)
         {
             if (requestCode != PermissionCode)
             {
