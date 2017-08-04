@@ -60,6 +60,10 @@
         </Grid>
     </ContentPage>
 
+    <ContentPage Title="Request Permissions" >
+        <Button Margin="4" Text="Request Camera Permissions - Mostly Android. Only in Android M and later." x:Name="RequestPermissionButton"  />
+    </ContentPage>
+    
     <ContentPage Title="Geo Location" x:Name="GeoLocationTab" >
 
         <Grid>
