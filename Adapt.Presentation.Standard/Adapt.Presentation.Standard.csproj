@@ -96,6 +96,7 @@
     <Compile Include="Adapt\Presentation\XamlReader.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Adapt\Presentation\PermissionStatusDictionary.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <CodeAnalysisDictionary Include="CodeRulesDictionary.xml" />
