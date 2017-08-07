@@ -129,14 +129,18 @@ namespace Adapt.Presentation.Controls
         #region Private Inner Classes
         private class ViewAndRectangle
         {
+            #region Constructor
             public ViewAndRectangle(View view, Rectangle rectangle)
             {
                 View = view;
                 Rectangle = rectangle;
             }
+            #endregion
 
-            public View View { get; set; }
-            public Rectangle Rectangle { get; set; }
+            #region Public Properties
+            public View View { get; }
+            public Rectangle Rectangle { get; }
+            #endregion
         }
 
         private class ViewAndRectableList : List<ViewAndRectangle>
