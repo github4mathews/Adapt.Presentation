@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls
@@ -34,6 +34,8 @@ namespace Adapt.Presentation.Controls
 
         public WrapLayout()
         {
+            BackgroundColor = Color.Red;
+
             VerticalOptions = HorizontalOptions = LayoutOptions.FillAndExpand;
         }
 
@@ -58,16 +60,16 @@ namespace Adapt.Presentation.Controls
 
             foreach (var t in layout)
             {
-                var offset = (int)((width - t.Last().Item2.Right) / 2);
+                var offset = (int)((width - t.Last().Rectangle.Right) / 2);
                 foreach (var dingus in t)
                 {
-                    var location = new Rectangle(dingus.Item2.X + x + offset, dingus.Item2.Y + y, dingus.Item2.Width, dingus.Item2.Height);
-                    LayoutChildIntoBoundingRegion(dingus.Item1, location);
+                    var location = new Rectangle(dingus.Rectangle.X + x + offset, dingus.Rectangle.Y + y, dingus.Rectangle.Width, dingus.Rectangle.Height);
+                    LayoutChildIntoBoundingRegion(dingus.View, location);
                 }
             }
         }
 
-        private List<List<Tuple<View, Rectangle>>> NaiveLayout(double width, out double lastX, out double lastY)
+        private List<List<ViewAndRectangle>> NaiveLayout(double width, out double lastX, out double lastY)
         {
             double startX = 0;
             double startY = 0;
@@ -77,8 +79,8 @@ namespace Adapt.Presentation.Controls
             lastX = 0;
             lastY = 0;
 
-            var result = new List<List<Tuple<View, Rectangle>>>();
-            var currentList = new List<Tuple<View, Rectangle>>();
+            var result = new List<List<ViewAndRectangle>>();
+            var currentList = new List<ViewAndRectangle>();
 
             foreach (var child in Children)
             {
@@ -100,11 +102,11 @@ namespace Adapt.Presentation.Controls
                     if (currentList.Count > 0)
                     {
                         result.Add(currentList);
-                        currentList = new List<Tuple<View, Rectangle>>();
+                        currentList = new List<ViewAndRectangle>();
                     }
                 }
 
-                currentList.Add(new Tuple<View, Rectangle>(child, new Rectangle(startX, startY, sizeRequest.Request.Width, sizeRequest.Request.Height)));
+                currentList.Add(new ViewAndRectangle(child, new Rectangle(startX, startY, sizeRequest.Request.Width, sizeRequest.Request.Height)));
 
                 lastX = Math.Max(lastX, startX + paddedWidth);
                 lastY = Math.Max(lastY, startY + paddedHeight);
@@ -115,5 +117,18 @@ namespace Adapt.Presentation.Controls
             result.Add(currentList);
             return result;
         }
+
+        private class ViewAndRectangle
+        {
+            public ViewAndRectangle(View view, Rectangle rectangle)
+            {
+                View = view;
+                Rectangle = rectangle;
+            }
+
+            public View View { get; set; }
+            public Rectangle Rectangle { get; set; }
+        }
+
     }
 }
