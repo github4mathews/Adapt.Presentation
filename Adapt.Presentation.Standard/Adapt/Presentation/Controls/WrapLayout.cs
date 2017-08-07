@@ -69,7 +69,7 @@ namespace Adapt.Presentation.Controls
             }
         }
 
-        private List<List<ViewAndRectangle>> NaiveLayout(double width, out double lastX, out double lastY)
+        private List<ViewAndRectableList> NaiveLayout(double width, out double lastX, out double lastY)
         {
             double startX = 0;
             double startY = 0;
@@ -79,8 +79,8 @@ namespace Adapt.Presentation.Controls
             lastX = 0;
             lastY = 0;
 
-            var result = new List<List<ViewAndRectangle>>();
-            var currentList = new List<ViewAndRectangle>();
+            var result = new List<ViewAndRectableList>();
+            var currentList = new ViewAndRectableList();
 
             foreach (var child in Children)
             {
@@ -102,7 +102,7 @@ namespace Adapt.Presentation.Controls
                     if (currentList.Count > 0)
                     {
                         result.Add(currentList);
-                        currentList = new List<ViewAndRectangle>();
+                        currentList = new ViewAndRectableList();
                     }
                 }
 
@@ -128,6 +128,11 @@ namespace Adapt.Presentation.Controls
 
             public View View { get; set; }
             public Rectangle Rectangle { get; set; }
+        }
+
+        private class ViewAndRectableList : List<ViewAndRectangle>
+        {
+
         }
 
     }
