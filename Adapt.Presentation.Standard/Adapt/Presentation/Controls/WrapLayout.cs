@@ -6,7 +6,7 @@ using Xamarin.Forms;
 namespace Adapt.Presentation.Controls
 {
     /// <summary>
-    /// A panel controls that renders its contents from left to right and wraps vertically
+    /// A panel controls that renders its contents from left to right and wraps vertically. Note this control currently uses HorizontalOptions to control the horizontal alignment of the content.
     /// </summary>
     public class WrapLayout : Layout<View>
     {
@@ -40,7 +40,6 @@ namespace Adapt.Presentation.Controls
         #region Constructor
         public WrapLayout()
         {
-            BackgroundColor = Color.Red;
             VerticalOptions = HorizontalOptions = LayoutOptions.FillAndExpand;
         }
         #endregion
@@ -89,6 +88,7 @@ namespace Adapt.Presentation.Controls
                 nextY = Math.Max(nextY, paddedHeight);
                 startX += paddedWidth;
             }
+
             result.Add(currentList);
 
             return result;
@@ -115,7 +115,25 @@ namespace Adapt.Presentation.Controls
 
             foreach (var viewAndRectableList in naiveLayoutResult)
             {
-                var offset = (int)((width - viewAndRectableList.Last().Rectangle.Right) / 2);
+                int offset;
+
+                if (HorizontalOptions.Equals(LayoutOptions.Center) || HorizontalOptions.Equals(LayoutOptions.CenterAndExpand))
+                {
+                    //Put contents in the middle
+                    offset = (int)((width - viewAndRectableList.Last().Rectangle.Right) / 2);
+                }
+                else if (HorizontalOptions.Equals(LayoutOptions.Fill) || HorizontalOptions.Equals(LayoutOptions.FillAndExpand) || HorizontalOptions.Equals(LayoutOptions.Start) || HorizontalOptions.Equals(LayoutOptions.StartAndExpand))
+                {
+                    //Put contents on the left
+                    offset = 0;
+                }
+                else
+                {
+                    //Put contents on the right
+                    offset = 0;
+                    //TODO: Right alignment
+                }
+
                 foreach (var viewAndRectangle in viewAndRectableList)
                 {
                     var location = new Rectangle(viewAndRectangle.Rectangle.X + x + offset, viewAndRectangle.Rectangle.Y + y, viewAndRectangle.Rectangle.Width, viewAndRectangle.Rectangle.Height);
