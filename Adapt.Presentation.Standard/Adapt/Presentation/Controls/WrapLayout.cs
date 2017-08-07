@@ -46,17 +46,18 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Methods
-        private NaiveLayoutResult NaiveLayout(double width, out double lastX, out double lastY)
+        private NaiveLayoutResult NaiveLayout(double width)
         {
             double startX = 0;
             double startY = 0;
             var right = width;
             double nextY = 0;
 
-            lastX = 0;
-            lastY = 0;
+            //lastX = 0;
+            //lastY = 0;
 
             var result = new NaiveLayoutResult();
+
             var currentList = new ViewAndRectableList();
 
             foreach (var child in Children)
@@ -85,8 +86,8 @@ namespace Adapt.Presentation.Controls
 
                 currentList.Add(new ViewAndRectangle(child, new Rectangle(startX, startY, sizeRequest.Request.Width, sizeRequest.Request.Height)));
 
-                lastX = Math.Max(lastX, startX + paddedWidth);
-                lastY = Math.Max(lastY, startY + paddedHeight);
+                result.LastX = Math.Max(result.LastX, startX + paddedWidth);
+                result.LastY = Math.Max(result.LastY, startY + paddedHeight);
 
                 nextY = Math.Max(nextY, paddedHeight);
                 startX += paddedWidth;
@@ -106,13 +107,13 @@ namespace Adapt.Presentation.Controls
         [Obsolete]
         protected override SizeRequest OnSizeRequest(double widthConstraint, double heightConstraint)
         {
-            NaiveLayout(widthConstraint, out double lastX, out double lastY);
-            return new SizeRequest(new Size(lastX, lastY));
+            var result=NaiveLayout(widthConstraint);
+            return new SizeRequest(new Size(result.LastX, result.LastY));
         }
 
         protected override void LayoutChildren(double x, double y, double width, double height)
         {
-            var layout = NaiveLayout(width, out double lastX, out double lastY);
+            var layout = NaiveLayout(width);
 
             foreach (var t in layout)
             {
@@ -150,7 +151,8 @@ namespace Adapt.Presentation.Controls
 
         private class NaiveLayoutResult : List<ViewAndRectableList>
         {
-
+            internal double LastX ;
+            internal double LastY ;
         }
         #endregion
     }
