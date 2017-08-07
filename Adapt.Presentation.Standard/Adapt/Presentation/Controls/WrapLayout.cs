@@ -53,9 +53,6 @@ namespace Adapt.Presentation.Controls
             var right = width;
             double nextY = 0;
 
-            //lastX = 0;
-            //lastY = 0;
-
             var result = new NaiveLayoutResult();
 
             var currentList = new ViewAndRectableList();
@@ -93,6 +90,7 @@ namespace Adapt.Presentation.Controls
                 startX += paddedWidth;
             }
             result.Add(currentList);
+
             return result;
         }
         #endregion
@@ -107,21 +105,21 @@ namespace Adapt.Presentation.Controls
         [Obsolete]
         protected override SizeRequest OnSizeRequest(double widthConstraint, double heightConstraint)
         {
-            var result=NaiveLayout(widthConstraint);
+            var result = NaiveLayout(widthConstraint);
             return new SizeRequest(new Size(result.LastX, result.LastY));
         }
 
         protected override void LayoutChildren(double x, double y, double width, double height)
         {
-            var layout = NaiveLayout(width);
+            var naiveLayoutResult = NaiveLayout(width);
 
-            foreach (var t in layout)
+            foreach (var viewAndRectableList in naiveLayoutResult)
             {
-                var offset = (int)((width - t.Last().Rectangle.Right) / 2);
-                foreach (var dingus in t)
+                var offset = (int)((width - viewAndRectableList.Last().Rectangle.Right) / 2);
+                foreach (var viewAndRectangle in viewAndRectableList)
                 {
-                    var location = new Rectangle(dingus.Rectangle.X + x + offset, dingus.Rectangle.Y + y, dingus.Rectangle.Width, dingus.Rectangle.Height);
-                    LayoutChildIntoBoundingRegion(dingus.View, location);
+                    var location = new Rectangle(viewAndRectangle.Rectangle.X + x + offset, viewAndRectangle.Rectangle.Y + y, viewAndRectangle.Rectangle.Width, viewAndRectangle.Rectangle.Height);
+                    LayoutChildIntoBoundingRegion(viewAndRectangle.View, location);
                 }
             }
         }
@@ -151,8 +149,8 @@ namespace Adapt.Presentation.Controls
 
         private class NaiveLayoutResult : List<ViewAndRectableList>
         {
-            internal double LastX ;
-            internal double LastY ;
+            internal double LastX;
+            internal double LastY;
         }
         #endregion
     }
