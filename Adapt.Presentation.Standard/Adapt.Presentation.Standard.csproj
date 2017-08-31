@@ -62,6 +62,7 @@
     <Compile Include="Adapt\Presentation\Behaviours\EditorValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EntryValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\CameraDevice.cs" />
+    <Compile Include="Adapt\Presentation\Controls\AdaptListView.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
