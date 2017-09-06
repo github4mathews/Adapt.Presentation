@@ -6,7 +6,7 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
 {
     public class Clipboard : IClipboard
     {
-        public async Task<string> GetClipboardText()
+        public async Task<string> GetClipboardTextAsync()
         {
             var content = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
             return await content.GetTextAsync();

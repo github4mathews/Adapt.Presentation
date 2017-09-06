@@ -4,7 +4,7 @@ namespace Adapt.Presentation
 {
     public interface IClipboard
     {
-        Task<string> GetClipboardText();
+        Task<string> GetClipboardTextAsync();
         void SetClipboardText(string data);
     }
 }

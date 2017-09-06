@@ -17,7 +17,12 @@ namespace apa.Adapt.Presentation.AndroidPlatform
     {
         ClipboardManager ClipboardManager => (ClipboardManager)Application.Context.GetSystemService(Context.ClipboardService);
 
-        public async Task<string> GetClipboardText()
+        public async Task<string> GetClipboardTextAsync()
+        {
+            return await Task.Run(() => GetClipboardText());
+        }
+
+        private string GetClipboardText()
         {
             return ClipboardManager.Text;
         }
