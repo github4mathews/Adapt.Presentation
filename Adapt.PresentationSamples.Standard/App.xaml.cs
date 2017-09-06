@@ -9,14 +9,15 @@ namespace Adapt.PresentationSamples
         public static IPresentationFactory PresentationFactory { get; private set; }
         public static IPermissions CurrentPermissions { get; private set; }
         public static IGeolocator Geolocator { get; private set; }
+        public IClipboard Clipboard { get; set; }
         #endregion
-
         #region Constructor
-        public App(IPresentationFactory presentationFactory, IPermissions currentPermissions, IGeolocator geolocator)
+        public App(IPresentationFactory presentationFactory, IPermissions currentPermissions, IGeolocator geolocator, IClipboard clipboard)
         {
             PresentationFactory = presentationFactory;
             CurrentPermissions = currentPermissions;
             Geolocator = geolocator;
+            Clipboard = clipboard;
 
             var mainPage = new MainPage();
 

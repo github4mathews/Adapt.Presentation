@@ -10,7 +10,7 @@ namespace XamForms.UWP
         {
             InitializeComponent();
 
-            var app = new samples.App(new PresentationFactory(), new Permissions(), new Geolocator());
+            var app = new samples.App(new PresentationFactory(), new Permissions(), new Geolocator(), new Adapt.Presentation.UWP.Adapt.Presentation.UWP.Clipboard());
 
             LoadApplication(app);
         }
