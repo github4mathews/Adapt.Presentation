@@ -100,4 +100,8 @@
         </Grid>
     </ContentPage>
 
+    <ContentPage Title="Clipboard" >
+        <Button Margin="4" Text="Copy Text" x:Name="CopyTextButton"  />
+    </ContentPage>
+
 </TabbedPage>
