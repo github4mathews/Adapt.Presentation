@@ -1,4 +1,5 @@
 ﻿
+using apa.Adapt.Presentation.AndroidPlatform;
 using Adapt.Presentation.AndroidPlatform;
 using Adapt.Presentation.AndroidPlatform.Geolocator;
 using Android.App;
@@ -28,7 +29,7 @@ namespace XamForms.Droid
             _PresentationFactory = new PresentationFactory(ApplicationContext, permissions);
             base.OnCreate(bundle);
             xf.Forms.Init(this, bundle);
-            LoadApplication(new samples.App(_PresentationFactory, permissions, new Geolocator(permissions)));
+            LoadApplication(new samples.App(_PresentationFactory, permissions, new Geolocator(permissions), new Clipboard()));
         }
         #endregion
 
