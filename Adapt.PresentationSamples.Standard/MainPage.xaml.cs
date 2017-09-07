@@ -96,6 +96,11 @@ namespace Adapt.PresentationSamples
                 Name = defaultFileName
             }))
             {
+                if (mediaFile == null)
+                {
+                    return;
+                }
+
                 using (var readFileStream = mediaFile.GetStream())
                 {
                     FileSelectionDictionary fileTypes = new FileSelectionDictionary { { "Jpeg Image", new List<string> { ".jpg" } } };

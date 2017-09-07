@@ -66,6 +66,11 @@ namespace Adapt.Presentation.UWP
             picker.FileTypeFilter.Add("*");
             var file = await picker.PickSingleFileAsync();
 
+            if (file == null)
+            {
+                return null;
+            }
+
             var retVal = new FileData();
             retVal.FileName = file.Name;
 
