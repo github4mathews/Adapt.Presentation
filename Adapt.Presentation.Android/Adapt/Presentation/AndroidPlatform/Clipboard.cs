@@ -1,13 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Adapt.Presentation;
-using Android.App;
 using Android.Content;
 
 namespace apa.Adapt.Presentation.AndroidPlatform
 {
     public class Clipboard : IClipboard
     {
-        ClipboardManager ClipboardManager => (ClipboardManager)Application.Context.GetSystemService(Context.ClipboardService);
+        ClipboardManager ClipboardManager => (ClipboardManager)Android.App.Application.Context.GetSystemService(Context.ClipboardService);
 
         public async Task<string> GetClipboardTextAsync()
         {
