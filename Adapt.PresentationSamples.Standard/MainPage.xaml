@@ -2,10 +2,17 @@
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             xmlns:controls="clr-namespace:Adapt.Presentation.Controls;assembly=Adapt.Presentation.Standard"
+            xmlns:converters="clr-namespace:Adapt.Presentation.Converters;assembly=Adapt.Presentation.Standard"
             Title="Samples"
              x:Class="Adapt.PresentationSamples.MainPage">
     <!--Pages can be added as references or inline-->
-    
+
+    <TabbedPage.Resources>
+        <ResourceDictionary>
+            <converters:DisplayDateInLocalFormatConverter x:Key="formatconverter" />
+        </ResourceDictionary>
+    </TabbedPage.Resources>
+
     <ContentPage Title="Camera" >
         <Button Margin="4" Text="Take Photo" x:Name="TakePhotoButton"  />
     </ContentPage>
@@ -45,7 +52,7 @@
 
 
     <ContentPage Title="Load XAML (Dynamic Rendering)" >
-        
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="60*" />
@@ -63,7 +70,7 @@
     <ContentPage Title="Request Permissions" >
         <Button Margin="4" Text="Request Storage Permissions - Mostly Android. Only in Android M and later." x:Name="RequestPermissionButton"  />
     </ContentPage>
-    
+
     <ContentPage Title="Geo Location" x:Name="GeoLocationTab" >
 
         <Grid>
@@ -102,6 +109,27 @@
 
     <ContentPage Title="Clipboard" >
         <Button Margin="4" Text="Copy Text" x:Name="CopyTextButton"  />
+    </ContentPage>
+
+    <ContentPage Title="DateTime Local Format" x:Name="LocalDateFormatPage" >
+
+        <StackLayout Orientation="Vertical" VerticalOptions="Center" HorizontalOptions="Center"   >
+
+            <Label Text="Xamarin Forms has a known bug with Date Formatting."  />
+            <Entry Text="https://bugzilla.xamarin.com/show_bug.cgi?id=58635"  />
+
+            <StackLayout Orientation="Horizontal" >
+                <Label Text="With Converter"  />
+                <Label  Text="{Binding TheDateTime, Converter={StaticResource formatconverter}" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal" >
+                <Label Text="Without Converter"   />
+                <Label Text="{Binding TheDateTime}"  />
+            </StackLayout>
+
+        </StackLayout>
+
     </ContentPage>
 
 </TabbedPage>

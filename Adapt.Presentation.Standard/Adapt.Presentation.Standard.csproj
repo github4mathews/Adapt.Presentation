@@ -65,6 +65,7 @@
     <Compile Include="Adapt\Presentation\Controls\AdaptListView.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
+    <Compile Include="Adapt\Presentation\Converters\DisplayDateInLocalFormatConverter.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
     <Compile Include="Adapt\Presentation\FilePickerEventArgs.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\ActivityType.cs" />
