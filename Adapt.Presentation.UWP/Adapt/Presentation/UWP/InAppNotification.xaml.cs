@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Page = Xamarin.Forms.Page;
 
 namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
 {
@@ -115,7 +116,12 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
 
         public void Show(string text)
         {
-            Show(text, 10);
+            Show(text, 3000);
+        }
+
+        public void Attach(Page view)
+        {
+            view.Resources.Add(nameof(InAppNotification), this);
         }
 
         /// <summary>

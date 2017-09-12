@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Adapt.Presentation;
-using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
+using Xamarin.Forms;
+using Application = Android.App.Application;
 
 namespace apa.Adapt.Presentation.AndroidPlatform
 {
@@ -17,6 +18,11 @@ namespace apa.Adapt.Presentation.AndroidPlatform
         public void Show(string text)
         {
             Toast.MakeText(Application.Context, text, ToastLength.Short);
+        }
+
+        public void Attach(Page view)
+        {
+            //No attach required
         }
     }
 }
