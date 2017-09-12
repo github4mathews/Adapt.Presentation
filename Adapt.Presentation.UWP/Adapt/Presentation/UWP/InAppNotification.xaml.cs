@@ -2,12 +2,12 @@
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP.InAppNotification
+namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
 {
     [TemplateVisualState(Name = StateContentVisible, GroupName = GroupContent)]
     [TemplateVisualState(Name = StateContentCollapsed, GroupName = GroupContent)]
     [TemplatePart(Name = DismissButtonPart, Type = typeof(Button))]
-    public sealed class InAppNotification : ContentControl
+    public sealed class InAppNotification : ContentControl, IInAppNotification
     {
         #region Dependency Properties
 
@@ -113,12 +113,17 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP.InAppNotification
             }
         }
 
+        public void Show(string text)
+        {
+            Show(text, 10);
+        }
+
         /// <summary>
         /// Show notification using text as the content of the notification
         /// </summary>
         /// <param name="text">Text used as the content of the notification</param>
         /// <param name="duration">Displayed duration of the notification in ms (less or equal 0 means infinite duration)</param>
-        public void Show(string text, int duration = 0)
+        public void Show(string text, int duration)
         {
             ContentTemplate = null;
             Content = text;
