@@ -48,5 +48,7 @@
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen.storyboard</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location is required for the Geolocator plugin</string>
 </dict>
 </plist>

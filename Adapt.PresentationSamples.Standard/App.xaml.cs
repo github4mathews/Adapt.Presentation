@@ -10,14 +10,16 @@ namespace Adapt.PresentationSamples
         public static IPermissions CurrentPermissions { get; private set; }
         public static IGeolocator Geolocator { get; private set; }
         public static IClipboard Clipboard { get; set; }
+        public static IInAppNotification InAppNotification { get; set; }
         #endregion
         #region Constructor
-        public App(IPresentationFactory presentationFactory, IPermissions currentPermissions, IGeolocator geolocator, IClipboard clipboard)
+        public App(IPresentationFactory presentationFactory, IPermissions currentPermissions, IGeolocator geolocator, IClipboard clipboard, IInAppNotification inAppNotification)
         {
             PresentationFactory = presentationFactory;
             CurrentPermissions = currentPermissions;
             Geolocator = geolocator;
             Clipboard = clipboard;
+            InAppNotification = inAppNotification;
 
             var mainPage = new MainPage();
 

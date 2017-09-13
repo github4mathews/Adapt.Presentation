@@ -29,7 +29,7 @@ namespace XamForms.Droid
             _PresentationFactory = new PresentationFactory(ApplicationContext, permissions);
             base.OnCreate(bundle);
             xf.Forms.Init(this, bundle);
-            LoadApplication(new samples.App(_PresentationFactory, permissions, new Geolocator(permissions), new Clipboard()));
+            LoadApplication(new samples.App(_PresentationFactory, permissions, new Geolocator(permissions), new Clipboard(), new InAppNotification()));
         }
         #endregion
 

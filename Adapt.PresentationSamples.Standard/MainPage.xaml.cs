@@ -21,12 +21,18 @@ namespace Adapt.PresentationSamples
             ChooseFileButton.Clicked += ChooseFileButton_Clicked;
             RequestPermissionButton.Clicked += RequestPermissionButton_Clicked;
             CopyTextButton.Clicked += CopyTextButton_Clicked;
+            NotificationButton.Clicked += NotificationButton_Clicked;
 
             DateTimePickerTab.BindingContext = new DateTimeModel { TheDateTime = DateTime.Now };
 
             XAMLBox.Text = "<?xml version=\"1.0\" encoding=\"UTF - 8\"?>\r\n<ContentView xmlns = \"http://xamarin.com/schemas/2014/forms\" xmlns:x = \"http://schemas.microsoft.com/winfx/2009/xaml\" >\r\n\t<ContentView.Content>\r\n\t\t<StackLayout VerticalOptions=\"Center\" HorizontalOptions=\"Center\" BackgroundColor=\"LightBlue\">\r\n\t\t\t<Label Text=\"Hello Xamarin.Forms!\" />\r\n\t\t</StackLayout>\r\n\t</ContentView.Content>\r\n</ContentView>";
 
             LocalDateFormatPage.BindingContext = new DateTimeModel { TheDateTime = new DateTime(2000, 1, 31) };
+        }
+
+        private void NotificationButton_Clicked(object sender, EventArgs e)
+        {
+            App.InAppNotification.Show("Here's a sample notification");
         }
 
         private void CopyTextButton_Clicked(object sender, EventArgs e)
