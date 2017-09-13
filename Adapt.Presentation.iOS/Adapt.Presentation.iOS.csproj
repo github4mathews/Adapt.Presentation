@@ -65,7 +65,7 @@
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\NotificationAction.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\NotificationOptions.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\NotificationResult.cs" />
-    <Compile Include="Adapt\Presentation\iOS\ToastNotifications\ToastNotification.cs" />
+    <Compile Include="Adapt\Presentation\iOS\ToastNotifications\InAppNotification.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\UNNotificationManager.cs" />
     <Compile Include="Adapt\Presentation\iOS\UIImageExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
