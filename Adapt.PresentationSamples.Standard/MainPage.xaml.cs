@@ -32,7 +32,7 @@ namespace Adapt.PresentationSamples
 
         private void NotificationButton_Clicked(object sender, EventArgs e)
         {
-            App.InAppNotification.Show("Here's a sample notificaiton");
+            App.InAppNotification.Show("Here's a sample notification");
         }
 
         private void CopyTextButton_Clicked(object sender, EventArgs e)
