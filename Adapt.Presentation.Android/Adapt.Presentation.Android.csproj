@@ -102,7 +102,7 @@
     <Compile Include="Adapt\Presentation\AndroidPlatform\MediaPickerActivity.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Permissions.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\PresentationFactory.cs" />
-    <Compile Include="Adapt\Presentation\AndroidPlatform\ToastNotifier.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\InAppNotification.cs" />
     <Compile Include="Resources\Resource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
