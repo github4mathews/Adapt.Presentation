@@ -1,9 +1,9 @@
-﻿namespace Plugin.Toasts
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
+namespace Adapt.Presentation.iOS.ToastNotifications
+{
     public interface IToastNotificator
     {
         /// <summary>

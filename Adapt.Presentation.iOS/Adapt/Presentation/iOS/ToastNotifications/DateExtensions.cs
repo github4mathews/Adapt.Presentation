@@ -1,8 +1,8 @@
-﻿namespace Plugin.Toasts.Extensions
-{
-    using Foundation;
-    using System;
+﻿using System;
+using Foundation;
 
+namespace Adapt.Presentation.iOS.ToastNotifications
+{
     public static class DateExtensions
     {
         private static DateTime _nsRef = new DateTime(2001, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);

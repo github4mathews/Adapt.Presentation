@@ -1,26 +1,27 @@
-﻿using Adapt.Presentation;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using UIKit;
+using UserNotifications;
 
-namespace Plugin.Toasts
+namespace Adapt.Presentation.iOS.ToastNotifications
 {
-    using Extensions;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using UIKit;
-    using UserNotifications;
-
     public class ToastNotification : IToastNotificator, IInAppNotification
     {
-        private UNNotificationManager _notificationManager;
+        private UnNotificationManager _notificationManager;
         private LocalNotificationManager _localNotificationManager;
 
         public ToastNotification()
         {
             if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-                _notificationManager = new UNNotificationManager();
+            {
+                _notificationManager = new UnNotificationManager();
+            }
             else
+            {
                 _localNotificationManager = new LocalNotificationManager();
+            }
         }
 
         public static void Init() { }
@@ -31,7 +32,9 @@ namespace Plugin.Toasts
             return await Task.Run(() =>
             {
                 if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
+                {
                     return _notificationManager.Notify(options);
+                }
                 else
                 {
                     ManualResetEvent reset = new ManualResetEvent(false);

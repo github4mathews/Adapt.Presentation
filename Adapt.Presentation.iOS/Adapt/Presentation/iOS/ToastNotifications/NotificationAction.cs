@@ -1,7 +1,7 @@
-﻿namespace Plugin.Toasts
-{
-    using System;
+﻿using System;
 
+namespace Adapt.Presentation.iOS.ToastNotifications
+{
     [Flags]
     public enum NotificationAction
     {

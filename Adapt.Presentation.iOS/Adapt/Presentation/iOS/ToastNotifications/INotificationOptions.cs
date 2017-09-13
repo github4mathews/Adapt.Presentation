@@ -1,8 +1,8 @@
-﻿namespace Plugin.Toasts
-{
-    using System;
-    using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
+namespace Adapt.Presentation.iOS.ToastNotifications
+{
     public interface INotificationOptions
     {
         string Title { get; }
@@ -18,9 +18,5 @@
         DateTime? DelayUntil { get; }
 
         IDictionary<string, string> CustomArgs { get; }
-
-        IWindowsOptions WindowsOptions { get; }
-        IAndroidOptions AndroidOptions { get; }
-        IiOSOptions iOSOptions { get; }
     }
 }

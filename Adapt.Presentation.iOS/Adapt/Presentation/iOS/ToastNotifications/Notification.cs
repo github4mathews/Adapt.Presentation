@@ -1,7 +1,7 @@
-﻿namespace Plugin.Toasts
-{
-    using System;
+﻿using System;
 
+namespace Adapt.Presentation.iOS.ToastNotifications
+{
     public class Notification : INotification
     {
         public string Id { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace Plugin.Toasts
+﻿namespace Adapt.Presentation.iOS.ToastNotifications
 {
     public class NotificationResult: INotificationResult
     {

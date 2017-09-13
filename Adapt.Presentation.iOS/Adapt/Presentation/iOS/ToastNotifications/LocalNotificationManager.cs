@@ -1,12 +1,8 @@
-﻿namespace Plugin.Toasts
-{
-    using Extensions;
-    using Foundation;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading;
-    using UIKit;
+﻿using Foundation;
+using UIKit;
 
+namespace Adapt.Presentation.iOS.ToastNotifications
+{
     public class LocalNotificationManager
     {
         private static object _lock = new object();
@@ -14,24 +10,27 @@
         public INotificationResult Notify(INotificationOptions options)
         {
             // create the notification
-            var notification = new UILocalNotification();
+            var notification = new UILocalNotification
+            {
+                // set the fire date (the date time in which it will fire)
+                FireDate = options.DelayUntil == null ? NSDate.Now : options.DelayUntil.Value.ToNSDate(),
 
-            // set the fire date (the date time in which it will fire)
-            notification.FireDate = options.DelayUntil == null ? NSDate.Now : options.DelayUntil.Value.ToNSDate();
+                // configure the alert
+                AlertTitle = options.Title,
+                AlertBody = options.Description,
 
-            // configure the alert
-            notification.AlertTitle = options.Title;
-            notification.AlertBody = options.Description;
-
-            // set the sound to be the default sound
-            notification.SoundName = UILocalNotification.DefaultSoundName;
+                // set the sound to be the default sound
+                SoundName = UILocalNotification.DefaultSoundName
+            };
 
             if (options.CustomArgs != null)
             {
                 NSMutableDictionary dictionary = new NSMutableDictionary();
                 foreach (var arg in options.CustomArgs)
+                {
                     dictionary.SetValueForKey(NSObject.FromObject(arg.Value), new NSString(arg.Key));
-                
+                }
+
                 // Don't document, this feature is most likely to change
                 dictionary.SetValueForKey(NSObject.FromObject(System.Guid.NewGuid().ToString()), new NSString("Identifier"));
 
