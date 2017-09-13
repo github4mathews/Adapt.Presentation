@@ -7,20 +7,20 @@ using UserNotifications;
 
 namespace Adapt.Presentation.iOS.ToastNotifications
 {
-    public class ToastNotification : IToastNotificator, IInAppNotification
+    public class InAppNotification : IToastNotificator, IInAppNotification
     {
-        private UnNotificationManager _notificationManager;
-        private LocalNotificationManager _localNotificationManager;
+        private readonly UnNotificationManager _NotificationManager;
+        private readonly LocalNotificationManager _LocalNotificationManager;
 
-        public ToastNotification()
+        public InAppNotification()
         {
             if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
             {
-                _notificationManager = new UnNotificationManager();
+                _NotificationManager = new UnNotificationManager();
             }
             else
             {
-                _localNotificationManager = new LocalNotificationManager();
+                _LocalNotificationManager = new LocalNotificationManager();
             }
         }
 
@@ -33,12 +33,12 @@ namespace Adapt.Presentation.iOS.ToastNotifications
             {
                 if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
                 {
-                    return _notificationManager.Notify(options);
+                    return _NotificationManager.Notify(options);
                 }
                 else
                 {
                     ManualResetEvent reset = new ManualResetEvent(false);
-                    UIApplication.SharedApplication.InvokeOnMainThread(() => { result = _localNotificationManager.Notify(options); reset.Set(); });
+                    UIApplication.SharedApplication.InvokeOnMainThread(() => { result = _LocalNotificationManager.Notify(options); reset.Set(); });
                     reset.WaitOne();
                     return result;
                 }
