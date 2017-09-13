@@ -21,7 +21,7 @@ namespace Adapt.Presentation.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Xamarin.Forms.Forms.Init();
-            LoadApplication(new App(new PresentationFactory(), new Permissions(), new Geolocator.Geolocator(), new Clipboard(), new Plugin.Toasts.LocalNotificationManager()));
+            LoadApplication(new App(new PresentationFactory(), new Permissions(), new Geolocator.Geolocator(), new Clipboard(), new Plugin.Toasts.ToastNotification()));
 
             return base.FinishedLaunching(app, options);
         }

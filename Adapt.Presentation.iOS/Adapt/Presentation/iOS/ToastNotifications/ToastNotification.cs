@@ -1,15 +1,16 @@
-﻿namespace Plugin.Toasts
+﻿using Adapt.Presentation;
+
+namespace Plugin.Toasts
 {
     using Extensions;
     using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using Toasts;
     using UIKit;
     using UserNotifications;
 
-    public class ToastNotification : IToastNotificator
+    public class ToastNotification : IToastNotificator, IInAppNotification
     {
         private UNNotificationManager _notificationManager;
         private LocalNotificationManager _localNotificationManager;
@@ -84,7 +85,9 @@
             }
         }
 
+        public async void Show(string text)
+        {
+            await Notify(new NotificationOptions() { Title = text, Description = text });
+        }
     }
-
-
 }
