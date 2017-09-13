@@ -13,16 +13,11 @@ using Application = Android.App.Application;
 
 namespace apa.Adapt.Presentation.AndroidPlatform
 {
-    class ToastNotifier : IInAppNotification
+    public class ToastNotifier : IInAppNotification
     {
         public void Show(string text)
         {
-            Toast.MakeText(Application.Context, text, ToastLength.Short);
-        }
-
-        public void Attach(Page view)
-        {
-            //No attach required
+            Toast.MakeText(Application.Context, text, ToastLength.Short).Show();
         }
     }
 }

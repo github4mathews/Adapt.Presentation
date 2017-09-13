@@ -132,4 +132,8 @@
 
     </ContentPage>
 
+    <ContentPage Title="In-App Notificaitons" >
+        <Button Margin="4" Text="Display Notification" x:Name="NotificationButton"  />
+    </ContentPage>
+
 </TabbedPage>

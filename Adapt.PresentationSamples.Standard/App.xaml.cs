@@ -10,7 +10,7 @@ namespace Adapt.PresentationSamples
         public static IPermissions CurrentPermissions { get; private set; }
         public static IGeolocator Geolocator { get; private set; }
         public static IClipboard Clipboard { get; set; }
-        public IInAppNotification InAppNotification { get; set; }
+        public static IInAppNotification InAppNotification { get; set; }
         #endregion
         #region Constructor
         public App(IPresentationFactory presentationFactory, IPermissions currentPermissions, IGeolocator geolocator, IClipboard clipboard, IInAppNotification inAppNotification)
@@ -25,8 +25,6 @@ namespace Adapt.PresentationSamples
 
             InitializeComponent();
             MainPage = mainPage;
-
-            InAppNotification.Attach(mainPage);
         }
         #endregion
 

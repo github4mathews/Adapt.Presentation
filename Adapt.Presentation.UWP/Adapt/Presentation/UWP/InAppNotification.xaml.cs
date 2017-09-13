@@ -1,58 +1,27 @@
 ﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Page = Xamarin.Forms.Page;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
 {
-    [TemplateVisualState(Name = StateContentVisible, GroupName = GroupContent)]
-    [TemplateVisualState(Name = StateContentCollapsed, GroupName = GroupContent)]
-    [TemplatePart(Name = DismissButtonPart, Type = typeof(Button))]
-    public sealed class InAppNotification : ContentControl, IInAppNotification
+    public sealed partial class InAppNotification : ContentControl, IInAppNotification
     {
         #region Dependency Properties
 
-        /// <summary>
-        /// Identifies the <see cref="ShowDismissButton"/> dependency property.
-        /// </summary>
-        public static readonly DependencyProperty ShowDismissButtonProperty = DependencyProperty.Register(nameof(ShowDismissButton), typeof(bool), typeof(InAppNotification), new PropertyMetadata(true, OnShowDismissButtonChanged));
+        public DependencyProperty TextProperty = DependencyProperty.Register(nameof(Text), typeof(string), typeof(InAppNotification), null);
 
-        /// <summary>
-        /// Gets or sets a value indicating whether to show the Dismiss button of the control.
-        /// </summary>
-        public bool ShowDismissButton
+        public string Text
         {
-            get => (bool)GetValue(ShowDismissButtonProperty);
-            set => SetValue(ShowDismissButtonProperty, value);
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
         }
 
         #endregion
 
         #region Private Fields
 
-        /// <summary>
-        /// Key of the UI Element that dismiss the control
-        /// </summary>
-        private const string DismissButtonPart = "PART_DismissButton";
-
-        /// <summary>
-        /// Key of the VisualStateGroup that show/dismiss content
-        /// </summary>
-        private const string GroupContent = "State";
-
-        /// <summary>
-        /// Key of the VisualState when content is dismissed
-        /// </summary>
-        private const string StateContentCollapsed = "Collapsed";
-
-        /// <summary>
-        /// Key of the VisualState when content is showed
-        /// </summary>
-        private const string StateContentVisible = "Visible";
-
         private readonly DispatcherTimer _Timer = new DispatcherTimer();
-
-        private Button _DismissButton;
 
         #endregion
 
@@ -63,12 +32,19 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
         /// </summary>
         public InAppNotification()
         {
-            DefaultStyleKey = typeof(InAppNotification);
-
+            //Prepare timer
             _Timer.Tick += (sender, e) =>
             {
                 Dismiss();
             };
+
+            //Setup control
+            InitializeComponent();
+            DataContext = this;
+
+            //Setup flyout
+            TheFlyout = new Flyout { Content = this };
+            FlyoutBase.SetAttachedFlyout((Frame)Window.Current.Content, TheFlyout);
         }
 
         #endregion
@@ -82,6 +58,17 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
 
         #endregion
 
+        #region Public Properties
+        public Flyout TheFlyout { get; set; }
+
+        #endregion
+
+        #region Private Properties
+
+        private static FrameworkElement Frame => (FrameworkElement)Window.Current.Content;
+
+        #endregion
+
         #region Public Methods
 
         /// <summary>
@@ -89,11 +76,8 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
         /// </summary>
         public void Dismiss()
         {
-            if (Visibility == Visibility.Visible)
-            {
-                VisualStateManager.GoToState(this, StateContentCollapsed, true);
-                Dismissed?.Invoke(this, EventArgs.Empty);
-            }
+            TheFlyout.Hide();
+            Dismissed?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -104,8 +88,7 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
         {
             _Timer.Stop();
 
-            Visibility = Visibility.Visible;
-            VisualStateManager.GoToState(this, StateContentVisible, true);
+            TheFlyout.ShowAt(Frame);
 
             if (duration > 0)
             {
@@ -119,11 +102,6 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
             Show(text, 3000);
         }
 
-        public void Attach(Page view)
-        {
-            view.Resources.Add(nameof(InAppNotification), this);
-        }
-
         /// <summary>
         /// Show notification using text as the content of the notification
         /// </summary>
@@ -131,77 +109,15 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
         /// <param name="duration">Displayed duration of the notification in ms (less or equal 0 means infinite duration)</param>
         public void Show(string text, int duration)
         {
-            ContentTemplate = null;
-            Content = text;
-            Show(duration);
-        }
-
-        /// <summary>
-        /// Show notification using UIElement as the content of the notification
-        /// </summary>
-        /// <param name="element">UIElement used as the content of the notification</param>
-        /// <param name="duration">Displayed duration of the notification in ms (less or equal 0 means infinite duration)</param>
-        public void Show(UIElement element, int duration = 0)
-        {
-            ContentTemplate = null;
-            Content = element;
-            Show(duration);
-        }
-
-        /// <summary>
-        /// Show notification using DataTemplate as the content of the notification
-        /// </summary>
-        /// <param name="dataTemplate">DataTemplate used as the content of the notification</param>
-        /// <param name="duration">Displayed duration of the notification in ms (less or equal 0 means infinite duration)</param>
-        public void Show(DataTemplate dataTemplate, int duration = 0)
-        {
-            ContentTemplate = dataTemplate;
-            Content = null;
+            Text = text;
             Show(duration);
         }
 
         #endregion
 
-        #region Protected Methods
+        #region Event Handlers
 
-        /// <inheritdoc />
-        protected override void OnApplyTemplate()
-        {
-            if (_DismissButton != null)
-            {
-                _DismissButton.Click -= DismissButton_Click;
-            }
-
-            _DismissButton = (Button)GetTemplateChild(DismissButtonPart);
-
-            if (_DismissButton != null)
-            {
-                _DismissButton.Visibility = ShowDismissButton ? Visibility.Visible : Visibility.Collapsed;
-                _DismissButton.Click += DismissButton_Click;
-            }
-
-            VisualStateManager.GoToState(this, Visibility == Visibility.Visible ? StateContentVisible : StateContentCollapsed, true);
-
-            base.OnApplyTemplate();
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private static void OnShowDismissButtonChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var inApNotification = (InAppNotification)d;
-
-            var showDismissButton = (bool)e.NewValue;
-
-            if (inApNotification._DismissButton != null)
-            {
-                inApNotification._DismissButton.Visibility = showDismissButton ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-
-        private void DismissButton_Click(object sender, RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             Dismiss();
         }
