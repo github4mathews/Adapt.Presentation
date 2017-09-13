@@ -43,8 +43,8 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
             DataContext = this;
 
             //Setup flyout
-            TheFlyout = new Flyout { Content = this };
-            FlyoutBase.SetAttachedFlyout((Frame)Window.Current.Content, TheFlyout);
+            TheFlyout = new Flyout { Content = this, Placement = FlyoutPlacementMode.Bottom };
+            FlyoutBase.SetAttachedFlyout((Frame)Window.Current.Content, TheFlyout);//TODO: Will this work across pages?
         }
 
         #endregion
