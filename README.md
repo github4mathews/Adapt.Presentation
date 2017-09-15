@@ -3,27 +3,27 @@ A library of common Xamarin Forms controls and code that the Xamarin Forms team 
 
 ## Includes
 
-#Permissions Management
+-Permissions Management
 
-#DateTimePicker
+-DateTimePicker
 
-#Camera/Media
+-Camera/Media
 
-#File Picking
+-File Picking
 
-#Dynamic XAML Rendering
+-Dynamic XAML Rendering
 
-#GeoLocator
+-GeoLocator
 
-#WrapLayout (Left to right, top to bottom)
+-WrapLayout (Left to right, top to bottom)
 
-#Clipboard helper
+-Clipboard helper
 
-#In App Notifications
+-In App Notifications
 
-#Async ready ListView (AdaptListView)
+-Async ready ListView (AdaptListView)
 
-#INotifyDataErrorInfo Behaviours (Validation)
+-INotifyDataErrorInfo Behaviours (Validation)
 
 ## Quick Start
 -Clone the repo
