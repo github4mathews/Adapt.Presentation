@@ -2,16 +2,27 @@
 A library of common Xamarin Forms controls and code that the Xamarin Forms team has not included in their core libraries. 
 
 ## Includes
+
 #Permissions Management
+
 #DateTimePicker
+
 #Camera/Media
+
 #File Picking
+
 #Dynamic XAML Rendering
+
 #GeoLocator
+
 #WrapLayout (Left to right, top to bottom)
+
 #Clipboard helper
+
 #In App Notifications
+
 #Async ready ListView (AdaptListView)
+
 #INotifyDataErrorInfo Behaviours (Validation)
 
 ## Quick Start
