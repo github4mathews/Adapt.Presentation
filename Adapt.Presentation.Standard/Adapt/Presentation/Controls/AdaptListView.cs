@@ -43,6 +43,12 @@ namespace Adapt.Presentation.Controls
             control.RefreshSelection();
         }
 
+        private static void NotifyCollectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            var control = (AdaptListView)sender;
+            control.SelectionChanged?.Invoke(control, new EventArgs());
+        }
+
         private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var control = (AdaptListView)bindable;
@@ -74,8 +80,19 @@ namespace Adapt.Presentation.Controls
             get => (IList)GetValue(SelectedItemsProperty);
             set
             {
-                SetValue(SelectedItemsProperty, value); SelectionChanged?.Invoke(this, new EventArgs());
+                SetValue(SelectedItemsProperty, value);
+                SelectionChanged?.Invoke(this, new EventArgs());
+
+                if (value is INotifyCollectionChanged notifyCollectionChanged)
+                {
+                    notifyCollectionChanged.CollectionChanged += NotifyCollectionChanged_CollectionChanged1;
+                }
             }
+        }
+
+        private void NotifyCollectionChanged_CollectionChanged1(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            SelectionChanged?.Invoke(this, new EventArgs());
         }
 
         public DataTemplate ItemTemplate { get; set; }
@@ -86,7 +103,7 @@ namespace Adapt.Presentation.Controls
 
         #region Private Methods
 
-        private void RefreshSelection()
+        public void RefreshSelection()
         {
             //TODO: Support for duplicate records
             var dataItems = _StackList.Children.ToDictionary(x => x, y => y.BindingContext);
@@ -144,7 +161,15 @@ namespace Adapt.Presentation.Controls
 
         private void TemplateTapped(View obj)
         {
-            SelectedItem = obj.BindingContext;
+            if (SelectedItems != null)
+            {
+                SelectedItems.Add(obj.BindingContext);
+                RefreshSelection();
+            }
+            else
+            {
+                SelectedItem = obj.BindingContext;
+            }
         }
 
         #endregion Private Methods
