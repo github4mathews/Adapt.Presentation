@@ -8,6 +8,14 @@ namespace Adapt.Presentation.Controls
 {
     public class AdaptListView : ScrollView
     {
+        #region Enums
+        public enum ItemSelectorSelectionMode
+        {
+            Single,
+            Multi
+        }
+        #endregion
+
         #region Events
         public event EventHandler SelectionChanged;
         #endregion
@@ -17,40 +25,40 @@ namespace Adapt.Presentation.Controls
         #endregion Private Fields
 
         #region Constructor
-
         public AdaptListView()
         {
             Content = _StackList;
         }
-
         #endregion Constructor
 
         #region Dependency Properties
 
+        #region SelectedItemProperty
         public static readonly BindableProperty SelectedItemProperty = BindableProperty.Create(nameof(SelectedItem), typeof(object), typeof(AdaptListView), null, BindingMode.OneWayToSource, propertyChanged: OnSelectedItemChanged);
-        public static readonly BindableProperty SelectedItemsProperty = BindableProperty.Create(nameof(SelectedItems), typeof(IList), typeof(AdaptListView), null, BindingMode.OneWayToSource, propertyChanged: OnSelectedItemsChanged);
-        public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(nameof(ItemsSource), typeof(IEnumerable), typeof(AdaptListView), null, propertyChanged: OnItemsSourceChanged);
 
         private static void OnSelectedItemChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var control = (AdaptListView)bindable;
             control.RefreshSelection();
         }
+        #endregion
+
+        #region SelectedItemsProperty		
+        public static readonly BindableProperty SelectedItemsProperty = BindableProperty.Create(nameof(SelectedItems), typeof(IList), typeof(AdaptListView), null, BindingMode.OneWayToSource, propertyChanged: OnSelectedItemsChanged);
 
         private static void OnSelectedItemsChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var control = (AdaptListView)bindable;
             control.RefreshSelection();
         }
+        #endregion
 
-        private static void NotifyCollectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            var control = (AdaptListView)sender;
-            control.SelectionChanged?.Invoke(control, new EventArgs());
-        }
+        #region ItemsSourceProperty
+        public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(nameof(ItemsSource), typeof(IEnumerable), typeof(AdaptListView), null, propertyChanged: OnItemsSourceChanged);
 
         private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
         {
+            //TODO: We need to detach the old collection changed handler here...
             var control = (AdaptListView)bindable;
             if (newValue is INotifyCollectionChanged itemsSource)
             {
@@ -58,10 +66,13 @@ namespace Adapt.Presentation.Controls
             }
             control.RefreshItems();
         }
+        #endregion
 
         #endregion Dependency Properties
 
         #region Public Properties
+
+        public ItemSelectorSelectionMode SelectionMode { get; set; }
 
         public IEnumerable ItemsSource
         {
@@ -80,19 +91,22 @@ namespace Adapt.Presentation.Controls
             get => (IList)GetValue(SelectedItemsProperty);
             set
             {
+                //TODO: We need to detach the previous collection's event here
+                //INotifyCollectionChanged notifyCollectionChanged = null;
+
+                //if(notifyCollectionChanged!=null)
+                //{
+                //	notifyCollectionChanged.CollectionChanged -= NotifyCollectionChanged_CollectionChanged;
+                //}
+
                 SetValue(SelectedItemsProperty, value);
                 SelectionChanged?.Invoke(this, new EventArgs());
 
                 if (value is INotifyCollectionChanged notifyCollectionChanged)
                 {
-                    notifyCollectionChanged.CollectionChanged += NotifyCollectionChanged_CollectionChanged1;
+                    notifyCollectionChanged.CollectionChanged += NotifyCollectionChanged_CollectionChanged;
                 }
             }
-        }
-
-        private void NotifyCollectionChanged_CollectionChanged1(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            SelectionChanged?.Invoke(this, new EventArgs());
         }
 
         public DataTemplate ItemTemplate { get; set; }
@@ -100,6 +114,13 @@ namespace Adapt.Presentation.Controls
         public Color SelectedBackgroundColor { get; set; } = Color.Gray;
 
         #endregion Public Properties
+
+        #region Event Handlers
+        private void NotifyCollectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            SelectionChanged?.Invoke(this, new EventArgs());
+        }
+        #endregion
 
         #region Private Methods
 
