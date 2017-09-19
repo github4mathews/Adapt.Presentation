@@ -133,28 +133,37 @@ namespace Adapt.Presentation.Controls
             {
                 var view = item.Key;
 
-                if (SelectedItems != null)
+                switch (SelectionMode)
                 {
-                    view.BackgroundColor = Color.Transparent;
+                    case ItemSelectorSelectionMode.Single:
 
-                    foreach (var selectedItem in SelectedItems)
-                    {
-                        if (item.Value != null && item.Value.Equals(selectedItem))
+                        if (item.Value != null && item.Value.Equals(SelectedItem))
                         {
                             view.BackgroundColor = SelectedBackgroundColor;
                         }
-                    }
-                }
-                else
-                {
-                    if (item.Value != null && item.Value.Equals(SelectedItem))
-                    {
-                        view.BackgroundColor = SelectedBackgroundColor;
-                    }
-                    else
-                    {
+                        else
+                        {
+                            view.BackgroundColor = Color.Transparent;
+                        }
+
+                        break;
+
+                    case ItemSelectorSelectionMode.Multi:
+
                         view.BackgroundColor = Color.Transparent;
-                    }
+
+                        if (SelectedItems != null)
+                        {
+                            foreach (var selectedItem in SelectedItems)
+                            {
+                                if (item.Value != null && item.Value.Equals(selectedItem))
+                                {
+                                    view.BackgroundColor = SelectedBackgroundColor;
+                                }
+                            }
+                        }
+
+                        break;
                 }
             }
         }
