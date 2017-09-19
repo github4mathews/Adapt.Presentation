@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Specialized;
 using System.Linq;
 using Xamarin.Forms;
@@ -7,10 +8,12 @@ namespace Adapt.Presentation.Controls
 {
     public class AdaptListView : ScrollView
     {
+        #region Events
+        public event EventHandler SelectionChanged;
+        #endregion
+
         #region Private Fields
-
         private readonly StackLayout _StackList = new StackLayout { Spacing = 0 };
-
         #endregion Private Fields
 
         #region Constructor
@@ -25,9 +28,16 @@ namespace Adapt.Presentation.Controls
         #region Dependency Properties
 
         public static readonly BindableProperty SelectedItemProperty = BindableProperty.Create(nameof(SelectedItem), typeof(object), typeof(AdaptListView), null, BindingMode.OneWayToSource, propertyChanged: OnSelectedItemChanged);
+        public static readonly BindableProperty SelectedItemsProperty = BindableProperty.Create(nameof(SelectedItems), typeof(IList), typeof(AdaptListView), null, BindingMode.OneWayToSource, propertyChanged: OnSelectedItemsChanged);
         public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(nameof(ItemsSource), typeof(IEnumerable), typeof(AdaptListView), null, propertyChanged: OnItemsSourceChanged);
 
         private static void OnSelectedItemChanged(BindableObject bindable, object oldValue, object newValue)
+        {
+            var control = (AdaptListView)bindable;
+            control.RefreshSelection();
+        }
+
+        private static void OnSelectedItemsChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var control = (AdaptListView)bindable;
             control.RefreshSelection();
@@ -59,6 +69,15 @@ namespace Adapt.Presentation.Controls
             set => SetValue(SelectedItemProperty, value);
         }
 
+        public IList SelectedItems
+        {
+            get => (IList)GetValue(SelectedItemsProperty);
+            set
+            {
+                SetValue(SelectedItemsProperty, value); SelectionChanged?.Invoke(this, new EventArgs());
+            }
+        }
+
         public DataTemplate ItemTemplate { get; set; }
 
         public Color SelectedBackgroundColor { get; set; } = Color.Gray;
@@ -75,13 +94,29 @@ namespace Adapt.Presentation.Controls
             foreach (var item in dataItems)
             {
                 var view = item.Key;
-                if (item.Value != null && item.Value.Equals(SelectedItem))
+
+                if (SelectedItems != null)
                 {
-                    view.BackgroundColor = SelectedBackgroundColor;
+                    view.BackgroundColor = Color.Transparent;
+
+                    foreach (var selectedItem in SelectedItems)
+                    {
+                        if (item.Value != null && item.Value.Equals(selectedItem))
+                        {
+                            view.BackgroundColor = SelectedBackgroundColor;
+                        }
+                    }
                 }
                 else
                 {
-                    view.BackgroundColor = Color.Transparent;
+                    if (item.Value != null && item.Value.Equals(SelectedItem))
+                    {
+                        view.BackgroundColor = SelectedBackgroundColor;
+                    }
+                    else
+                    {
+                        view.BackgroundColor = Color.Transparent;
+                    }
                 }
             }
         }
