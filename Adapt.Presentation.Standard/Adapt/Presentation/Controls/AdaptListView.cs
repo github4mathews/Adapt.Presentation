@@ -59,6 +59,7 @@ namespace Adapt.Presentation.Controls
         private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
         {
             //TODO: We need to detach the old collection changed handler here...
+
             var control = (AdaptListView)bindable;
             if (newValue is INotifyCollectionChanged itemsSource)
             {
@@ -92,12 +93,6 @@ namespace Adapt.Presentation.Controls
             set
             {
                 //TODO: We need to detach the previous collection's event here
-                //INotifyCollectionChanged notifyCollectionChanged = null;
-
-                //if(notifyCollectionChanged!=null)
-                //{
-                //	notifyCollectionChanged.CollectionChanged -= NotifyCollectionChanged_CollectionChanged;
-                //}
 
                 SetValue(SelectedItemsProperty, value);
                 SelectionChanged?.Invoke(this, new EventArgs());
@@ -118,6 +113,7 @@ namespace Adapt.Presentation.Controls
         #region Event Handlers
         private void NotifyCollectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            RefreshSelection();
             SelectionChanged?.Invoke(this, new EventArgs());
         }
         #endregion
@@ -191,17 +187,35 @@ namespace Adapt.Presentation.Controls
 
         private void TemplateTapped(View obj)
         {
-            if (SelectedItems != null)
+            if (obj == null)
             {
-                SelectedItems.Add(obj.BindingContext);
-                RefreshSelection();
+                return;
             }
-            else
+
+            var bindingContext = obj.BindingContext;
+
+            switch (SelectionMode)
             {
-                SelectedItem = obj.BindingContext;
+                case ItemSelectorSelectionMode.Single:
+                    SelectedItem = bindingContext;
+                    break;
+                case ItemSelectorSelectionMode.Multi:
+                    if (SelectedItems != null)
+                    {
+                        if (!SelectedItems.Contains(bindingContext))
+                        {
+                            SelectedItems.Add(bindingContext);
+                        }
+                        else
+                        {
+                            SelectedItems.Remove(bindingContext);
+                        }
+                    }
+                    break;
             }
         }
 
         #endregion Private Methods
     }
 }
+
