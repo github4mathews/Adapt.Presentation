@@ -127,8 +127,7 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Methods
-
-        public void RefreshSelection()
+        private void RefreshSelection()
         {
             //TODO: Support for duplicate records
             var dataItems = _StackList.Children.ToDictionary(x => x, y => y.BindingContext);
