@@ -54,6 +54,11 @@ namespace Adapt.Presentation.Controls
         {
             var control = (AdaptListView)bindable;
             control.RefreshSelection();
+
+            if (newValue is INotifyCollectionChanged notifyCollectionChanged)
+            {
+                notifyCollectionChanged.CollectionChanged += control.NotifyCollectionChanged_CollectionChanged;
+            }
         }
         #endregion
 
@@ -100,11 +105,6 @@ namespace Adapt.Presentation.Controls
 
                 SetValue(SelectedItemsProperty, value);
                 SelectionChanged?.Invoke(this, new EventArgs());
-
-                if (value is INotifyCollectionChanged notifyCollectionChanged)
-                {
-                    notifyCollectionChanged.CollectionChanged += NotifyCollectionChanged_CollectionChanged;
-                }
             }
         }
 
@@ -140,28 +140,28 @@ namespace Adapt.Presentation.Controls
                 {
                     case ItemSelectorSelectionMode.Single:
 
-                        if (item.Value != null && item.Value.Equals(SelectedItem))
+                        if (GetIsEqual(item.Value, SelectedItem))
                         {
-                            view.BackgroundColor = SelectedBackgroundColor;
+                            SetToBackgroundColor(view);
                         }
                         else
                         {
-                            view.BackgroundColor = Color.Transparent;
+                            SetToTransparent(view);
                         }
 
                         break;
 
                     case ItemSelectorSelectionMode.Multi:
 
-                        view.BackgroundColor = Color.Transparent;
+                        SetToTransparent(view);
 
                         if (SelectedItems != null)
                         {
                             foreach (var selectedItem in SelectedItems)
                             {
-                                if (item.Value != null && item.Value.Equals(selectedItem))
+                                if (GetIsEqual(item.Value, selectedItem))
                                 {
-                                    view.BackgroundColor = SelectedBackgroundColor;
+                                    SetToBackgroundColor(view);
                                 }
                             }
                         }
@@ -169,6 +169,21 @@ namespace Adapt.Presentation.Controls
                         break;
                 }
             }
+        }
+
+        private static bool GetIsEqual(object item, object selectedItem)
+        {
+            return item != null && item.Equals(selectedItem);
+        }
+
+        private void SetToBackgroundColor(View view)
+        {
+            view.BackgroundColor = SelectedBackgroundColor;
+        }
+
+        private static void SetToTransparent(View view)
+        {
+            view.BackgroundColor = Color.Transparent;
         }
 
         private void RefreshItems()
