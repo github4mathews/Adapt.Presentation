@@ -33,6 +33,10 @@ namespace Adapt.Presentation.Controls
 
         #region Dependency Properties
 
+        #region SelectedBackgroundColorProperty
+        public static readonly BindableProperty SelectedBackgroundColorProperty = BindableProperty.Create(nameof(SelectedBackgroundColor), typeof(Color), typeof(AdaptListView), Color.Gray, BindingMode.OneWayToSource);
+        #endregion
+
         #region SelectedItemProperty
         public static readonly BindableProperty SelectedItemProperty = BindableProperty.Create(nameof(SelectedItem), typeof(object), typeof(AdaptListView), null, BindingMode.OneWayToSource, propertyChanged: OnSelectedItemChanged);
 
@@ -104,9 +108,13 @@ namespace Adapt.Presentation.Controls
             }
         }
 
-        public DataTemplate ItemTemplate { get; set; }
+        public Color SelectedBackgroundColor
+        {
+            get => (Color)GetValue(SelectedBackgroundColorProperty);
+            set => SetValue(SelectedBackgroundColorProperty, value);
+        }
 
-        public Color SelectedBackgroundColor { get; set; } = Color.Gray;
+        public DataTemplate ItemTemplate { get; set; }
 
         #endregion Public Properties
 
