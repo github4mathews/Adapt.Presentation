@@ -3,6 +3,7 @@ using Adapt.Presentation;
 using Model;
 using System;
 using System.Collections.Generic;
+using TestXamarinForms.AsyncListView;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -22,12 +23,20 @@ namespace Adapt.PresentationSamples
             RequestPermissionButton.Clicked += RequestPermissionButton_Clicked;
             CopyTextButton.Clicked += CopyTextButton_Clicked;
             NotificationButton.Clicked += NotificationButton_Clicked;
+            ListViewPage.Appearing += ListViewPage_Appearing;
 
             DateTimePickerTab.BindingContext = new DateTimeModel { TheDateTime = DateTime.Now };
 
             XAMLBox.Text = "<?xml version=\"1.0\" encoding=\"UTF - 8\"?>\r\n<ContentView xmlns = \"http://xamarin.com/schemas/2014/forms\" xmlns:x = \"http://schemas.microsoft.com/winfx/2009/xaml\" >\r\n\t<ContentView.Content>\r\n\t\t<StackLayout VerticalOptions=\"Center\" HorizontalOptions=\"Center\" BackgroundColor=\"LightBlue\">\r\n\t\t\t<Label Text=\"Hello Xamarin.Forms!\" />\r\n\t\t</StackLayout>\r\n\t</ContentView.Content>\r\n</ContentView>";
 
             LocalDateFormatPage.BindingContext = new DateTimeModel { TheDateTime = new DateTime(2000, 1, 31) };
+
+
+            CreateNewModel();
+
+            items = (ItemModelProvider)ListViewPageGrid.Resources["items"];
+            items.ItemsLoaded += Items_ItemsLoaded;
+
         }
 
         private void NotificationButton_Clicked(object sender, EventArgs e)
@@ -122,5 +131,53 @@ namespace Adapt.PresentationSamples
                 }
             }
         }
+
+
+        private void SetWaitIndicatorVisibility(bool isVisible)
+        {
+            ListViewActivityIndicator.IsRunning = isVisible;
+            ListViewActivityIndicator.IsVisible = isVisible;
+        }
+
+        private void ListViewPage_Appearing(object sender, EventArgs e)
+        {
+        }
+
+        ItemModelProvider items;
+        ItemModel two;
+
+        private AsyncListViewModel CurrentAsyncListViewModel => BindingContext as AsyncListViewModel;
+
+
+        //private void OnSetToTwoButtonClicked()
+        //{
+        //    if (two == null)
+        //    {
+        //        DisplayAlert("Wait for the items to load", "Wait for the items to load", "OK");
+        //        return;
+        //    }
+
+        //    CurrentAsyncListViewModel.ItemModel = two;
+        //}
+
+        private void CreateNewModel()
+        {
+            //Note: if you replace the line below with this, the behaviour works:
+            //BindingContext = new AsyncListViewModel { ItemModel = two };
+
+            BindingContext = new AsyncListViewModel { ItemModel = GetNewTwo() };
+        }
+
+        private static ItemModel GetNewTwo()
+        {
+            return new ItemModel { Name = 2, Description = "Second" };
+        }
+
+        private void Items_ItemsLoaded(object sender, System.EventArgs e)
+        {
+            SetWaitIndicatorVisibility(false);
+            two = items[1];
+        }
+
     }
 }

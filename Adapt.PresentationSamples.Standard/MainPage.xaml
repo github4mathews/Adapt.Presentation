@@ -4,7 +4,8 @@
             xmlns:controls="clr-namespace:Adapt.Presentation.Controls;assembly=Adapt.Presentation.Standard"
             xmlns:converters="clr-namespace:Adapt.Presentation.Converters;assembly=Adapt.Presentation.Standard"
             Title="Samples"
-             x:Class="Adapt.PresentationSamples.MainPage">
+             x:Class="Adapt.PresentationSamples.MainPage"
+            xmlns:local="clr-namespace:TestXamarinForms.AsyncListView">
     <!--Pages can be added as references or inline-->
 
     <TabbedPage.Resources>
@@ -135,5 +136,53 @@
     <ContentPage Title="In-App Notificaitons" >
         <Button Margin="4" Text="Display Notification" x:Name="NotificationButton"  />
     </ContentPage>
+
+    <ContentPage Title="ListView" x:Name="ListViewPage" >
+        <Grid x:Name="ListViewPageGrid">
+
+            <Grid.Resources>
+                <ResourceDictionary>
+                    <local:ItemModelProvider x:Key="items" />
+                </ResourceDictionary>
+            </Grid.Resources>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="33*" />
+                <RowDefinition Height="33*" />
+                <RowDefinition Height="33*" />
+            </Grid.RowDefinitions>
+
+            <ActivityIndicator x:Name="ListViewActivityIndicator" IsRunning="True" />
+
+            <controls:AdaptListView x:Name="TheListView" SelectionMode="Multi" Margin="4" SelectedItem="{Binding ItemModel, Mode=TwoWay}" ItemsSource="{StaticResource items}" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="#EEEEEE" >
+
+                <controls:AdaptListView.ItemTemplate>
+                    <DataTemplate>
+
+                        <Grid >
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20" />
+                                <RowDefinition Height="20" />
+                            </Grid.RowDefinitions>
+
+                            <Label Text="{Binding Name}" TextColor="#FF0000EE" VerticalOptions="Center"  />
+                            <Label Text="{Binding Description}" Grid.Row="1"  VerticalOptions="Center" />
+
+                        </Grid>
+
+                    </DataTemplate>
+                </controls:AdaptListView.ItemTemplate>
+
+            </controls:AdaptListView>
+
+
+            <controls:AdaptListView x:Name="SingleListView" Grid.Row="2" SelectionMode="Single" Margin="2" >
+
+            </controls:AdaptListView>
+
+        </Grid>
+    </ContentPage>
+
 
 </TabbedPage>
