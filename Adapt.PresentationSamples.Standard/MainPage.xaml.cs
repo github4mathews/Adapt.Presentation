@@ -3,6 +3,7 @@ using Adapt.Presentation;
 using Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using TestXamarinForms.AsyncListView;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -149,17 +150,6 @@ namespace Adapt.PresentationSamples
         private AsyncListViewModel CurrentAsyncListViewModel => BindingContext as AsyncListViewModel;
 
 
-        //private void OnSetToTwoButtonClicked()
-        //{
-        //    if (two == null)
-        //    {
-        //        DisplayAlert("Wait for the items to load", "Wait for the items to load", "OK");
-        //        return;
-        //    }
-
-        //    CurrentAsyncListViewModel.ItemModel = two;
-        //}
-
         private void CreateNewModel()
         {
             //Note: if you replace the line below with this, the behaviour works:
@@ -176,7 +166,7 @@ namespace Adapt.PresentationSamples
         private void Items_ItemsLoaded(object sender, System.EventArgs e)
         {
             SetWaitIndicatorVisibility(false);
-            two = items[1];
+            TheListView.SelectedItems = new ObservableCollection<ItemModel> { new ItemModel { Name = 2, Description = "Second" } };
         }
 
     }
