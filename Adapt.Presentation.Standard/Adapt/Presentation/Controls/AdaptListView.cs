@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using Xamarin.Forms;
@@ -44,6 +45,7 @@ namespace Adapt.Presentation.Controls
         {
             var control = (AdaptListView)bindable;
             control.RefreshSelection();
+            control.SelectionChanged?.Invoke(control, new EventArgs());
         }
         #endregion
 
@@ -59,6 +61,8 @@ namespace Adapt.Presentation.Controls
             {
                 notifyCollectionChanged.CollectionChanged += control.NotifyCollectionChanged_CollectionChanged;
             }
+
+            control.SelectionChanged?.Invoke(control, new EventArgs());
         }
         #endregion
 
@@ -72,7 +76,21 @@ namespace Adapt.Presentation.Controls
             var control = (AdaptListView)bindable;
             if (newValue is INotifyCollectionChanged itemsSource)
             {
-                itemsSource.CollectionChanged += (s, e) => control.RefreshItems();
+                itemsSource.CollectionChanged += (s, e) =>
+                {
+                    control.RefreshItems();
+
+                    //This is here to keep the async behaviour of the control while allowing for items to be removed.
+                    //We don't process this in RefreshSelection because then, the SelectedItem would not get set if the ItemsSource doesn't yet have the SelectedItem
+                    //But if the SelectedItem is removed from the ItemsSource later, we deselect the item
+                    if (e.Action == NotifyCollectionChangedAction.Remove && control.SelectionMode == ItemSelectorSelectionMode.Single && e.OldItems != null && e.OldItems.Contains(control.SelectedItem))
+                    {
+                        control.SelectedItem = null;
+                    }
+
+                    //TODO: Handle multi select mode here, and also handle Resets
+
+                };
             }
             control.RefreshItems();
         }
@@ -93,7 +111,10 @@ namespace Adapt.Presentation.Controls
         public object SelectedItem
         {
             get => GetValue(SelectedItemProperty);
-            set => SetValue(SelectedItemProperty, value);
+            set
+            {
+                SetValue(SelectedItemProperty, value);
+            }
         }
 
         public IList SelectedItems
@@ -102,9 +123,7 @@ namespace Adapt.Presentation.Controls
             set
             {
                 //TODO: We need to detach the previous collection's event here
-
                 SetValue(SelectedItemsProperty, value);
-                SelectionChanged?.Invoke(this, new EventArgs());
             }
         }
 
@@ -232,6 +251,10 @@ namespace Adapt.Presentation.Controls
                         {
                             SelectedItems.Remove(bindingContext);
                         }
+                    }
+                    else
+                    {
+                        SelectedItems = new ObservableCollection<object> { bindingContext };
                     }
                     break;
             }

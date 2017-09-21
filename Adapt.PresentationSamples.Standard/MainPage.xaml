@@ -1,11 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-            xmlns:controls="clr-namespace:Adapt.Presentation.Controls;assembly=Adapt.Presentation.Standard"
             xmlns:converters="clr-namespace:Adapt.Presentation.Converters;assembly=Adapt.Presentation.Standard"
+             xmlns:controls="clr-namespace:Adapt.Presentation.Controls;assembly=Adapt.Presentation.Standard"
             Title="Samples"
-             x:Class="Adapt.PresentationSamples.MainPage">
-    <!--Pages can be added as references or inline-->
+            xmlns:pages="clr-namespace:Pages"
+             x:Class="Adapt.PresentationSamples.MainPage"
+            >
 
     <TabbedPage.Resources>
         <ResourceDictionary>
@@ -135,5 +136,10 @@
     <ContentPage Title="In-App Notificaitons" >
         <Button Margin="4" Text="Display Notification" x:Name="NotificationButton"  />
     </ContentPage>
+
+    <pages:ListViewPage Title="ListView" >
+
+    </pages:ListViewPage>
+
 
 </TabbedPage>
