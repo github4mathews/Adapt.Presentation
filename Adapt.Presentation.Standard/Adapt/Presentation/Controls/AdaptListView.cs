@@ -73,7 +73,21 @@ namespace Adapt.Presentation.Controls
             var control = (AdaptListView)bindable;
             if (newValue is INotifyCollectionChanged itemsSource)
             {
-                itemsSource.CollectionChanged += (s, e) => control.RefreshItems();
+                itemsSource.CollectionChanged += (s, e) =>
+                {
+                    control.RefreshItems();
+
+                    //This is here to keep the async behaviour of the control while allowing for items to be removed.
+                    //We don't process this in RefreshSelection because then, the SelectedItem would not get set if the ItemsSource doesn't yet have the SelectedItem
+                    //But if the SelectedItem is removed from the ItemsSource later, we deselect the item
+                    if (e.Action == NotifyCollectionChangedAction.Remove && control.SelectionMode == ItemSelectorSelectionMode.Single && e.OldItems.Count > 0 && control.SelectedItem == e.OldItems[0])
+                    {
+                        control.SelectedItem = null;
+                    }
+
+                    //TODO: Handle multi select mode here, and also handle Resets
+
+                };
             }
             control.RefreshItems();
         }
@@ -94,7 +108,11 @@ namespace Adapt.Presentation.Controls
         public object SelectedItem
         {
             get => GetValue(SelectedItemProperty);
-            set => SetValue(SelectedItemProperty, value);
+            set
+            {
+                SetValue(SelectedItemProperty, value);
+                SelectionChanged?.Invoke(this, new EventArgs());
+            }
         }
 
         public IList SelectedItems
