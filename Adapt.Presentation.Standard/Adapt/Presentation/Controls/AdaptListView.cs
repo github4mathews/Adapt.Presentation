@@ -80,7 +80,7 @@ namespace Adapt.Presentation.Controls
                     //This is here to keep the async behaviour of the control while allowing for items to be removed.
                     //We don't process this in RefreshSelection because then, the SelectedItem would not get set if the ItemsSource doesn't yet have the SelectedItem
                     //But if the SelectedItem is removed from the ItemsSource later, we deselect the item
-                    if (e.Action == NotifyCollectionChangedAction.Remove && control.SelectionMode == ItemSelectorSelectionMode.Single && e.OldItems.Count > 0 && control.SelectedItem == e.OldItems[0])
+                    if (e.Action == NotifyCollectionChangedAction.Remove && control.SelectionMode == ItemSelectorSelectionMode.Single && e.OldItems != null && e.OldItems.Contains(control.SelectedItem))
                     {
                         control.SelectedItem = null;
                     }
