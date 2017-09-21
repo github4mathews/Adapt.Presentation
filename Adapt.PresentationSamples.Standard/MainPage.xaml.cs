@@ -3,8 +3,6 @@ using Adapt.Presentation;
 using Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using TestXamarinForms.AsyncListView;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 

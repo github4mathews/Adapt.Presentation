@@ -1,54 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TestXamarinForms.AsyncListView;
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ListViewPage 
+    public partial class ListViewPage
     {
+        #region Fields
+        private ItemModelProvider _Items;
+        #endregion
 
-        ItemModelProvider items;
-        ItemModel two;
-
+        #region Private Properties
         private AsyncListViewModel CurrentAsyncListViewModel => BindingContext as AsyncListViewModel;
+        #endregion
 
-
+        #region Constructor
         public ListViewPage()
         {
             InitializeComponent();
-
             CreateNewModel();
-
-            items = (ItemModelProvider)ListViewPageGrid.Resources["items"];
-            items.ItemsLoaded += Items_ItemsLoaded;
+            _Items = (ItemModelProvider)ListViewPageGrid.Resources["items"];
+            _Items.ItemsLoaded += Items_ItemsLoaded;
         }
+        #endregion
 
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-        }
-
+        #region Private Methods
         private void SetWaitIndicatorVisibility(bool isVisible)
         {
             ListViewActivityIndicator.IsRunning = isVisible;
             ListViewActivityIndicator.IsVisible = isVisible;
         }
 
-
-
         private void CreateNewModel()
         {
-            //Note: if you replace the line below with this, the behaviour works:
-            //BindingContext = new AsyncListViewModel { ItemModel = two };
-
             BindingContext = new AsyncListViewModel { ItemModel = GetNewTwo() };
         }
 
@@ -56,12 +42,14 @@ namespace Pages
         {
             return new ItemModel { Name = 2, Description = "Second" };
         }
+        #endregion
 
-        private void Items_ItemsLoaded(object sender, System.EventArgs e)
+        #region Event Handlers
+        private void Items_ItemsLoaded(object sender, EventArgs e)
         {
             SetWaitIndicatorVisibility(false);
             TheListView.SelectedItems = new ObservableCollection<ItemModel> { new ItemModel { Name = 2, Description = "Second" } };
         }
-
+        #endregion
     }
 }
