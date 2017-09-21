@@ -45,6 +45,7 @@ namespace Adapt.Presentation.Controls
         {
             var control = (AdaptListView)bindable;
             control.RefreshSelection();
+            control.SelectionChanged?.Invoke(control, new EventArgs());
         }
         #endregion
 
@@ -60,6 +61,8 @@ namespace Adapt.Presentation.Controls
             {
                 notifyCollectionChanged.CollectionChanged += control.NotifyCollectionChanged_CollectionChanged;
             }
+
+            control.SelectionChanged?.Invoke(control, new EventArgs());
         }
         #endregion
 
@@ -111,7 +114,6 @@ namespace Adapt.Presentation.Controls
             set
             {
                 SetValue(SelectedItemProperty, value);
-                SelectionChanged?.Invoke(this, new EventArgs());
             }
         }
 
@@ -121,9 +123,7 @@ namespace Adapt.Presentation.Controls
             set
             {
                 //TODO: We need to detach the previous collection's event here
-
                 SetValue(SelectedItemsProperty, value);
-                SelectionChanged?.Invoke(this, new EventArgs());
             }
         }
 
