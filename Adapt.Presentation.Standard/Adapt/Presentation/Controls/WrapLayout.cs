@@ -89,7 +89,15 @@ namespace Adapt.Presentation.Controls
                         cache = true;
                     }
 
-                    sizeRequest = child.Measure(double.PositiveInfinity, double.PositiveInfinity);
+                    if (child is WrapLayout wrapLayout)
+                    {
+                        //This will give a more accurte reading for wrap layouts
+                        sizeRequest = wrapLayout.OnMeasure(double.PositiveInfinity, double.PositiveInfinity);
+                    }
+                    else
+                    {
+                        sizeRequest = child.Measure(double.PositiveInfinity, double.PositiveInfinity);
+                    }
 
                     if (cache) _LayoutCache[child] = sizeRequest;
                 }
@@ -140,6 +148,11 @@ namespace Adapt.Presentation.Controls
 
         [Obsolete]
         protected override SizeRequest OnSizeRequest(double widthConstraint, double heightConstraint)
+        {
+            return OnMeasure(widthConstraint, heightConstraint);
+        }
+
+        protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         {
             var result = NaiveLayout(widthConstraint);
             return new SizeRequest(new Size(result.LastX, result.LastY));
