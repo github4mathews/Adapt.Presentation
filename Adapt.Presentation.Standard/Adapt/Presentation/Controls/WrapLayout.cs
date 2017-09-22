@@ -78,7 +78,7 @@ namespace Adapt.Presentation.Controls
                     if (child is Layout layout)
                     {
                         //Constrain this so it knows to resize if it can
-                        if (!double.IsNaN(availableSpace) && availableSpace > 0 && layout.WidthRequest != -1)
+                        if (!double.IsNaN(availableSpace) && availableSpace > 0 && !layout.WidthRequest.Equals(-1))
                         {
                             layout.WidthRequest = availableSpace;
                         }
