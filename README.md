@@ -1,5 +1,5 @@
 ## Adapt.Presentation
-A library of common Xamarin Forms controls and code that the Xamarin Forms team have not included in their core libraries. 
+A library of common Xamarin Forms controls and code that the Xamarin Forms team has not included in their core libraries. 
 
 ## Includes
 
