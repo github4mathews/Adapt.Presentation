@@ -44,10 +44,19 @@ namespace Adapt.Presentation.Controls
         #region Private Methods
         private NaiveLayoutResult NaiveLayout(double fullWidthConstraint)
         {
+            if (HasParent)
+            {
+                //We shouldn't have to do this if the width would set correctly
+                var parentLayout = (WrapLayout)Parent;
+                FullWidthConstraint = parentLayout.FullWidthConstraint - (X - parentLayout.X);
+            }
+            else
+            {
+                FullWidthConstraint = fullWidthConstraint;
+            }
+
             double currentX = 0, nextY = 0, currentY = 0;
-
             var result = new NaiveLayoutResult();
-
             var currentList = new ViewAndRectangleList();
 
             foreach (var child in Children)
@@ -65,11 +74,11 @@ namespace Adapt.Presentation.Controls
                     }
 
                     var cache = false;
-                    var availableSpace = fullWidthConstraint - currentX;
+                    var availableSpace = FullWidthConstraint - currentX;
                     if (child is Layout layout)
                     {
                         //Constrain this so it knows to resize if it can
-                        if (!double.IsNaN(availableSpace) && availableSpace > 0)
+                        if (!double.IsNaN(availableSpace) && availableSpace > 0 && layout.WidthRequest != -1)
                         {
                             layout.WidthRequest = availableSpace;
                         }
@@ -88,7 +97,7 @@ namespace Adapt.Presentation.Controls
                 var paddedWidth = sizeRequest.Request.Width + Spacing;
                 var paddedHeight = sizeRequest.Request.Height + Spacing;
 
-                if (currentX + paddedWidth > fullWidthConstraint)
+                if (currentX + paddedWidth > FullWidthConstraint)
                 {
                     //We're over sized, wrap to the next line and set the X to 0
                     currentX = HasParent ? ParentWrapStart : 0;
@@ -114,6 +123,8 @@ namespace Adapt.Presentation.Controls
 
             return result;
         }
+
+        public double FullWidthConstraint { get; set; }
 
         public double ParentWrapStart { get; set; }
 
