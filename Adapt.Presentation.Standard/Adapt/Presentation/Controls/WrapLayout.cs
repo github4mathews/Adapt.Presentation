@@ -59,7 +59,6 @@ namespace Adapt.Presentation.Controls
                         //It's a direct nested wrap layout, make sure it knows it where to start the next line
                         if (!wraplayout.HasParent)
                         {
-                            Children.AddRange(wraplayout.Children);
                             wraplayout.HasParent = true;
                             wraplayout.ParentWrapStart = X;
                         }
