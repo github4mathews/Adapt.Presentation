@@ -3,6 +3,8 @@ A library of common Xamarin Forms controls and code that the Xamarin Forms team 
 
 ## Includes
 
+-ListView (Multi Select, Async Ready)
+
 -Permissions Management
 
 -DateTimePicker
