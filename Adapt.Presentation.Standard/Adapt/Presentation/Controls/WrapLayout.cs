@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Adapt.Extensions;
 using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls
@@ -18,11 +19,7 @@ namespace Adapt.Presentation.Controls
         /// <summary>
         /// Backing Storage for the Spacing property
         /// </summary>
-        public static readonly BindableProperty SpacingProperty =
-#pragma warning disable CS0618 // Type or member is obsolete
-            BindableProperty.Create<WrapLayout, double>(w => w.Spacing, 5,
-                propertyChanged: (bindable, oldvalue, newvalue) => ((WrapLayout)bindable)._LayoutCache.Clear());
-#pragma warning restore CS0618 // Type or member is obsolete
+        public static readonly BindableProperty SpacingProperty = BindableProperty.Create(nameof(Spacing), defaultValue: 5d, returnType: typeof(double), declaringType: typeof(WrapLayout), propertyChanged: (bindable, oldvalue, newvalue) => ((WrapLayout)bindable)._LayoutCache.Clear());
         #endregion
 
         #region Public Properties
@@ -45,54 +42,83 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Methods
-        private NaiveLayoutResult NaiveLayout(double width)
+        private NaiveLayoutResult NaiveLayout(double fullWidthConstraint)
         {
-            double startX = 0;
-            double startY = 0;
-            var right = width;
-            double nextY = 0;
+            double currentX = 0, nextY = 0, currentY = 0;
 
             var result = new NaiveLayoutResult();
 
-            var currentList = new ViewAndRectableList();
+            var currentList = new ViewAndRectangleList();
 
             foreach (var child in Children)
             {
                 if (!_LayoutCache.TryGetValue(child, out SizeRequest sizeRequest))
                 {
-#pragma warning disable CS0618 // Type or member is obsolete
-                    _LayoutCache[child] = sizeRequest = child.GetSizeRequest(double.PositiveInfinity, double.PositiveInfinity);
-#pragma warning restore CS0618 // Type or member is obsolete
+                    if (child is WrapLayout wraplayout)
+                    {
+                        //It's a direct nested wrap layout, make sure it knows it where to start the next line
+                        if (!wraplayout.HasParent)
+                        {
+                            Children.AddRange(wraplayout.Children);
+                            wraplayout.HasParent = true;
+                            wraplayout.ParentWrapStart = X;
+                        }
+                    }
+
+                    var cache = false;
+                    var availableSpace = fullWidthConstraint - currentX;
+                    if (child is Layout layout)
+                    {
+                        //Constrain this so it knows to resize if it can
+                        if (!double.IsNaN(availableSpace) && availableSpace > 0)
+                        {
+                            layout.WidthRequest = availableSpace;
+                        }
+                        layout.ForceLayout();
+                    }
+                    else
+                    {
+                        cache = true;
+                    }
+
+                    sizeRequest = child.Measure(double.PositiveInfinity, double.PositiveInfinity);
+
+                    if (cache) _LayoutCache[child] = sizeRequest;
                 }
 
                 var paddedWidth = sizeRequest.Request.Width + Spacing;
                 var paddedHeight = sizeRequest.Request.Height + Spacing;
 
-                if (startX + paddedWidth > right)
+                if (currentX + paddedWidth > fullWidthConstraint)
                 {
-                    startX = 0;
-                    startY += nextY;
+                    //We're over sized, wrap to the next line and set the X to 0
+                    currentX = HasParent ? ParentWrapStart : 0;
+                    currentY += nextY;
 
-                    if (currentList.Count > 0)
+                    if (currentList.Any())
                     {
                         result.Add(currentList);
-                        currentList = new ViewAndRectableList();
+                        currentList = new ViewAndRectangleList();
                     }
                 }
 
-                currentList.Add(new ViewAndRectangle(child, new Rectangle(startX, startY, sizeRequest.Request.Width, sizeRequest.Request.Height)));
+                currentList.Add(new ViewAndRectangle(child, new Rectangle(currentX, currentY, sizeRequest.Request.Width, sizeRequest.Request.Height)));
 
-                result.LastX = Math.Max(result.LastX, startX + paddedWidth);
-                result.LastY = Math.Max(result.LastY, startY + paddedHeight);
+                result.LastX = Math.Max(result.LastX, currentX + paddedWidth);
+                result.LastY = Math.Max(result.LastY, currentY + paddedHeight);
 
                 nextY = Math.Max(nextY, paddedHeight);
-                startX += paddedWidth;
+                currentX += paddedWidth;
             }
 
             result.Add(currentList);
 
             return result;
         }
+
+        public double ParentWrapStart { get; set; }
+
+        public bool HasParent { get; set; }
         #endregion
 
         #region Protected Overrides
@@ -113,14 +139,14 @@ namespace Adapt.Presentation.Controls
         {
             var naiveLayoutResult = NaiveLayout(width);
 
-            foreach (var viewAndRectableList in naiveLayoutResult)
+            foreach (var viewAndRectangleList in naiveLayoutResult)
             {
                 int offset;
 
                 if (HorizontalOptions.Equals(LayoutOptions.Center) || HorizontalOptions.Equals(LayoutOptions.CenterAndExpand))
                 {
                     //Put contents in the middle
-                    offset = (int)((width - viewAndRectableList.Last().Rectangle.Right) / 2);
+                    offset = (int)((width - viewAndRectangleList.Last().Rectangle.Right) / 2);
                 }
                 else if (HorizontalOptions.Equals(LayoutOptions.Fill) || HorizontalOptions.Equals(LayoutOptions.FillAndExpand) || HorizontalOptions.Equals(LayoutOptions.Start) || HorizontalOptions.Equals(LayoutOptions.StartAndExpand))
                 {
@@ -134,7 +160,7 @@ namespace Adapt.Presentation.Controls
                     //TODO: Right alignment
                 }
 
-                foreach (var viewAndRectangle in viewAndRectableList)
+                foreach (var viewAndRectangle in viewAndRectangleList)
                 {
                     var location = new Rectangle(viewAndRectangle.Rectangle.X + x + offset, viewAndRectangle.Rectangle.Y + y, viewAndRectangle.Rectangle.Width, viewAndRectangle.Rectangle.Height);
                     LayoutChildIntoBoundingRegion(viewAndRectangle.View, location);
@@ -160,12 +186,15 @@ namespace Adapt.Presentation.Controls
             #endregion
         }
 
-        private class ViewAndRectableList : List<ViewAndRectangle>
+        private class ViewAndRectangleList : List<ViewAndRectangle>
         {
 
         }
 
-        private class NaiveLayoutResult : List<ViewAndRectableList>
+        /// <summary>
+        /// A class for holding the information about how the child views should be lain out
+        /// </summary>
+        private class NaiveLayoutResult : List<ViewAndRectangleList>
         {
             internal double LastX;
             internal double LastY;
