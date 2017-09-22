@@ -3,7 +3,7 @@ A library of common Xamarin Forms controls and code that the Xamarin Forms team 
 
 ## Includes
 
--ListView (Multi Select, Async Ready)
+-ListView (Multi Select, Async Ready - AdaptListView)
 
 -Permissions Management
 
@@ -22,8 +22,6 @@ A library of common Xamarin Forms controls and code that the Xamarin Forms team 
 -Clipboard helper
 
 -In App Notifications
-
--Async ready ListView (AdaptListView)
 
 -INotifyDataErrorInfo Behaviours (Validation)
 
