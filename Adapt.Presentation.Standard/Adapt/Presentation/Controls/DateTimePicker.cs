@@ -6,33 +6,34 @@ using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls
 {
-    public class DateTimePicker : WrapLayout
+    public class DateTimePicker : Grid
     {
         #region Fields
-        private readonly DatePicker _Date;
-        private readonly TimePicker _Time;
+        private readonly DatePicker _DatePicker;
+        private readonly TimePicker _TimePicker;
         private bool _IsChanging;
         #endregion
 
         #region Bindable Properties
         public static readonly BindableProperty ValueProperty =
-#pragma warning disable CS0618 // Type or member is obsolete
-        BindableProperty.Create<DateTimePicker, DateTime>
+        BindableProperty.Create
         (
-            p => p.Value,
-            default(DateTime),
+            nameof(Value),
+            typeof(DateTime),
+            typeof(DateTimePicker),
+            DateTime.MinValue,
             BindingMode.TwoWay,
             propertyChanging: ValueChanging
         );
-#pragma warning restore CS0618 // Type or member is obsolete
 
-        private static void ValueChanging(BindableObject bindable, DateTime oldValue, DateTime newValue)
+        private static void ValueChanging(BindableObject bindable, object oldValue, object newValue)
         {
-            var ctrl = (DateTimePicker)bindable;
-            ctrl._IsChanging = true;
-            ctrl._Date.Date = newValue;
-            ctrl._Time.Time = newValue.TimeOfDay;
-            ctrl._IsChanging = false;
+            var date = (DateTime)newValue;
+            var thisPicker = (DateTimePicker)bindable;
+            thisPicker._IsChanging = true;
+            thisPicker._DatePicker.Date = date;
+            thisPicker._TimePicker.Time = date.TimeOfDay;
+            thisPicker._IsChanging = false;
         }
         #endregion
 
@@ -48,20 +49,33 @@ namespace Adapt.Presentation.Controls
         public DateTimePicker()
         {
             Padding = 2;
-            _Date = new DatePicker { Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern };
-            _Time = new TimePicker { Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern };
+
+            _DatePicker = new DatePicker { Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern, Date = Value };
+            _TimePicker = new TimePicker { Format = CultureInfo.CurrentCulture.DateTimeFormat.ShortTimePattern, Time = Value.TimeOfDay };
+
             var clearButton = new Button { Text = "Clear" };
             var nowButton = new Button { Text = "Now" };
+
             Children.Add(clearButton);
             Children.Add(nowButton);
-            Children.Add(_Date);
-            Children.Add(_Time);
-            _Date.PropertyChanged += DateOrTimePropertyChanged;
-            _Time.PropertyChanged += DateOrTimePropertyChanged;
+            Children.Add(_DatePicker);
+            Children.Add(_TimePicker);
+
+            RowDefinitions.Add(new RowDefinition { Height = new GridLength(0, GridUnitType.Auto) });
+            RowDefinitions.Add(new RowDefinition { Height = new GridLength(0, GridUnitType.Auto) });
+
+            ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(0, GridUnitType.Auto) });
+            ColumnDefinitions.Add(new ColumnDefinition());
+
+            SetColumn(_DatePicker, 1);
+            SetColumn(_TimePicker, 1);
+            SetRow(_TimePicker, 1);
+            SetRow(clearButton, 1);
+
+            _DatePicker.PropertyChanged += DateOrTimePropertyChanged;
+            _TimePicker.PropertyChanged += DateOrTimePropertyChanged;
             clearButton.Clicked += ClearButton_Clicked;
             nowButton.Clicked += NowButton_Clicked;
-            _Date.Date = new DateTime();
-            _Time.Time = new DateTime().TimeOfDay;
         }
         #endregion
 
@@ -89,7 +103,7 @@ namespace Adapt.Presentation.Controls
                 return;
             }
 
-            Value = _Date.Date.Add(_Time.Time);
+            Value = _DatePicker.Date.Add(_TimePicker.Time);
         }
         #endregion
     }
