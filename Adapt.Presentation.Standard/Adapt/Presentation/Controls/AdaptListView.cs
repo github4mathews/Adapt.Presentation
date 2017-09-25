@@ -10,35 +10,46 @@ namespace Adapt.Presentation.Controls
     public class AdaptListView : ScrollView
     {
         #region Enums
+
         public enum ItemSelectorSelectionMode
         {
             Single,
             Multi
         }
+
         #endregion
 
         #region Events
+
         public event EventHandler SelectionChanged;
+
         #endregion
 
         #region Private Fields
+
         private readonly StackLayout _StackList = new StackLayout { Spacing = 0 };
+
         #endregion Private Fields
 
         #region Constructor
+
         public AdaptListView()
         {
             Content = _StackList;
         }
+
         #endregion Constructor
 
         #region Dependency Properties
 
         #region SelectedBackgroundColorProperty
+
         public static readonly BindableProperty SelectedBackgroundColorProperty = BindableProperty.Create(nameof(SelectedBackgroundColor), typeof(Color), typeof(AdaptListView), Color.Gray, BindingMode.OneWayToSource);
+
         #endregion
 
         #region SelectedItemProperty
+
         public static readonly BindableProperty SelectedItemProperty = BindableProperty.Create(nameof(SelectedItem), typeof(object), typeof(AdaptListView), null, BindingMode.OneWayToSource, propertyChanged: OnSelectedItemChanged);
 
         private static void OnSelectedItemChanged(BindableObject bindable, object oldValue, object newValue)
@@ -47,9 +58,11 @@ namespace Adapt.Presentation.Controls
             control.RefreshSelection();
             control.SelectionChanged?.Invoke(control, new EventArgs());
         }
+
         #endregion
 
-        #region SelectedItemsProperty		
+        #region SelectedItemsProperty
+
         public static readonly BindableProperty SelectedItemsProperty = BindableProperty.Create(nameof(SelectedItems), typeof(IList), typeof(AdaptListView), null, BindingMode.OneWayToSource, propertyChanged: OnSelectedItemsChanged);
 
         private static void OnSelectedItemsChanged(BindableObject bindable, object oldValue, object newValue)
@@ -64,9 +77,11 @@ namespace Adapt.Presentation.Controls
 
             control.SelectionChanged?.Invoke(control, new EventArgs());
         }
+
         #endregion
 
         #region ItemsSourceProperty
+
         public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(nameof(ItemsSource), typeof(IEnumerable), typeof(AdaptListView), null, propertyChanged: OnItemsSourceChanged);
 
         private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
@@ -89,18 +104,46 @@ namespace Adapt.Presentation.Controls
                     }
 
                     //TODO: Handle multi select mode here, and also handle Resets
-
                 };
             }
             control.RefreshItems();
         }
+
+        #endregion
+
+        #region SelectionModeProperty
+
+        private static void SelectionModeChanged(BindableObject bindable, object oldvalue, object newvalue)
+        {
+            var view = (AdaptListView)bindable;
+            switch ((ItemSelectorSelectionMode)oldvalue)
+            {
+                case ItemSelectorSelectionMode.Single:
+                    view.SelectedItem = null;
+                    break;
+
+                case ItemSelectorSelectionMode.Multi:
+                    view.SelectedItems.Clear();
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public BindableProperty SelectionModeProperty = BindableProperty.Create(nameof(SelectionMode), typeof(ItemSelectorSelectionMode), typeof(AdaptListView), default(ItemSelectorSelectionMode), propertyChanged: SelectionModeChanged);
+
         #endregion
 
         #endregion Dependency Properties
 
         #region Public Properties
 
-        public ItemSelectorSelectionMode SelectionMode { get; set; }
+        public ItemSelectorSelectionMode SelectionMode
+        {
+            get => (ItemSelectorSelectionMode)GetValue(SelectionModeProperty);
+            set => SetValue(SelectionModeProperty, value);
+        }
 
         public IEnumerable ItemsSource
         {
@@ -138,14 +181,17 @@ namespace Adapt.Presentation.Controls
         #endregion Public Properties
 
         #region Event Handlers
+
         private void NotifyCollectionChanged_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RefreshSelection();
             SelectionChanged?.Invoke(this, new EventArgs());
         }
+
         #endregion
 
         #region Private Methods
+
         private void RefreshSelection()
         {
             //TODO: Support for duplicate records
@@ -240,6 +286,7 @@ namespace Adapt.Presentation.Controls
                 case ItemSelectorSelectionMode.Single:
                     SelectedItem = bindingContext;
                     break;
+
                 case ItemSelectorSelectionMode.Multi:
                     if (SelectedItems != null)
                     {
@@ -263,4 +310,3 @@ namespace Adapt.Presentation.Controls
         #endregion Private Methods
     }
 }
-
