@@ -18,9 +18,10 @@ using System;
 
 namespace Adapt.Presentation
 {
-    public class MediaFileNotFoundException
-      : Exception
+    public class MediaFileNotFoundException : Exception
     {
+        public string Path { get; }
+
         public MediaFileNotFoundException(string path)
           : base("Unable to locate media file at " + path)
         {
@@ -31,13 +32,6 @@ namespace Adapt.Presentation
           : base("Unable to locate media file at " + path, innerException)
         {
             Path = path;
-        }
-        /// <summary>
-        /// Path
-        /// </summary>
-        private string Path
-        {
-            get;
         }
     }
 }

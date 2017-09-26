@@ -64,7 +64,7 @@ namespace Adapt.Presentation.Geolocator
         /// <summary>
         /// Start listening for changes
         /// </summary>
-        Task<bool> StartListeningAsync(TimeSpan minimumTime, double minimumDistance, bool includeHeading = false, ListenerSettings listenerSettings = null);
+        Task<bool> StartListeningAsync(TimeSpan minimumTime, double minimumDistance, bool includeHeading, ListenerSettings listenerSettings);
 
 
         /// <summary>

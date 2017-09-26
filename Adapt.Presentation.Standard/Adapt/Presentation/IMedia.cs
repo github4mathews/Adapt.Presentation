@@ -39,7 +39,7 @@ namespace Adapt.Presentation
         /// Picks a photo from the default gallery
         /// </summary>
         /// <returns>Media file or null if canceled</returns>
-        Task<MediaFile> PickPhotoAsync(PickMediaOptions options = null);
+        Task<MediaFile> PickPhotoAsync(PickMediaOptions options);
 
         /// <summary>
         /// Take a photo async with specified options

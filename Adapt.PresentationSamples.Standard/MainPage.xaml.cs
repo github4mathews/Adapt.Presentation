@@ -115,6 +115,11 @@ namespace Adapt.PresentationSamples
 
                     using (var fileData = await filePicker.PickAndOpenFileForWriting(fileTypes, defaultFileName))
                     {
+                        if (fileData == null)
+                        {
+                            return;
+                        }
+
                         var readBuffer = new byte[readFileStream.Length];
                         await readFileStream.ReadAsync(readBuffer, 0, (int)readFileStream.Length);
                         fileData.FileStream.Write(readBuffer, 0, readBuffer.Length);
