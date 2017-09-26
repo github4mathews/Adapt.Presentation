@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using TestXamarinForms.AsyncListView;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Pages
@@ -21,10 +22,18 @@ namespace Pages
         {
             InitializeComponent();
             CreateNewModel();
-            _Items = (ItemModelProvider)ListViewPageGrid.Resources["items"];
-            _Items.ItemsLoaded += Items_ItemsLoaded;
         }
         #endregion
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            Resources = new ResourceDictionary();
+            _Items = new ItemModelProvider();
+            _Items.ItemsLoaded += Items_ItemsLoaded;
+            Resources.Add("items", _Items);
+        }
 
         #region Private Methods
         private void SetWaitIndicatorVisibility(bool isVisible)

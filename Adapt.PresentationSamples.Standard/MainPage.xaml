@@ -137,7 +137,7 @@
         <Button Margin="4" Text="Display Notification" x:Name="NotificationButton"  />
     </ContentPage>
 
-    <pages:ListViewPage Title="ListView" >
+    <pages:ListViewPage Title="ListView" x:Name="ListViewTab" >
 
     </pages:ListViewPage>
 

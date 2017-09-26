@@ -63,7 +63,7 @@ namespace Adapt.Presentation.Controls
 
         #region SelectedItemsProperty
 
-        public static readonly BindableProperty SelectedItemsProperty = BindableProperty.Create(nameof(SelectedItems), typeof(IList), typeof(AdaptListView), null, BindingMode.OneWayToSource, propertyChanged: OnSelectedItemsChanged);
+        public static readonly BindableProperty SelectedItemsProperty = BindableProperty.Create(nameof(SelectedItems), typeof(IList), typeof(AdaptListView), null, BindingMode.TwoWay, propertyChanged: OnSelectedItemsChanged);
 
         private static void OnSelectedItemsChanged(BindableObject bindable, object oldValue, object newValue)
         {

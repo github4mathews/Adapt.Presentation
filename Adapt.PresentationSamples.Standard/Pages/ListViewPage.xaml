@@ -11,8 +11,7 @@
 
             <Grid.Resources>
                 <ResourceDictionary>
-                    <local:ItemModelProvider x:Key="items" />
-
+    
                     <DataTemplate x:Key="itemtemplate">
 
                         <Grid >
@@ -41,7 +40,7 @@
 
             <ActivityIndicator x:Name="ListViewActivityIndicator" IsRunning="True" />
 
-            <controls:AdaptListView Grid.Row="1" ItemTemplate="{StaticResource itemtemplate}" x:Name="TheListView" SelectionMode="Multi" Margin="2" SelectedItem="{Binding ItemModel, Mode=TwoWay}" ItemsSource="{StaticResource items}" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="#EEEEEE" />
+            <controls:AdaptListView Grid.Row="1" ItemTemplate="{StaticResource itemtemplate}" x:Name="TheListView" SelectionMode="Multi" Margin="2" SelectedItem="{Binding ItemModel, Mode=TwoWay}" ItemsSource="{DynamicResource items}" HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="#EEEEEE" />
 
             <controls:AdaptListView Grid.Row="2" ItemTemplate="{StaticResource itemtemplate}" ItemsSource="{Binding Source={Reference TheListView}, Path=SelectedItems}" SelectionMode="Single" Margin="2"   HorizontalOptions="Center" VerticalOptions="Center" BackgroundColor="#EEEEEE" x:Name="SingleItemListView" />
 
