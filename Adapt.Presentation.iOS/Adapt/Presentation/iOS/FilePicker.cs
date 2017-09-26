@@ -14,9 +14,12 @@ namespace Adapt.Presentation.iOS
     /// </summary>
     public class FilePicker : NSObject, IUIDocumentMenuDelegate, IFilePicker
     {
+        #region Fields
         private int _RequestId;
         private TaskCompletionSource<FileData> _CompletionSource;
+        #endregion
 
+        #region Events
         /// <summary>
         /// Event which is invoked when a file was picked
         /// </summary>
@@ -25,12 +28,9 @@ namespace Adapt.Presentation.iOS
             get;
             set;
         }
+        #endregion
 
-        private void OnFilePicked(FilePickerEventArgs e)
-        {
-            Handler?.Invoke(null, e);
-        }
-
+        #region Public Methods
         public void DidPickDocumentPicker(UIDocumentMenuViewController documentMenu, UIDocumentPickerViewController documentPicker)
         {
             documentPicker.DidPickDocument += DocumentPicker_DidPickDocument;
@@ -39,6 +39,73 @@ namespace Adapt.Presentation.iOS
             UIApplication.SharedApplication.KeyWindow.RootViewController.PresentViewController(documentPicker, true, null);
         }
 
+        /// <summary>
+        /// Lets the user pick a file with the systems default file picker
+        /// For iOS iCloud drive needs to be configured
+        /// </summary>
+        /// <returns></returns>
+        public async Task<FileData> PickAndOpenFileForReading()
+        {
+            var media = await TakeMediaAsync();
+
+            return media;
+        }
+
+        public void WasCancelled(UIDocumentMenuViewController documentMenu)
+        {
+            var tcs = Interlocked.Exchange(ref _CompletionSource, null);
+
+            tcs?.SetResult(null);
+        }
+        public void OpenFile(NSUrl fileUrl)
+        {
+            var docControl = UIDocumentInteractionController.FromUrl(fileUrl);
+
+            var window = UIApplication.SharedApplication.KeyWindow;
+            var subViews = window.Subviews;
+            var lastView = subViews.Last();
+            var frame = lastView.Frame;
+
+            docControl.PresentOpenInMenu(frame, lastView, true);
+        }
+
+
+        public void OpenFile(string fileToOpen)
+        {
+            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            var fileName = Path.Combine(documents, fileToOpen);
+
+            if (!NSFileManager.DefaultManager.FileExists(fileName))
+            {
+                return;
+            }
+
+            var url = new NSUrl(fileName, true);
+            OpenFile(url);
+        }
+
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task<FileData> PickAndOpenFileForWriting(FileSelectionDictionary fileTypes, string fileName)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        {
+            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var filePath = Path.Combine(documents, fileName);
+
+            var fileStream = File.Create(filePath);
+
+            var retVal = new FileData
+            {
+                FileName = fileName,
+                FileStream = fileStream
+            };
+
+            return retVal;
+        }
+
+        #endregion
+
+        #region Event Handlers
         private void DocumentPicker_DidPickDocument(object sender, UIDocumentPickedEventArgs e)
         {
             var securityEnabled = e.Url.StartAccessingSecurityScopedResource();
@@ -68,15 +135,13 @@ namespace Adapt.Presentation.iOS
                 filename = pathname?.Substring(filesplit + 1);
             }
 
-            OnFilePicked(new FilePickerEventArgs(dataBytes, filename));
+            OnFilePicked(new FilePickerEventArgs(filename));
         }
 
         /// <summary>
         /// Handles when the file picker was cancelled. Either in the
         /// popup menu or later on.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         public void DocumentPicker_WasCancelled(object sender, EventArgs e)
         {
             {
@@ -84,17 +149,12 @@ namespace Adapt.Presentation.iOS
                 tcs.SetResult(null);
             }
         }
+        #endregion
 
-        /// <summary>
-        /// Lets the user pick a file with the systems default file picker
-        /// For iOS iCloud drive needs to be configured
-        /// </summary>
-        /// <returns></returns>
-        public async Task<FileData> PickAndOpenFileForReading()
+        #region Private Methods
+        private void OnFilePicked(FilePickerEventArgs e)
         {
-            var media = await TakeMediaAsync();
-
-            return media;
+            Handler?.Invoke(null, e);
         }
 
         private Task<FileData> TakeMediaAsync()
@@ -149,13 +209,6 @@ namespace Adapt.Presentation.iOS
             return _CompletionSource.Task;
         }
 
-        public void WasCancelled(UIDocumentMenuViewController documentMenu)
-        {
-            var tcs = Interlocked.Exchange(ref _CompletionSource, null);
-
-            tcs?.SetResult(null);
-        }
-
         private int GetRequestId()
         {
             var id = _RequestId;
@@ -172,50 +225,6 @@ namespace Adapt.Presentation.iOS
             return id;
         }
 
-
-        public void OpenFile(NSUrl fileUrl)
-        {
-            var docControl = UIDocumentInteractionController.FromUrl(fileUrl);
-
-            var window = UIApplication.SharedApplication.KeyWindow;
-            var subViews = window.Subviews;
-            var lastView = subViews.Last();
-            var frame = lastView.Frame;
-
-            docControl.PresentOpenInMenu(frame, lastView, true);
-        }
-
-        public void OpenFile(string fileToOpen)
-        {
-            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-            var fileName = Path.Combine(documents, fileToOpen);
-
-            if (!NSFileManager.DefaultManager.FileExists(fileName))
-            {
-                return;
-            }
-
-            var url = new NSUrl(fileName, true);
-            OpenFile(url);
-        }
-
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<FileData> PickAndOpenFileForWriting(FileSelectionDictionary fileTypes, string fileName)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-        {
-            var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var filePath = Path.Combine(documents, fileName);
-
-            var fileStream = File.Create(filePath);
-
-            var retVal = new FileData
-            {
-                FileName = fileName,
-                FileStream = fileStream
-            };
-
-            return retVal;
-        }
+        #endregion
     }
 }

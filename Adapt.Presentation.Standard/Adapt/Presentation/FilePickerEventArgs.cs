@@ -4,25 +4,22 @@ namespace Adapt.Presentation
 {
     public class FilePickerEventArgs : EventArgs
     {
+        #region Public Properties
         public string FileName { get; }
-        private byte[] FileBytes { get; }
         public string FilePath { get; }
+        #endregion
 
-        private FilePickerEventArgs (byte [] fileByte)
-        {
-            FileBytes = fileByte;
-        }
+        #region Constructors
+        public FilePickerEventArgs(string fileName)
 
-        public FilePickerEventArgs (byte [] fileByte, string fileName)
-            : this (fileByte)
         {
             FileName = fileName;
         }
 
-        public FilePickerEventArgs (byte [] fileByte, string fileName, string filePath)
-            : this (fileByte, fileName)
+        public FilePickerEventArgs(string fileName, string filePath) : this(fileName)
         {
             FilePath = filePath;
         }
+        #endregion  
     }
 }
