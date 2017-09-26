@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Xamarin.Forms;
 
 namespace Adapt.Presentation.Behaviours
@@ -20,6 +21,11 @@ namespace Adapt.Presentation.Behaviours
 
         public static void SetAttachBehavior(BindableObject view, bool value)
         {
+            if (view == null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
             view.SetValue(AttachBehaviorProperty, value);
         }
 
@@ -49,7 +55,7 @@ namespace Adapt.Presentation.Behaviours
             }
         }
 
-        private static void Editor_BindingContextChanged(object sender, System.EventArgs e)
+        private static void Editor_BindingContextChanged(object sender, EventArgs e)
         {
             Refresh(sender);
         }

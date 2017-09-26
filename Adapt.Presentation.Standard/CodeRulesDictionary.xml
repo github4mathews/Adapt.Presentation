@@ -12,6 +12,7 @@
       <Word>Behaviours</Word>
       <Word>Sms</Word>
       <Word>iOS</Word>
+      <Word>BindingContext</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>

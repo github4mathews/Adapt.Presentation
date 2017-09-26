@@ -10,19 +10,25 @@ namespace Adapt.Presentation.Converters
     /// </summary>
     public class DisplayDateInLocalFormatConverter : IValueConverter
     {
+        #region Fields
+        private const string NoDateSelected = "No Date Selected";
+        #endregion
+
+        #region Public Methods
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateTime dateTime)
+            if (value is DateTime theDate)
             {
-                return value.ToString();
+                return theDate == DateTime.MinValue ? NoDateSelected : theDate.ToString("dd/MM/yyyy HH:mm");
             }
 
-            return value;
+            return NoDateSelected;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return value;
         }
+        #endregion
     }
 }

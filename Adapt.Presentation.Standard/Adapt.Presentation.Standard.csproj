@@ -44,7 +44,7 @@
     <NoStdLib>true</NoStdLib>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -64,6 +64,8 @@
     <Compile Include="Adapt\Presentation\CameraDevice.cs" />
     <Compile Include="Adapt\Presentation\Controls\AdaptListView.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
+    <Compile Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml.cs" />
+    <Compile Include="Adapt\Presentation\Controls\ModalDateTimePickerButton.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
     <Compile Include="Adapt\Presentation\Converters\DisplayDateInLocalFormatConverter.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
@@ -108,5 +110,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Adapt.Presentation.Standard.ruleset" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>

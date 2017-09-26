@@ -57,7 +57,7 @@ namespace Adapt.Presentation
             }
 
             var ext = Path.GetExtension(name);
-            if (ext == string.Empty)
+            if (string.IsNullOrEmpty(ext))
             {
                 ext = isPhoto ? ".jpg" : ".mp4";
             }

@@ -232,6 +232,8 @@ namespace Adapt.Presentation.Controls
                         }
 
                         break;
+                    default:
+                        throw new NotImplementedException();
                 }
             }
         }
@@ -304,6 +306,8 @@ namespace Adapt.Presentation.Controls
                         SelectedItems = new ObservableCollection<object> { bindingContext };
                     }
                     break;
+                default:
+                    throw new NotImplementedException();
             }
         }
 

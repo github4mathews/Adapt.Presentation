@@ -45,38 +45,25 @@ namespace Adapt.Presentation.Geolocator
         /// </summary>
         bool IsGeolocationEnabled { get; }
 
-
-
         /// <summary>
         /// Gets the last known and most accurate location.
         /// This is usually cached and best to display first before querying for full position.
         /// </summary>
-        /// <returns>Best and most recent location or null if none found</returns>
         Task<Position> GetLastKnownLocationAsync();
 
         /// <summary>
         /// Gets position async with specified parameters
         /// </summary>
-        /// <param name="timeout">Timeout to wait, Default Infinite</param>
-        /// <param name="token">Cancelation token</param>
-        /// <param name="includeHeading">If you would like to include heading</param>
-        /// <returns>Position</returns>
         Task<Position> GetPositionAsync(TimeSpan? timeout, CancellationToken? token, bool includeHeading);
 
         /// <summary>
         /// Retrieve addresses for position.
         /// </summary>
-        /// <param name="position">Desired position (latitude and longitude)</param>
-        /// <returns>Addresses of the desired position</returns>
         Task<IEnumerable<Address>> GetAddressesForPositionAsync(Position position);
 
         /// <summary>
         /// Start listening for changes
         /// </summary>
-        /// <param name="minimumTime">Time</param>
-        /// <param name="minimumDistance">Distance</param>
-        /// <param name="includeHeading">Include heading or not</param>
-        /// <param name="listenerSettings">Optional settings (iOS only)</param>
         Task<bool> StartListeningAsync(TimeSpan minimumTime, double minimumDistance, bool includeHeading = false, ListenerSettings listenerSettings = null);
 
 
