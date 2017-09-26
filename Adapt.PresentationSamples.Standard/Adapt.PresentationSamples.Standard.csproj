@@ -76,9 +76,11 @@
     <Compile Include="Model\DateTimeModel.cs" />
     <Compile Include="Model\ItemModel.cs" />
     <Compile Include="Model\ItemModelProvider.cs" />
+    <Compile Include="Model\TestModel.cs" />
     <Compile Include="Pages\ListViewPage.xaml.cs">
       <DependentUpon>ListViewPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ModalDateTimePickerPage.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App.xaml">
@@ -94,6 +96,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Pages\ListViewPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Pages\ModalDateTimePickerPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
