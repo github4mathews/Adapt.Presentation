@@ -60,8 +60,10 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
     <Compile Include="Adapt\Extensions\IEnumerableExtension.cs" />
+    <Compile Include="Adapt\Presentation\Behaviours\ButtonCollectionBehaviourBase.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EditorValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EntryValidationBehaviour.cs" />
+    <Compile Include="Adapt\Presentation\Behaviours\RemoveFromCollectionBehavior.cs" />
     <Compile Include="Adapt\Presentation\CameraDevice.cs" />
     <Compile Include="Adapt\Presentation\Controls\AdaptListView.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
