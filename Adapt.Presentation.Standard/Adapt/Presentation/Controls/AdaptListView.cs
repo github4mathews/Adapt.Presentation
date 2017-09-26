@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Adapt.Extensions;
+using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -98,12 +99,33 @@ namespace Adapt.Presentation.Controls
                     //This is here to keep the async behaviour of the control while allowing for items to be removed.
                     //We don't process this in RefreshSelection because then, the SelectedItem would not get set if the ItemsSource doesn't yet have the SelectedItem
                     //But if the SelectedItem is removed from the ItemsSource later, we deselect the item
-                    if (e.Action == NotifyCollectionChangedAction.Remove && control.SelectionMode == ItemSelectorSelectionMode.Single && e.OldItems != null && e.OldItems.Contains(control.SelectedItem))
+
+                    //TODO: Handle Resets
+                    if (e.Action != NotifyCollectionChangedAction.Remove || e.OldItems == null)
                     {
-                        control.SelectedItem = null;
+                        return;
                     }
 
-                    //TODO: Handle multi select mode here, and also handle Resets
+                    switch (control.SelectionMode)
+                    {
+                        case ItemSelectorSelectionMode.Single:
+                            if (e.OldItems.Contains(control.SelectedItem))
+                            {
+                                control.SelectedItem = null;
+                            }
+                            break;
+                        case ItemSelectorSelectionMode.Multi:
+                            if (e.OldItems.ContainsAny(control.SelectedItems))
+                            {
+                                for (var i = e.OldItems.Count - 1; i > -1; i--)
+                                {
+                                    control.SelectedItems.Remove(e.OldItems[i]);
+                                }
+                            }
+                            break;
+                        default:
+                            throw new NotImplementedException();
+                    }
                 };
             }
             control.RefreshItems();
@@ -123,7 +145,7 @@ namespace Adapt.Presentation.Controls
                     break;
 
                 case ItemSelectorSelectionMode.Multi:
-                    view.SelectedItems.Clear();
+                    view.SelectedItems?.Clear();
                     break;
 
                 default:

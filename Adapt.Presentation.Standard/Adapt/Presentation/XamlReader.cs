@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+using xaml = Xamarin.Forms.Xaml;
 
 namespace Adapt.Presentation
 {
@@ -20,7 +20,7 @@ namespace Adapt.Presentation
         private static void Initialise()
         {
             // This is the current situation, where the LoadFromXaml is the only non-public static method.
-            _FirstExtensionsMethods = typeof(Extensions).GetMethods(BindingFlags.Static | BindingFlags.NonPublic).FirstOrDefault() ?? typeof(Extensions).GetMethods(BindingFlags.Static | BindingFlags.Public).FirstOrDefault(m => m.GetParameters().Last().ParameterType == typeof(string));
+            _FirstExtensionsMethods = typeof(xaml.Extensions).GetMethods(BindingFlags.Static | BindingFlags.NonPublic).FirstOrDefault() ?? typeof(xaml.Extensions).GetMethods(BindingFlags.Static | BindingFlags.Public).FirstOrDefault(m => m.GetParameters().Last().ParameterType == typeof(string));
 
             _FirstExtensionsMethods = _FirstExtensionsMethods?.MakeGenericMethod(typeof(BindableObject)) ?? throw new NotSupportedException("Xamarin.Forms implementation of XAML loading not found. Please update the Dynamic nuget package.");
         }
