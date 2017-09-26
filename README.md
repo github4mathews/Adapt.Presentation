@@ -31,3 +31,10 @@ A library of common Xamarin Forms controls and code that the Xamarin Forms team 
 -Open the solution file in Visual Studio 2017
 
 -Run one of the three sample platform apps
+
+## Licensing Notes
+
+See license here:
+https://github.com/MelbourneDeveloper/Adapt.Presentation/blob/master/LICENSE
+
+No warantees are provided with this software. All code is subject to change which includes breaking changes.
