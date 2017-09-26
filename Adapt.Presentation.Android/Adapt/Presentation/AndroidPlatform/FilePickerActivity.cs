@@ -54,11 +54,9 @@ namespace Adapt.Presentation.AndroidPlatform
                         filePath = uri.Path;
                     }
 
-                    var file = IoUtil.ReadFile(filePath);
-
                     var fileName = GetFileName(ApplicationContext, uri);
 
-                    OnFilePicked(new FilePickerEventArgs(file, fileName, filePath));
+                    OnFilePicked(new FilePickerEventArgs(fileName, filePath));
                 }
                 catch (Exception readEx)
                 {

@@ -64,16 +64,22 @@ namespace Adapt.Presentation.Controls
             await Navigation.PopModalAsync();
         }
 
-        private void Clear_Clicked(object sender, EventArgs e)
+        private async void Clear_Clicked(object sender, EventArgs e)
         {
             TheCalendar.Date = DateTime.MinValue;
             TheTimePicker.Time = new TimeSpan();
+            _IsOkClicked = true;
+            await Close();
         }
-        private void Now_Clicked(object sender, EventArgs e)
+
+        private async void Now_Clicked(object sender, EventArgs e)
         {
             TheCalendar.Date = DateTime.Now;
             TheTimePicker.Time = DateTime.Now.TimeOfDay;
+            _IsOkClicked = true;
+            await Close();
         }
+
         #endregion
 
     }
