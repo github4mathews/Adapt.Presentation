@@ -5,14 +5,25 @@
              x:Class="Pages.ValidationPage">
     <ContentPage.Content>
 
-        <StackLayout Orientation="Vertical">
-            <Label Text="RegEx Pattern Matching Mask" />
-            <Entry WidthRequest="200" Keyboard="Numeric"  >
-                <Entry.Behaviors>
-                    <behaviours:PatternMatchEntryBehaviour Mask="^\d+(?:\.\d{0,2})?$" Default="0" />
-                </Entry.Behaviors>
-            </Entry>
-        </StackLayout>
-        
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50*" />
+                <RowDefinition Height="50*" />
+            </Grid.RowDefinitions>
+
+
+            <StackLayout Orientation="Vertical">
+                <Label Text="RegEx Pattern Matching Mask (Numeric - Two Decimal Places)" />
+                <Entry WidthRequest="200" Keyboard="Numeric"  >
+                    <Entry.Behaviors>
+                        <behaviours:PatternMatchEntryBehaviour Mask="^\d+(?:\.\d{0,2})?$" Default="0" />
+                    </Entry.Behaviors>
+                </Entry>
+            </StackLayout>
+
+            <!--Label Text="{Binding NumberDisplay}" Grid.Row="1" /-->
+
+        </Grid>
+
     </ContentPage.Content>
 </ContentPage>
