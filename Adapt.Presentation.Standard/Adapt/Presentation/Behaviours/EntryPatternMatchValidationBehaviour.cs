@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace Adapt.Presentation.Behaviours
 {
-    public class PatternMatchEntryBehaviour : Behavior<Entry>
+    public class EntryPatternMatchValidationBehaviour : Behavior<Entry>
     {
         #region Fields
         private Entry Entry;

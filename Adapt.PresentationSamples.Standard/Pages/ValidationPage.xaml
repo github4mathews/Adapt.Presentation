@@ -16,7 +16,7 @@
                 <Label Text="RegEx Pattern Matching Mask (Numeric - Two Decimal Places)" />
                 <Entry WidthRequest="200" Keyboard="Numeric"  >
                     <Entry.Behaviors>
-                        <behaviours:PatternMatchEntryBehaviour Mask="^\d+(?:\.\d{0,2})?$" Default="0" />
+                        <behaviours:EntryPatternMatchValidationBehaviour Mask="^\d+(?:\.\d{0,2})?$" Default="0" />
                     </Entry.Behaviors>
                 </Entry>
             </StackLayout>
