@@ -70,7 +70,6 @@
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePickerButton.cs" />
-    <Compile Include="Adapt\Presentation\Controls\SelectionModeToggleButton.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
     <Compile Include="Adapt\Presentation\Converters\DisplayDateInLocalFormatConverter.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
