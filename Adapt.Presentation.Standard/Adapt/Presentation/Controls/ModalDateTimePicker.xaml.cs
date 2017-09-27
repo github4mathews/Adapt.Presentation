@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace Adapt.Presentation.Controls
@@ -16,6 +17,10 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Public Properties
+        public NavigationPage NavigationPage { get; set; }
+
+        public ModalDateTimePickerButton.PickerNavigationMode NavigationMode { get; set; }
+
         public DateTime SelectedValue
         {
             get
@@ -61,7 +66,20 @@ namespace Adapt.Presentation.Controls
         private async Task Close()
         {
             Closing?.Invoke(this, new EventArgs());
-            await Navigation.PopModalAsync();
+
+            switch (NavigationMode)
+            {
+                case ModalDateTimePickerButton.PickerNavigationMode.Modal:
+                    await Navigation.PopModalAsync();
+                    break;
+                case ModalDateTimePickerButton.PickerNavigationMode.SDI:
+                    if (NavigationPage == null)
+                    {
+                        throw new Exception(ModalDateTimePickerButton.NoNavigationPageMessage);
+                    }
+                    await NavigationPage.PopAsync();
+                    break;
+            }
         }
 
         private async void Clear_Clicked(object sender, EventArgs e)
@@ -81,6 +99,5 @@ namespace Adapt.Presentation.Controls
         }
 
         #endregion
-
     }
 }

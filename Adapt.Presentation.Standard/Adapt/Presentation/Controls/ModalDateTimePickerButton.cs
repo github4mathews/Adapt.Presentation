@@ -6,13 +6,30 @@ namespace Adapt.Presentation.Controls
 {
     public class ModalDateTimePickerButton : Button
     {
+        #region Enums
+        public enum PickerNavigationMode
+        {
+            Modal,
+            SDI
+        }
+        #endregion Enums
+
         #region Fields
         private readonly ModalDateTimePicker _ModalDateTimePicker;
+        #endregion Fields
+
+        #region Internal Fields
+        internal static string NoNavigationPageMessage = $"{NavigationPage} must be specified on app startup for SDI usage of this control.";
         #endregion
 
         #region Public Properties
         public string DateTimePropertyName { get; set; }
+        public PickerNavigationMode NavigationMode { get; set; }
         #endregion
+
+        #region Public Static Methods
+        public static NavigationPage NavigationPage { get; set; }
+        #endregion Public Static Methods
 
         #region Constructor
         public ModalDateTimePickerButton()
@@ -21,7 +38,7 @@ namespace Adapt.Presentation.Controls
             Clicked += ModalDateTimePickerButton_Clicked;
             _ModalDateTimePicker.Closing += ModalDateTimePicker_Closing;
         }
-        #endregion
+        #endregion Constructor
 
         #region Event Handlers
         private async void ModalDateTimePickerButton_Clicked(object sender, EventArgs e)
@@ -29,7 +46,29 @@ namespace Adapt.Presentation.Controls
             var dateTimeProperty = GetDateTimeProperty();
             var value = (DateTime)dateTimeProperty.GetValue(BindingContext);
             _ModalDateTimePicker.SelectedValue = value;
-            await Navigation.PushModalAsync(_ModalDateTimePicker);
+            _ModalDateTimePicker.NavigationMode = NavigationMode;
+            _ModalDateTimePicker.NavigationPage = NavigationPage;
+
+            switch (NavigationMode)
+            {
+                case PickerNavigationMode.SDI:
+
+                    if (NavigationPage == null)
+                    {
+                        throw new Exception(NoNavigationPageMessage);
+                    }
+
+                    await NavigationPage.PushAsync(_ModalDateTimePicker);
+
+                    break;
+
+                case PickerNavigationMode.Modal:
+                    await Navigation.PushModalAsync(_ModalDateTimePicker);
+                    break;
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         private void ModalDateTimePicker_Closing(object sender, EventArgs e)
