@@ -81,6 +81,9 @@
       <DependentUpon>ListViewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ModalDateTimePickerPage.xaml.cs" />
+    <Compile Include="Pages\ValidationPage.xaml.cs">
+      <DependentUpon>ValidationPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App.xaml">
@@ -102,6 +105,12 @@
   <ItemGroup>
     <EmbeddedResource Include="Pages\ModalDateTimePickerPage.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Pages\ValidationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>

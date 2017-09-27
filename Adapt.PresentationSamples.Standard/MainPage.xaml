@@ -137,13 +137,11 @@
         <Button Margin="4" Text="Display Notification" x:Name="NotificationButton"  />
     </ContentPage>
 
-    <pages:ListViewPage Title="ListView" x:Name="ListViewTab" >
+    <pages:ListViewPage Title="ListView" x:Name="ListViewTab" />
 
-    </pages:ListViewPage>
+    <pages:ModalDateTimePickerPage Title="Modal DateTimePicker" />
 
-    <pages:ModalDateTimePickerPage Title="Modal DateTimePicker" >
-
-    </pages:ModalDateTimePickerPage>
+    <pages:ValidationPage Title="Validation" />
 
 
 </TabbedPage>
