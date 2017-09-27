@@ -3,11 +3,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Xamarin.Forms;
 
-namespace TestXamarinForms
+namespace Adapt.Presentation.Behaviours
 {
-    public class PatternMatchEntryBehaviour : Entry
+    public class PatternMatchEntryBehaviour : Behavior<Entry>
     {
         #region Fields
+        private Entry Entry;
         private string _LastText = string.Empty;
         private string _Mask;
         private string _Default;
@@ -38,26 +39,42 @@ namespace TestXamarinForms
         }
         #endregion
 
-        #region Constructor
-        public PatternMatchEntryBehaviour()
+        #region Protected Overrides
+        protected override void OnAttachedTo(Entry bindable)
         {
-            TextChanged += NumericTextBox_TextChanged;
+            base.OnAttachedTo(bindable);
+            Entry = bindable;
+            Entry.TextChanged += Entry_TextChanged;
+            Refresh();
+        }
+
+        protected override void OnDetachingFrom(Entry bindable)
+        {
+            base.OnDetachingFrom(bindable);
         }
         #endregion
 
         #region Event Handlers
-        private void NumericTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void Entry_TextChanged(object sender, TextChangedEventArgs e)
         {
             Refresh();
         }
+        #endregion
 
+        #region Private Methods
         private void Refresh()
         {
-            if (string.IsNullOrEmpty(Text) && !string.IsNullOrEmpty(Default))
+            if (Entry == null)
+            {
+                _LastText = string.Empty;
+                return;
+            }
+
+            if (string.IsNullOrEmpty(Entry.Text) && !string.IsNullOrEmpty(Default))
             {
                 if (IsMatching(Default, Mask))
                 {
-                    Text = Default;
+                    Entry.Text = Default;
                 }
                 else if (!string.IsNullOrEmpty(Mask))
                 {
@@ -65,22 +82,24 @@ namespace TestXamarinForms
                 }
             }
 
-            if (string.IsNullOrEmpty(Mask) || string.IsNullOrEmpty(Text))
+            if (string.IsNullOrEmpty(Mask) || string.IsNullOrEmpty(Entry.Text))
             {
                 _LastText = string.Empty;
                 return;
             }
 
-            var isMatch = IsMatching(Text, Mask);
+            var isMatch = IsMatching(Entry.Text, Mask);
             if (!isMatch)
             {
-                Text = _LastText;
+                Entry.Text = _LastText;
                 return;
             }
 
-            _LastText = Text;
+            _LastText = Entry.Text;
         }
+        #endregion
 
+        #region Private Static Methods
         private static bool IsMatching(string text, string mask)
         {
             var success = false;
