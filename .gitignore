@@ -3,6 +3,7 @@
 *.suo
 *.lock.json
 *.dll.mdb
+*.csproj.user
 
 Log*.txt
 Traces.svclog
