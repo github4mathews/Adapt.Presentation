@@ -113,9 +113,6 @@
     <Compile Include="Adapt\Presentation\UWP\Geolocator\Geolocator.cs" />
     <Compile Include="Adapt\Presentation\UWP\Geolocator\GeolocatorUtils.cs" />
     <Compile Include="Adapt\Presentation\UWP\Geolocator\Timeout.cs" />
-    <Compile Include="Adapt\Presentation\UWP\InAppNotification.xaml.cs">
-      <DependentUpon>InAppNotification.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Adapt\Presentation\UWP\Media.cs" />
     <Compile Include="Adapt\Presentation\UWP\Permissions.cs" />
     <Compile Include="Adapt\Presentation\UWP\PresentationFactory.cs" />
@@ -136,12 +133,6 @@
       <Project>{dbc98916-4e18-40ff-833d-af318da6a1d0}</Project>
       <Name>Adapt.Presentation.Standard</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Adapt\Presentation\UWP\InAppNotification.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
