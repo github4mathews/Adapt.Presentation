@@ -20,7 +20,7 @@ namespace Adapt.Presentation
         private static void Initialise()
         {
             // This is the current situation, where the LoadFromXaml is the only non-public static method.
-            _FirstExtensionsMethods = typeof(xaml.Extensions).GetMethods(BindingFlags.Static | BindingFlags.NonPublic).FirstOrDefault() ?? typeof(xaml.Extensions).GetMethods(BindingFlags.Static | BindingFlags.Public).FirstOrDefault(m => m.GetParameters().Last().ParameterType == typeof(string));
+            _FirstExtensionsMethods = typeof(xaml.Extensions).GetTypeInfo().DeclaredMethods.First(x => x.IsPublic == false && x.IsStatic);
 
             _FirstExtensionsMethods = _FirstExtensionsMethods?.MakeGenericMethod(typeof(BindableObject)) ?? throw new NotSupportedException("Xamarin.Forms implementation of XAML loading not found. Please update the Dynamic nuget package.");
         }
