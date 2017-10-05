@@ -1,8 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using UIKit;
+using Adapt.Presentation.iOS.ToastNotifications;
 
-namespace Adapt.Presentation.iOS.ToastNotifications
+namespace Adapt.Presentation.iOS
 {
     public class InAppNotification : IInAppNotification
     {
