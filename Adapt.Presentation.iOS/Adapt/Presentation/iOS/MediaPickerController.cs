@@ -14,26 +14,26 @@
 //    limitations under the License.
 //
 
+using Foundation;
 using System;
 using System.Threading.Tasks;
-
 using UIKit;
-using Foundation;
 
 namespace Adapt.Presentation.iOS
 {
     /// <summary>
     /// Media Picker Controller
     /// </summary>
-    public sealed class MediaPickerController
-        : UIImagePickerController
+    public sealed class MediaPickerController : UIImagePickerController
     {
-
+        #region Constructor
         internal MediaPickerController(NSObject mpDelegate)
         {
             base.Delegate = mpDelegate;
         }
+        #endregion
 
+        #region Public Overrides
         /// <summary>
         /// Deleage
         /// </summary>
@@ -52,14 +52,17 @@ namespace Adapt.Presentation.iOS
                 }
             }
         }
+        #endregion
 
+        #region Public Methods
         /// <summary>
         /// Gets result of picker
         /// </summary>
-        /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public Task<MediaFile> GetResultAsync()
         {
             return ((MediaPickerDelegate)Delegate).Task;
         }
+        #endregion
     }
 }

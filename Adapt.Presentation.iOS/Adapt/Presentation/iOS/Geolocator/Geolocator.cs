@@ -214,10 +214,6 @@ namespace Adapt.Presentation.iOS.Geolocator
         /// <summary>
         /// Gets position async with specified parameters
         /// </summary>
-        /// <param name="timeout">Timeout to wait, Default Infinite</param>
-        /// <param name="token">Cancelation token</param>
-        /// <param name="includeHeading">If you would like to include heading</param>
-        /// <returns>Position</returns>
 		public Task<Position> GetPositionAsync(TimeSpan? timeout, CancellationToken? cancelToken = null, bool includeHeading = false)
         {
             var timeoutMilliseconds = timeout.HasValue ? (int)timeout.Value.TotalMilliseconds : Timeout.Infinite;
