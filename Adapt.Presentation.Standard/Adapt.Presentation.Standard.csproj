@@ -90,6 +90,7 @@
     <Compile Include="Adapt\Presentation\FileSelectionDictionary.cs" />
     <Compile Include="Adapt\Presentation\IClipboard.cs" />
     <Compile Include="Adapt\Presentation\IFilePicker.cs" />
+    <Compile Include="Adapt\Presentation\IFileSource.cs" />
     <Compile Include="Adapt\Presentation\IInAppNotification.cs" />
     <Compile Include="Adapt\Presentation\IMedia.cs" />
     <Compile Include="Adapt\Presentation\IPermissions.cs" />
