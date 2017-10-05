@@ -9,6 +9,8 @@ A library of common Xamarin Forms controls and code that the Xamarin Forms team 
 
 -DateTimePicker
 
+-Modal DateTimePicker
+
 -Camera/Media
 
 -File Picking
