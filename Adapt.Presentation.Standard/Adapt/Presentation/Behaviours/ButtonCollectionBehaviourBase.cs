@@ -37,7 +37,7 @@ namespace Adapt.Presentation.Behaviours
         {
             var button = (Button)view;
             view.SetValue(CollectionProperty, value);
-            if (value is INotifyCollectionChanged notifyCollectionChanged)
+            if (value is INotifyCollectionChanged)
             {
                 RaiseCollectionChanged(button);
             }
