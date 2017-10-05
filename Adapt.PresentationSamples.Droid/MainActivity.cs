@@ -1,5 +1,4 @@
 ﻿
-using apa.Adapt.Presentation.AndroidPlatform;
 using Adapt.Presentation.AndroidPlatform;
 using Adapt.Presentation.AndroidPlatform.Geolocator;
 using Android.App;
