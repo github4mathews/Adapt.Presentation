@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using UIKit;
-using UserNotifications;
 
 namespace Adapt.Presentation.iOS.ToastNotifications
 {
@@ -46,21 +44,6 @@ namespace Adapt.Presentation.iOS.ToastNotifications
                 }
 
             });
-        }
-
-        private void Notify(Action<INotificationResult> callback, INotificationOptions options)
-        {
-            Task.Run(async () => callback(await Notify(options)));
-        }
-
-        private void CancelAllDelivered()
-        {
-            if (UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
-            {
-                var notificationCenter = UNUserNotificationCenter.Current;
-
-                notificationCenter.RemoveAllDeliveredNotifications();
-            }
         }
         #endregion
 
