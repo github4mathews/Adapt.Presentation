@@ -25,7 +25,7 @@
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
     <CodeAnalysisRuleSet>..\Adapt.Presentation.Standard\Adapt.Presentation.Standard.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -73,7 +73,6 @@
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\INotification.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\INotificationOptions.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\INotificationResult.cs" />
-    <Compile Include="Adapt\Presentation\iOS\ToastNotifications\IToastNotificator.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\LocalNotificationManager.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\Notification.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\NotificationAction.cs" />

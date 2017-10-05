@@ -7,7 +7,7 @@ using UserNotifications;
 
 namespace Adapt.Presentation.iOS.ToastNotifications
 {
-    public class InAppNotification : IToastNotifier, IInAppNotification
+    public class InAppNotification : IInAppNotification
     {
         private readonly UnNotificationManager _NotificationManager;
         private readonly LocalNotificationManager _LocalNotificationManager;
