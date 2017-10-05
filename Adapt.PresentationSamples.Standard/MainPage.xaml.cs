@@ -74,8 +74,15 @@ namespace Adapt.PresentationSamples
 
         private async void GetLocationButton_Clicked(object sender, EventArgs e)
         {
-            var position = await App.Geolocator.GetPositionAsync(null, null, false);
-            GeoLocationTab.BindingContext = position;
+            try
+            {
+                var position = await App.Geolocator.GetPositionAsync(null, null, false);
+                GeoLocationTab.BindingContext = position;
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Error", $"Error getting location\r\n{ex.Message}", "OK");
+            }
         }
 
         private void RenderButton_Clicked(object sender, EventArgs e)
