@@ -57,18 +57,6 @@ namespace Adapt.Presentation.iOS
 
             tcs?.SetResult(null);
         }
-        public void OpenFile(NSUrl fileUrl)
-        {
-            var docControl = UIDocumentInteractionController.FromUrl(fileUrl);
-
-            var window = UIApplication.SharedApplication.KeyWindow;
-            var subViews = window.Subviews;
-            var lastView = subViews.Last();
-            var frame = lastView.Frame;
-
-            docControl.PresentOpenInMenu(frame, lastView, true);
-        }
-
 
         public void OpenFile(string fileToOpen)
         {
@@ -103,6 +91,20 @@ namespace Adapt.Presentation.iOS
             return retVal;
         }
 
+        #endregion
+
+        #region Public Static Methods
+        public static void OpenFile(NSUrl fileUrl)
+        {
+            var docControl = UIDocumentInteractionController.FromUrl(fileUrl);
+
+            var window = UIApplication.SharedApplication.KeyWindow;
+            var subViews = window.Subviews;
+            var lastView = subViews.Last();
+            var frame = lastView.Frame;
+
+            docControl.PresentOpenInMenu(frame, lastView, true);
+        }
         #endregion
 
         #region Event Handlers
