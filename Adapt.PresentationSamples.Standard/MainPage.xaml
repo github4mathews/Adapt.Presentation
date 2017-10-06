@@ -143,5 +143,19 @@
 
     <pages:ValidationPage Title="Validation" />
 
+    <ContentPage Title="File Sourcing">
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <Button Text="Get File" x:Name="GetFileButton" />
+            <Image Grid.Row="1" x:Name="FileDisplay" />
+            
+        </Grid>
+    </ContentPage>
+
 
 </TabbedPage>
