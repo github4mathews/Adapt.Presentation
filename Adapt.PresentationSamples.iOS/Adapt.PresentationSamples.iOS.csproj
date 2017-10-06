@@ -133,10 +133,10 @@
     <ImageAsset Include="Resources\Media.xcassets\AppIcons.appiconset\Contents.json">
       <InProject>false</InProject>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\Images.imageset\Contents.json">
+    <ImageAsset Include="Resources\Media.xcassets\kitten.imageset\Contents.json">
       <InProject>false</InProject>
     </ImageAsset>
-    <ImageAsset Include="Resources\Media.xcassets\Images.imageset\kitten.png">
+    <ImageAsset Include="Resources\Media.xcassets\kitten.imageset\kitten.png">
       <InProject>false</InProject>
     </ImageAsset>
     <ImageAsset Include="Resources\Media.xcassets\LaunchImages.launchimage\Contents.json">
