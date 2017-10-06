@@ -22,7 +22,7 @@ namespace Adapt.Presentation.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             Xamarin.Forms.Forms.Init();
-            LoadApplication(new App(new PresentationFactory(), new Permissions(), new Geolocator.Geolocator(), new Clipboard(), new InAppNotification()));
+            LoadApplication(new App(new PresentationFactory(), new Permissions(), new Geolocator.Geolocator(), new Clipboard(), new InAppNotification(), new FileSource()));
 
             return base.FinishedLaunching(app, options);
         }

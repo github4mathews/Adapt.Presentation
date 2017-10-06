@@ -77,6 +77,7 @@
     <Compile Include="Adapt\Presentation\Converters\DisplayDateInLocalFormatConverter.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
     <Compile Include="Adapt\Presentation\FilePickerEventArgs.cs" />
+    <Compile Include="Adapt\Presentation\FileSourceType.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\ActivityType.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\Address.cs" />
     <Compile Include="Adapt\Presentation\Geolocator\GeolocationError.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Adapt\Presentation\FileSelectionDictionary.cs" />
     <Compile Include="Adapt\Presentation\IClipboard.cs" />
     <Compile Include="Adapt\Presentation\IFilePicker.cs" />
+    <Compile Include="Adapt\Presentation\IFileSource.cs" />
     <Compile Include="Adapt\Presentation\IInAppNotification.cs" />
     <Compile Include="Adapt\Presentation\IMedia.cs" />
     <Compile Include="Adapt\Presentation\IPermissions.cs" />

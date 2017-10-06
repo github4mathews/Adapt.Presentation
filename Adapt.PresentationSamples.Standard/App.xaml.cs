@@ -11,15 +11,18 @@ namespace Adapt.PresentationSamples
         public static IGeolocator Geolocator { get; private set; }
         public static IClipboard Clipboard { get; set; }
         public static IInAppNotification InAppNotification { get; set; }
+        public static IFileSource FileSource { get; set; }
         #endregion
+
         #region Constructor
-        public App(IPresentationFactory presentationFactory, IPermissions currentPermissions, IGeolocator geolocator, IClipboard clipboard, IInAppNotification inAppNotification)
+        public App(IPresentationFactory presentationFactory, IPermissions currentPermissions, IGeolocator geolocator, IClipboard clipboard, IInAppNotification inAppNotification, IFileSource fileSource)
         {
             PresentationFactory = presentationFactory;
             CurrentPermissions = currentPermissions;
             Geolocator = geolocator;
             Clipboard = clipboard;
             InAppNotification = inAppNotification;
+            FileSource = fileSource;
 
             var mainPage = new MainPage();
 
