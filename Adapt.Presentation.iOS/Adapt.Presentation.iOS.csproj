@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Adapt\Presentation\iOS\Clipboard.cs" />
     <Compile Include="Adapt\Presentation\iOS\FilePicker.cs" />
+    <Compile Include="Adapt\Presentation\iOS\FileSource.cs" />
     <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocationSingleUpdateDelegate.cs" />
     <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocationUtils.cs" />
     <Compile Include="Adapt\Presentation\iOS\Geolocator\Geolocator.cs" />
