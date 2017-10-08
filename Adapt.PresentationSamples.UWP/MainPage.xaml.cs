@@ -11,7 +11,7 @@ namespace XamForms.UWP
         {
             InitializeComponent();
 
-            var app = new samples.App(new PresentationFactory(), new Permissions(), new Geolocator(), new Adapt.Presentation.UWP.Adapt.Presentation.UWP.Clipboard(), new InAppNotification());
+            var app = new samples.App(new PresentationFactory(), new Permissions(), new Geolocator(), new Clipboard(), new InAppNotification(), new FileSource());
 
             LoadApplication(app);
         }

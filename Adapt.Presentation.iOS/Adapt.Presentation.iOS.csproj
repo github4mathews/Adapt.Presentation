@@ -59,9 +59,11 @@
   <ItemGroup>
     <Compile Include="Adapt\Presentation\iOS\Clipboard.cs" />
     <Compile Include="Adapt\Presentation\iOS\FilePicker.cs" />
+    <Compile Include="Adapt\Presentation\iOS\FileSource.cs" />
     <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocationSingleUpdateDelegate.cs" />
     <Compile Include="Adapt\Presentation\iOS\Geolocator\GeolocationUtils.cs" />
     <Compile Include="Adapt\Presentation\iOS\Geolocator\Geolocator.cs" />
+    <Compile Include="Adapt\Presentation\iOS\InAppNotification.cs" />
     <Compile Include="Adapt\Presentation\iOS\Media.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerController.cs" />
     <Compile Include="Adapt\Presentation\iOS\MediaPickerDelegate.cs" />
@@ -73,13 +75,11 @@
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\INotification.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\INotificationOptions.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\INotificationResult.cs" />
-    <Compile Include="Adapt\Presentation\iOS\ToastNotifications\IToastNotificator.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\LocalNotificationManager.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\Notification.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\NotificationAction.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\NotificationOptions.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\NotificationResult.cs" />
-    <Compile Include="Adapt\Presentation\iOS\ToastNotifications\InAppNotification.cs" />
     <Compile Include="Adapt\Presentation\iOS\ToastNotifications\UNNotificationManager.cs" />
     <Compile Include="Adapt\Presentation\iOS\UIImageExtensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />

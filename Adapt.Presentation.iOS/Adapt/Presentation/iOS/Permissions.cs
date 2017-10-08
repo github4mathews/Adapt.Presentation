@@ -26,12 +26,11 @@ namespace Adapt.Presentation.iOS
         private CMMotionActivityManager _ActivityManager;
         #endregion
 
+        #region Public Methods
         /// <summary>
         /// Request to see if you should show a rationale for requesting permission
         /// Only on Android
         /// </summary>
-        /// <returns>True or false to show rationale</returns>
-        /// <param name="permission">Permission to check.</param>
         public Task<bool> ShouldShowRequestPermissionRationaleAsync(Permission permission)
         {
             return Task.FromResult(false);
@@ -40,8 +39,6 @@ namespace Adapt.Presentation.iOS
         /// <summary>
         /// Determines whether this instance has permission the specified permission.
         /// </summary>
-        /// <returns><c>true</c> if this instance has permission the specified permission; otherwise, <c>false</c>.</returns>
-        /// <param name="permission">Permission to check.</param>
         public Task<PermissionStatus> CheckPermissionStatusAsync(Permission permission)
         {
             switch (permission)
@@ -56,10 +53,6 @@ namespace Adapt.Presentation.iOS
                     return Task.FromResult(LocationPermissionStatus);
                 case Permission.Microphone:
                     return Task.FromResult(GetAvPermissionStatus(AVMediaType.Audio));
-                //case Permission.NotificationsLocal:
-                //    break;
-                //case Permission.NotificationsRemote:
-                //    break;
                 case Permission.Photos:
                     return Task.FromResult(PhotosPermissionStatus);
                 case Permission.Reminders:
@@ -75,8 +68,6 @@ namespace Adapt.Presentation.iOS
         /// <summary>
         /// Requests the permissions from the users
         /// </summary>
-        /// <returns>The permissions and their status.</returns>
-        /// <param name="permissions">Permissions to request.</param>
         public async Task<PermissionStatusDictionary> RequestPermissionsAsync(params Permission[] permissions)
         {
             var results = new PermissionStatusDictionary();
@@ -145,6 +136,28 @@ namespace Adapt.Presentation.iOS
             return results;
         }
 
+        public bool OpenAppSettings()
+        {
+            //Opening settings only open in iOS 8+
+            if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+            {
+                return false;
+            }
+
+            try
+            {
+                UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region Private Methods
         #region AV: Camera and Microphone
 
         private PermissionStatus GetAvPermissionStatus(NSString mediaType)
@@ -346,31 +359,6 @@ namespace Adapt.Presentation.iOS
         }
         #endregion
 
-        #region Notifications
-        /*PermissionStatus NotificationLocalPermissionState
-        {
-            get
-            {
-                var currentSettings = UIApplication.SharedApplication.CurrentUserNotificationSettings;
-
-                if (currentSettings == null || notificationLocalSettings.Types == UIUserNotificationType.None)
-                {
-                    return PermissionStatus.Denied;
-                }
-
-                return PermissionStatus.Granted;
-            }
-        }
-
-        Task<PermissionStatus> RequestNotificationLocalPermission()
-        {
-            if (NotificationLocalPermissionState == PermissionStatus.Granted)
-                return Task.FromResult(PermissionStatus.Granted);
-
-            NSNotificationCenter.DefaultCenter.AddObserver(new NSString("DidRegisterUserNotificationSettings")
-        }*/
-        #endregion
-
         #region Photos
 
         private PermissionStatus PhotosPermissionStatus
@@ -515,24 +503,6 @@ namespace Adapt.Presentation.iOS
             }
         }
         #endregion
-
-        public bool OpenAppSettings()
-        {
-            //Opening settings only open in iOS 8+
-            if (!UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
-            {
-                return false;
-            }
-
-            try
-            {
-                UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        #endregion
     }
 }

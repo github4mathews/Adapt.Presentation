@@ -1,7 +1,6 @@
-﻿using Adapt.Presentation;
-using Android.Widget;
+﻿using Android.Widget;
 
-namespace apa.Adapt.Presentation.AndroidPlatform
+namespace Adapt.Presentation.AndroidPlatform
 {
     public class InAppNotification : IInAppNotification
     {

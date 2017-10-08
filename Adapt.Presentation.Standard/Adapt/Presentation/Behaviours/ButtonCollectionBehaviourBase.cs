@@ -83,14 +83,9 @@ namespace Adapt.Presentation.Behaviours
         private static void RaiseCollectionChanged(Button button)
         {
             //TODO: Why is this necessary in XF? Is there a better way?
-            var behaviour = (ButtonCollectionBehaviourBase)button.Behaviors.Where(b => (b is ButtonCollectionBehaviourBase)).FirstOrDefault();
-            if (behaviour == null)
-            {
-                //This shouldn't be possible...
-                return;
-            }
+            var behaviour = (ButtonCollectionBehaviourBase)button.Behaviors.FirstOrDefault(b => (b is ButtonCollectionBehaviourBase));
 
-            behaviour.OnCollectionChanged(button);
+            behaviour?.OnCollectionChanged(button);
         }
         #endregion
     }

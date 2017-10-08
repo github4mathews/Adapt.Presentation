@@ -1,8 +1,7 @@
-﻿using System.Threading.Tasks;
-using Adapt.Presentation;
-using Android.Content;
+﻿using Android.Content;
+using System.Threading.Tasks;
 
-namespace apa.Adapt.Presentation.AndroidPlatform
+namespace Adapt.Presentation.AndroidPlatform
 {
     public class Clipboard : IClipboard
     {

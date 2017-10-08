@@ -89,6 +89,7 @@
     <Compile Include="Adapt\Presentation\AndroidPlatform\CurrentActivityImplementation.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\FilePicker.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\FilePickerActivity.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\FileSource.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Geolocator\GeolocationContinuousListener.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Geolocator\GeolocationSingleListener.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\Geolocator\GeolocationUtils.cs" />
