@@ -6,8 +6,9 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
     {
         public string GetFileString(string name, FileSourceType type)
         {
-            //TODO: Implement type
-            return Path.Combine("Assets", name);
+            var value = Path.Combine("Assets", name);
+            if (type == FileSourceType.PackageImage) value = Path.Combine(@"ms-appx:///", value);
+            return value;
         }
     }
 }
