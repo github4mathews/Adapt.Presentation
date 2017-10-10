@@ -5,6 +5,7 @@
     /// </summary>
     public enum FileSourceType
     {
-        Image
+        Image,
+        PackageImage
     }
 }
