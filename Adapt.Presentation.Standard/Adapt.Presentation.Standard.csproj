@@ -64,9 +64,11 @@
     <Compile Include="Adapt\Extensions\IEnumerableExtension.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\AdaptListViewSelectionModeToggleBehavior.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\ButtonCollectionBehaviourBase.cs" />
+    <Compile Include="Adapt\Presentation\Behaviours\ContextMenuBehavior.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EditorValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EntryValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EntryPatternMatchValidationBehaviour.cs" />
+    <Compile Include="Adapt\Presentation\IContextMenuFactory.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\RemoveFromCollectionBehavior.cs" />
     <Compile Include="Adapt\Presentation\CameraDevice.cs" />
     <Compile Include="Adapt\Presentation\Controls\AdaptListView.cs" />

@@ -23,6 +23,7 @@ namespace Adapt.PresentationSamples
             CopyTextButton.Clicked += CopyTextButton_Clicked;
             NotificationButton.Clicked += NotificationButton_Clicked;
             GetFileButton.Clicked += GetFileButton_Clicked;
+	        HiItem.Command = new Command(SayHi);
 
             DateTimePickerTab.BindingContext = new DateTimeModel { TheDateTime = DateTime.Now };
 
@@ -31,7 +32,12 @@ namespace Adapt.PresentationSamples
             LocalDateFormatPage.BindingContext = new DateTimeModel { TheDateTime = new DateTime(2000, 1, 31) };
         }
 
-        private void GetFileButton_Clicked(object sender, EventArgs e)
+	    private void SayHi()
+	    {
+		    App.InAppNotification.Show("Hello, friend!");
+	    }
+
+	    private void GetFileButton_Clicked(object sender, EventArgs e)
         {
             FileDisplay.Source = ImageSource.FromFile(App.FileSource.GetFileString("kitten.jpg", FileSourceType.Image));
         }

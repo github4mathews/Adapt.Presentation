@@ -109,6 +109,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Adapt\Presentation\UWP\Clipboard.cs" />
+    <Compile Include="Adapt\Presentation\UWP\ContextMenuFactory.cs" />
     <Compile Include="Adapt\Presentation\UWP\FilePicker.cs" />
     <Compile Include="Adapt\Presentation\UWP\FileSource.cs" />
     <Compile Include="Adapt\Presentation\UWP\Geolocator\Geolocator.cs" />

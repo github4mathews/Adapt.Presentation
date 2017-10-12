@@ -4,6 +4,7 @@
             xmlns:converters="clr-namespace:Adapt.Presentation.Converters;assembly=Adapt.Presentation.Standard"
             xmlns:controls="clr-namespace:Adapt.Presentation.Controls;assembly=Adapt.Presentation.Standard"
             xmlns:pages="clr-namespace:Pages"
+            xmlns:behaviors="clr-namespace:Adapt.Presentation.Behaviours;assembly=Adapt.Presentation.Standard"
             Title="Samples"
              x:Class="Adapt.PresentationSamples.MainPage"
             >
@@ -153,8 +154,23 @@
 
             <Button Text="Get File" x:Name="GetFileButton" />
             <Image Grid.Row="1" x:Name="FileDisplay" />
-            
+
         </Grid>
+    </ContentPage>
+
+    <ContentPage Title="Context Menus">
+
+        <Frame BackgroundColor="Crimson">
+            <Label Text="Manipulate me!" />
+            <Frame.Behaviors>
+                <behaviors:ContextMenuBehavior>
+                    <behaviors:ContextMenuBehavior.ContextActions>
+                        <MenuItem Text="Say Hi" x:Name="HiItem"/>
+                    </behaviors:ContextMenuBehavior.ContextActions>
+                </behaviors:ContextMenuBehavior>
+            </Frame.Behaviors>
+        </Frame>
+
     </ContentPage>
 
 
