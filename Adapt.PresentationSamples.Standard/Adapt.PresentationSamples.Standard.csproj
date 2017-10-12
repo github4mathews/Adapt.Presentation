@@ -43,7 +43,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <RunCodeAnalysis>true</RunCodeAnalysis>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>..\..\..\AES\Code Rules - Level 1.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\..\AdaptSource\AES\Code Rules - Level 1.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
