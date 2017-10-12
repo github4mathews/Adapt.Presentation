@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Adapt.Presentation.Behaviours;
 using Xamarin.Forms;
 
 namespace Adapt.Presentation
@@ -7,6 +8,6 @@ namespace Adapt.Presentation
     {
         void Detach(View bindable);
 
-        void Attach(View bindable, IList<MenuItem> contextActions);
+        void Attach(View bindable, IList<ContextMenuItem> contextActions);
     }
 }

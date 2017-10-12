@@ -165,7 +165,7 @@
             <Frame.Behaviors>
                 <behaviors:ContextMenuBehavior>
                     <behaviors:ContextMenuBehavior.ContextActions>
-                        <MenuItem Text="Say Hi" x:Name="HiItem"/>
+                        <behaviors:ContextMenuItem Text="Say Hi" x:Name="HiItem" Clicked="SayHi_Clicked"/>
                     </behaviors:ContextMenuBehavior.ContextActions>
                 </behaviors:ContextMenuBehavior>
             </Frame.Behaviors>

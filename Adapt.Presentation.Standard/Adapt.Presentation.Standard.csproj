@@ -65,6 +65,7 @@
     <Compile Include="Adapt\Presentation\Behaviours\AdaptListViewSelectionModeToggleBehavior.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\ButtonCollectionBehaviourBase.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\ContextMenuBehavior.cs" />
+    <Compile Include="Adapt\Presentation\Behaviours\ContextMenuItem.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EditorValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EntryValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\EntryPatternMatchValidationBehaviour.cs" />

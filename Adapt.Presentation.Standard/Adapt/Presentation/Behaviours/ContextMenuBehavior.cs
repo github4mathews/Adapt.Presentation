@@ -5,8 +5,8 @@ namespace Adapt.Presentation.Behaviours
 {
 	public class ContextMenuBehavior : Behavior<View>
 	{
-		public IList<MenuItem> ContextActions => (IList<MenuItem>)GetValue(ContextActionsProperty);
-		public static BindableProperty ContextActionsProperty = BindableProperty.Create(nameof(ContextActions), typeof(IList<MenuItem>), typeof(ContextMenuBehavior), new List<MenuItem>());
+		public IList<ContextMenuItem> ContextActions => (IList<ContextMenuItem>)GetValue(ContextActionsProperty);
+		public static BindableProperty ContextActionsProperty = BindableProperty.Create(nameof(ContextActions), typeof(IList<ContextMenuItem>), typeof(ContextMenuBehavior), new List<ContextMenuItem>());
 
 		protected override void OnAttachedTo(View bindable)
 		{

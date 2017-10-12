@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Adapt.Presentation.Behaviours;
 using Adapt.Presentation.UWP.Adapt.Presentation.UWP;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.UWP;
@@ -20,14 +19,15 @@ namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
 			FlyoutBase.SetAttachedFlyout(Platform.GetRenderer(bindable).ContainerElement, null);
 		}
 
-		public void Attach(View bindable, IList<MenuItem> contextActions)
+		public void Attach(View bindable, IList<ContextMenuItem> contextActions)
 		{
 			//Build the flyout
 			var flyout = new MenuFlyout();
 			foreach (var action in contextActions)
 			{
-				//TODO: Don't use ICommand
-				flyout.Items.Add(new MenuFlyoutItem { Command = action.Command, Text = action.Text });
+				var menuteim = new MenuFlyoutItem { Text = action.Text, Tag = action };
+				menuteim.Click += (s, e) => action.InvokeClicked();
+				flyout.Items.Add(menuteim);
 			}
 
 			//This is fucking nasty
