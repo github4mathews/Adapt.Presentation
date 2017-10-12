@@ -160,12 +160,14 @@
 
     <ContentPage Title="Context Menus">
 
-        <Frame BackgroundColor="Crimson" Margin="200">
-            <Label Text="Manipulate me!" />
+        <Frame BackgroundColor="Red" x:Name="ContextualSquare" HorizontalOptions="Center" VerticalOptions="Center" HeightRequest="100" WidthRequest="100">
+            <Label Text="I am a color" HorizontalOptions="Center" VerticalOptions="Center" />
             <Frame.Behaviors>
                 <behaviors:ContextMenuBehavior>
                     <behaviors:ContextMenuBehavior.ContextActions>
-                        <behaviors:ContextMenuItem Text="Say Hi" x:Name="HiItem" Clicked="SayHi_Clicked"/>
+                        <behaviors:ContextMenuItem Text="Red" Clicked="Red_Clicked"/>
+                        <behaviors:ContextMenuItem Text="Blue" Clicked="Blue_Clicked"/>
+                        <behaviors:ContextMenuItem Text="Green" Clicked="Green_Clicked"/>
                     </behaviors:ContextMenuBehavior.ContextActions>
                 </behaviors:ContextMenuBehavior>
             </Frame.Behaviors>
