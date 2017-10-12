@@ -161,6 +161,12 @@ namespace Adapt.Presentation.Controls
 
         #region Public Properties
 
+        public StackOrientation LayoutOrientation
+        {
+            get => _StackList.Orientation;
+            set => _StackList.Orientation = value;
+        }
+
         public ItemSelectorSelectionMode SelectionMode
         {
             get => (ItemSelectorSelectionMode)GetValue(SelectionModeProperty);
