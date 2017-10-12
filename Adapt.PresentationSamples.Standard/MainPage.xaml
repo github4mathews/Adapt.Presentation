@@ -160,7 +160,7 @@
 
     <ContentPage Title="Context Menus">
 
-        <Frame BackgroundColor="Crimson">
+        <Frame BackgroundColor="Crimson" Margin="200">
             <Label Text="Manipulate me!" />
             <Frame.Behaviors>
                 <behaviors:ContextMenuBehavior>
