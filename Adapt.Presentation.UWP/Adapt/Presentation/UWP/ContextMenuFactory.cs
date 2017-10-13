@@ -12,43 +12,43 @@ using Xamarin.Forms.Platform.UWP;
 [assembly: Dependency(typeof(ContextMenuFactory))]
 namespace Adapt.Presentation.UWP.Adapt.Presentation.UWP
 {
-	class ContextMenuFactory : IContextMenuFactory
-	{
-		public void Detach(View bindable)
-		{
-			FlyoutBase.SetAttachedFlyout(Platform.GetRenderer(bindable).ContainerElement, null);
-		}
+    class ContextMenuFactory : IContextMenuFactory
+    {
+        public void Detach(View bindable)
+        {
+            FlyoutBase.SetAttachedFlyout(Platform.GetRenderer(bindable).ContainerElement, null);
+        }
 
-		public void Attach(View bindable, IList<ContextMenuItem> contextActions)
-		{
-			//Build the flyout
-			var flyout = new MenuFlyout();
-			foreach (var action in contextActions)
-			{
-				var menuteim = new MenuFlyoutItem { Text = action.Text, Tag = action };
-				menuteim.Click += (s, e) => action.InvokeClicked();
-				flyout.Items.Add(menuteim);
-			}
+        public void Attach(View bindable, IList<ContextMenuItem> contextActions)
+        {
+            //Build the flyout
+            var flyout = new MenuFlyout();
+            foreach (var action in contextActions)
+            {
+                var menuteim = new MenuFlyoutItem { Text = action.Text, Tag = action };
+                menuteim.Click += (s, e) => action.InvokeClicked();
+                flyout.Items.Add(menuteim);
+            }
 
-			//This is fucking nasty
-			var mainThread = SynchronizationContext.Current;
-			new TaskFactory().StartNew(() =>
-			{
-				//Wait for the renderer e.e
-				IVisualElementRenderer renderer = null;
-				while (renderer == null)
-				{
-					renderer = Platform.GetRenderer(bindable);
-				}
+            //This is fucking nasty
+            var mainThread = SynchronizationContext.Current;
+            new TaskFactory().StartNew(() =>
+            {
+                //Wait for the renderer, creating it does not work in UWP for some reason :/
+                IVisualElementRenderer renderer = null;
+                while (renderer == null)
+                {
+                    renderer = Platform.GetRenderer(bindable);
+                }
 
-				//Renderer is all good, set the flyout and the event
-				mainThread.Post(arg =>
-				{
-					var nativeElement = renderer.ContainerElement;
-					FlyoutBase.SetAttachedFlyout(nativeElement, flyout);
-					nativeElement.RightTapped += (s, e) => FlyoutBase.ShowAttachedFlyout(nativeElement);
-				}, null);
-			});
-		}
-	}
+                //Renderer is all good, set the flyout and the event
+                mainThread.Post(arg =>
+                {
+                    var nativeElement = renderer.ContainerElement;
+                    FlyoutBase.SetAttachedFlyout(nativeElement, flyout);
+                    nativeElement.RightTapped += (s, e) => FlyoutBase.ShowAttachedFlyout(nativeElement);
+                }, null);
+            });
+        }
+    }
 }
