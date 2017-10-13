@@ -86,6 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapt\Presentation\AndroidPlatform\Clipboard.cs" />
+    <Compile Include="Adapt\Presentation\AndroidPlatform\ContextMenuFactory.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\CurrentActivityImplementation.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\FilePicker.cs" />
     <Compile Include="Adapt\Presentation\AndroidPlatform\FilePickerActivity.cs" />
