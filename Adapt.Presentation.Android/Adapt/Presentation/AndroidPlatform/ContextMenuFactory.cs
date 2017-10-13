@@ -47,6 +47,7 @@ namespace apa.Adapt.Presentation.AndroidPlatform
             }
 
             //Attach long click listener
+            nativeView.LongClickable = true;
             nativeView.LongClick += ObjectLongTapped;
 
             //Handle item clicks
