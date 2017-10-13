@@ -20,17 +20,13 @@ namespace Adapt.Presentation.iOS
 
         public void Attach(View bindable, IList<ContextMenuItem> contextActions)
         {
-            //Set properties
-            ContextActions = contextActions;
-            View = bindable;
-
             //Set the renderer, it won't be created yet :/
-            var renderer = Platform.CreateRenderer(View);
-            Platform.SetRenderer(View, renderer);
+            var renderer = Platform.CreateRenderer(bindable);
+            Platform.SetRenderer(bindable, renderer);
 
             //Create a context menu and add the items
             ContextMenu = UIAlertController.Create(null, null, UIAlertControllerStyle.ActionSheet);
-            foreach (var action in ContextActions)
+            foreach (var action in contextActions)
             {
                 ContextMenu.AddAction(UIAlertAction.Create(action.Text, UIAlertActionStyle.Default, a => action.InvokeClicked()));
             }
@@ -40,9 +36,7 @@ namespace Adapt.Presentation.iOS
             ContextMenu.PopoverPresentationController.SourceRect = renderer.NativeView.Frame;
         }
 
-        public IList<ContextMenuItem> ContextActions { get; set; }
         public UIAlertController ContextMenu { get; set; }
-        public View View { get; private set; }
 
         public void ShowContextMenu()
         {

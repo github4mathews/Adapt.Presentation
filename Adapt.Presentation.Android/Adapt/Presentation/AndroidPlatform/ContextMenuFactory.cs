@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using apa.Adapt.Presentation.AndroidPlatform;
 using Adapt.Presentation;
 using Adapt.Presentation.Behaviours;
-using Android.App;
-using Android.Runtime;
-using Android.Support.V7.View;
 using Android.Views;
 using Android.Widget;
 using Xamarin.Forms;
@@ -17,7 +9,7 @@ using Xamarin.Forms.Platform.Android;
 using View = Xamarin.Forms.View;
 
 //TODO: Possible to dependency inject this manually?
-[assembly: Xamarin.Forms.Dependency(typeof(ContextMenuFactory))]
+[assembly: Dependency(typeof(ContextMenuFactory))]
 
 namespace apa.Adapt.Presentation.AndroidPlatform
 {
@@ -32,11 +24,10 @@ namespace apa.Adapt.Presentation.AndroidPlatform
         {
             //Set properties
             ContextActions = contextActions;
-            View = bindable;
 
             //Set the renderer, it won't be created yet :/
-            var renderer = Platform.CreateRenderer(View);
-            Platform.SetRenderer(View, renderer);
+            var renderer = Platform.CreateRenderer(bindable);
+            Platform.SetRenderer(bindable, renderer);
             var nativeView = (Android.Views.View)renderer;
 
             //Create a context menu and add the items
@@ -56,7 +47,6 @@ namespace apa.Adapt.Presentation.AndroidPlatform
 
         public IList<ContextMenuItem> ContextActions { get; set; }
         public PopupMenu ContextMenu { get; set; }
-        public View View { get; private set; }
 
         private void ObjectLongTapped(object sender, Android.Views.View.LongClickEventArgs longClickEventArgs)
         {
