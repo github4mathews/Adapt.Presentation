@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using apa.Adapt.Presentation.AndroidPlatform;
@@ -15,7 +17,7 @@ using Xamarin.Forms.Platform.Android;
 using View = Xamarin.Forms.View;
 
 //TODO: Possible to dependency inject this manually?
-[assembly: Dependency(typeof(ContextMenuFactory))]
+[assembly: Xamarin.Forms.Dependency(typeof(ContextMenuFactory))]
 
 namespace apa.Adapt.Presentation.AndroidPlatform
 {
@@ -32,19 +34,20 @@ namespace apa.Adapt.Presentation.AndroidPlatform
             ContextActions = contextActions;
             View = bindable;
 
-            //TODO: Create long tap recogniser
-            View.GestureRecognizers.Add(new TapGestureRecognizer(ObjectLongTapped));
-
             //Set the renderer, it won't be created yet :/
             var renderer = Platform.CreateRenderer(View);
             Platform.SetRenderer(View, renderer);
+            var nativeView = (Android.Views.View)renderer;
 
             //Create a context menu and add the items
-            ContextMenu = new PopupMenu(Forms.Context, (Android.Views.View)renderer);
+            ContextMenu = new PopupMenu(Forms.Context, nativeView);
             foreach (var action in ContextActions)
             {
                 ContextMenu.Menu.Add(Menu.None, ContextActions.IndexOf(action), Menu.None, action.Text);
             }
+
+            //Attach long click listener
+            nativeView.LongClick += ObjectLongTapped;
 
             //Handle item clicks
             ContextMenu.MenuItemClick += ContextMenu_MenuItemClick;
@@ -54,7 +57,7 @@ namespace apa.Adapt.Presentation.AndroidPlatform
         public PopupMenu ContextMenu { get; set; }
         public View View { get; private set; }
 
-        private void ObjectLongTapped(View obj)
+        private void ObjectLongTapped(object sender, Android.Views.View.LongClickEventArgs longClickEventArgs)
         {
             ContextMenu.Show();
         }
