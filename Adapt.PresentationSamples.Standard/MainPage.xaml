@@ -18,39 +18,7 @@
         <Button Margin="4" Text="Take Photo" x:Name="TakePhotoButton"  />
     </ContentPage>
 
-    <ContentPage Title="Choose File" >
-        <Button Margin="4" Text="Choose File" x:Name="ChooseFileButton"  />
-    </ContentPage>
-
-    <ContentPage Title="DateTimePicker" x:Name="DateTimePickerTab" >
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50*" />
-                <RowDefinition Height="50*" />
-                <RowDefinition Height="50*" />
-            </Grid.RowDefinitions>
-
-            <Label Text="Notice this works with two way binding" />
-
-            <controls:DateTimePicker Value="{Binding TheDateTime}" Grid.Row="1" />
-
-            <Entry Text="{Binding TheDateTime, Mode=TwoWay}" Grid.Row="2" />
-
-        </Grid>
-    </ContentPage>
-
-    <ContentPage Title="WrapLayout" >
-        <controls:WrapLayout>
-
-            <Label Text="Some Text" />
-
-            <controls:DateTimePicker />
-
-            <Entry Text="Something"  />
-
-        </controls:WrapLayout>
-    </ContentPage>
-
+    <pages:ListViewPage Title="ListView" x:Name="ListViewTab" />
 
     <ContentPage Title="Load XAML (Dynamic Rendering)" >
 
@@ -68,8 +36,32 @@
         </Grid>
     </ContentPage>
 
+    <ContentPage Title="In-App Notificaitons" >
+        <Button Margin="4" Text="Display Notification" x:Name="NotificationButton"  />
+    </ContentPage>
+
+    <ContentPage Title="Choose File" >
+        <Button Margin="4" Text="Choose File" x:Name="ChooseFileButton"  />
+    </ContentPage>
+
     <ContentPage Title="Request Permissions" >
         <Button Margin="4" Text="Request Storage Permissions - Mostly Android. Only in Android M and later." x:Name="RequestPermissionButton"  />
+    </ContentPage>
+
+    <ContentPage Title="Clipboard" >
+        <Button Margin="4" Text="Copy Text" x:Name="CopyTextButton"  />
+    </ContentPage>
+
+    <ContentPage Title="WrapLayout" >
+        <controls:WrapLayout>
+
+            <Label Text="Some Text" />
+
+            <controls:DateTimePicker />
+
+            <Entry Text="Something"  />
+
+        </controls:WrapLayout>
     </ContentPage>
 
     <ContentPage Title="Geo Location" x:Name="GeoLocationTab" >
@@ -108,8 +100,23 @@
         </Grid>
     </ContentPage>
 
-    <ContentPage Title="Clipboard" >
-        <Button Margin="4" Text="Copy Text" x:Name="CopyTextButton"  />
+    <pages:ModalDateTimePickerPage Title="Modal DateTimePicker" />
+
+    <ContentPage Title="DateTimePicker" x:Name="DateTimePickerTab" >
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50*" />
+                <RowDefinition Height="50*" />
+                <RowDefinition Height="50*" />
+            </Grid.RowDefinitions>
+
+            <Label Text="Notice this works with two way binding" />
+
+            <controls:DateTimePicker Value="{Binding TheDateTime}" Grid.Row="1" />
+
+            <Entry Text="{Binding TheDateTime, Mode=TwoWay}" Grid.Row="2" />
+
+        </Grid>
     </ContentPage>
 
     <ContentPage Title="DateTime Local Format" x:Name="LocalDateFormatPage" >
@@ -133,14 +140,6 @@
 
     </ContentPage>
 
-    <ContentPage Title="In-App Notificaitons" >
-        <Button Margin="4" Text="Display Notification" x:Name="NotificationButton"  />
-    </ContentPage>
-
-    <pages:ListViewPage Title="ListView" x:Name="ListViewTab" />
-
-    <pages:ModalDateTimePickerPage Title="Modal DateTimePicker" />
-
     <pages:ValidationPage Title="Validation" />
 
     <ContentPage Title="File Sourcing">
@@ -153,9 +152,8 @@
 
             <Button Text="Get File" x:Name="GetFileButton" />
             <Image Grid.Row="1" x:Name="FileDisplay" />
-            
+
         </Grid>
     </ContentPage>
-
 
 </TabbedPage>
