@@ -79,6 +79,8 @@ namespace Adapt.Presentation.Controls
                     }
                     await NavigationPage.PopAsync();
                     break;
+                default:
+                    throw new NotImplementedException();
             }
         }
 
