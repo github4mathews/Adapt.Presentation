@@ -17,12 +17,14 @@ namespace Adapt.Presentation.Converters
         #region Public Methods
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var emptyDateDisplay = (string)parameter ?? NoDateSelected;
+
             if (value is DateTime theDate)
             {
-                return theDate == DateTime.MinValue ? NoDateSelected : theDate.ToString("dd/MM/yyyy HH:mm");
+                return theDate == DateTime.MinValue ? emptyDateDisplay : theDate.ToString("dd/MM/yyyy HH:mm");
             }
 
-            return NoDateSelected;
+            return emptyDateDisplay;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
