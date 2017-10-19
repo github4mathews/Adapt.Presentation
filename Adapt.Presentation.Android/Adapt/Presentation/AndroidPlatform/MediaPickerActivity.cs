@@ -159,7 +159,7 @@ namespace Adapt.Presentation.AndroidPlatform
 
                         if (targetsNOrNewer && path.Scheme == "file")
                         {
-                            var photoURI = FileProvider.GetUriForFile(this, "Adapt.Presentation.fileprovider", new Java.IO.File(path.Path));
+                            var photoURI = FileProvider.GetUriForFile(this, $"{Application.PackageName}.fileprovider", new Java.IO.File(path.Path));
 
                             GrantUriPermissionsForIntent(pickIntent, photoURI);
                             pickIntent.AddFlags(ActivityFlags.GrantReadUriPermission);
