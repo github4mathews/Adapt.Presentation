@@ -17,12 +17,12 @@ namespace Pages
             InitializeComponent();
 
 
-            var grid = new Grid();
-            grid.RowDefinitions.Add(new RowDefinition { Height=100 });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = 100 });
-            grid.BackgroundColor = Color.Red;
+            //var grid = new Grid();
+            //grid.RowDefinitions.Add(new RowDefinition { Height=100 });
+            //grid.ColumnDefinitions.Add(new ColumnDefinition { Width = 100 });
+            //grid.BackgroundColor = Color.Red;
 
-            TheTreeView.ChildTreeNodeViews.Add(new Adapt.Presentation.Controls.TreeView.TreeNodeView() { Children = { grid } });
+            //TheTreeView.ChildTreeNodeViews.Add(new Adapt.Presentation.Controls.TreeView.TreeNodeView() { Children = { grid } });
 
         }
     }

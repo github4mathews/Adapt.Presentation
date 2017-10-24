@@ -6,7 +6,6 @@ using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls.TreeView
 {
-    // analog to ITreeNode<T>
     public partial class TreeNodeView : StackLayout
     {
         #region Fields
@@ -18,7 +17,7 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Bindable Properties
-        public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create("IsExpanded", typeof(bool), typeof(TreeNodeView), true, BindingMode.TwoWay, null, 
+        public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create("IsExpanded", typeof(bool), typeof(TreeNodeView), true, BindingMode.TwoWay, null,
             (bindable, oldValue, newValue) =>
             {
                 var node = bindable as TreeNodeView;
@@ -48,6 +47,10 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Public Properties
+
+        public DataTemplate ContentTemplate { get; set; }
+        public DataTemplate HeaderTemplate { get; set; }
+
         public View HeaderContent
         {
             get { return HeaderView.Content; }
@@ -64,8 +67,11 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Constructor
-        public TreeNodeView() : base()
+        public TreeNodeView(DataTemplate headerTemplate, DataTemplate contentTemplate) : base()
         {
+            HeaderTemplate = headerTemplate;
+            ContentTemplate = contentTemplate;
+
             IsExpanded = true;
 
             MainLayoutGrid = new Grid
@@ -106,9 +112,9 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Protected Methods
         protected void DetachVisualChildren()
         {
-			var views = ChildrenStackLayout.Children.OfType<TreeNodeView>().ToList();
+            var views = ChildrenStackLayout.Children.OfType<TreeNodeView>().ToList();
 
-			foreach (TreeNodeView nodeView in views)
+            foreach (TreeNodeView nodeView in views)
             {
                 ChildrenStackLayout.Children.Remove(nodeView);
                 nodeView.ParentTreeNodeView = null;
@@ -117,9 +123,7 @@ namespace Adapt.Presentation.Controls.TreeView
 
         protected void BuildHeader()
         {
-            // the new HeaderContent will inherit its BindingContext from this.BindingContext [recursive down]
-            if (HeaderCreationFactory != null)
-                HeaderContent = HeaderCreationFactory.Invoke();
+            HeaderContent = (View)HeaderTemplate.CreateContent();
         }
 
         // [recursive down] create item template instances, attach and layout, and set descendents until finding overrides
@@ -148,28 +152,27 @@ namespace Adapt.Presentation.Controls.TreeView
 
             // STEP 2: add visual tree nodes (TreeNodeViews) for children of the binding context not already associated with a TreeNodeView
 
-            if (NodeCreationFactory != null)
+
+            BatchBegin();
+            try
             {
-                BatchBegin();
-                try
+                // perform the additions in a batch
+                foreach (var nodeView in ChildTreeNodeViews)
                 {
-                    // perform the additions in a batch
-                    foreach (var nodeView in ChildTreeNodeViews)
-                    {
-                        ChildrenStackLayout.Children.Add(nodeView);
+                    ChildrenStackLayout.Children.Add(nodeView);
 
-                        ChildrenStackLayout.SetBinding(IsVisibleProperty, new Binding("IsExpanded", BindingMode.TwoWay));
+                    ChildrenStackLayout.SetBinding(IsVisibleProperty, new Binding("IsExpanded", BindingMode.TwoWay));
 
-                        // TODO: make sure to unsubscribe elsewhere
-                        nodeView.PropertyChanged += HandleListCountChanged;
-                    }
-                }
-                finally
-                {
-                    // ensure we commit
-                    BatchCommit();
+                    // TODO: make sure to unsubscribe elsewhere
+                    nodeView.PropertyChanged += HandleListCountChanged;
                 }
             }
+            finally
+            {
+                // ensure we commit
+                BatchCommit();
+            }
+
         }
 
         #endregion
@@ -180,11 +183,11 @@ namespace Adapt.Presentation.Controls.TreeView
             // prevent exceptions for null binding contexts
             // and during startup, this node will inherit its BindingContext from its Parent - ignore this
             if (BindingContext == null || (Parent != null && BindingContext == Parent.BindingContext))
-                return;		
+                return;
 
-			base.OnBindingContextChanged();
+            base.OnBindingContextChanged();
 
-			// clear out any existing child nodes - the new data source replaces them
+            // clear out any existing child nodes - the new data source replaces them
             // make sure we don't do this if BindingContext == null
             DetachVisualChildren();
 
@@ -196,15 +199,15 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Private Methods
         private void HandleListCountChanged(object sender, PropertyChangedEventArgs e)
         {
-			Device.BeginInvokeOnMainThread(() =>
-			    {
-					if (e.PropertyName == "Count")
+            Device.BeginInvokeOnMainThread(() =>
+                {
+                    if (e.PropertyName == "Count")
                     {
-					    var nodeView = ChildTreeNodeViews.Where(nv => nv.BindingContext == sender).FirstOrDefault();
+                        var nodeView = ChildTreeNodeViews.Where(nv => nv.BindingContext == sender).FirstOrDefault();
                         if (nodeView != null)
                             nodeView.BuildVisualChildren();
                     }
-				});
+                });
         }
         #endregion
     }

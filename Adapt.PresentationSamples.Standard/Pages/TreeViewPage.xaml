@@ -11,7 +11,28 @@
                 <ColumnDefinition Width="40*" />
             </Grid.ColumnDefinitions>
 
-            <treeview:TreeView x:Name="TheTreeView" />
+            <treeview:TreeView x:Name="TheTreeView" >
+
+                <treeview:TreeView.HeaderTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="Green">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50" />
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </DataTemplate>
+                </treeview:TreeView.HeaderTemplate>
+
+                <treeview:TreeView.ContentTemplate>
+                    <DataTemplate>
+                        <Grid BackgroundColor="Red">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50" />
+                            </Grid.RowDefinitions>
+                        </Grid>
+                    </DataTemplate>
+                </treeview:TreeView.ContentTemplate>
+            </treeview:TreeView>
 
         </Grid>
 
