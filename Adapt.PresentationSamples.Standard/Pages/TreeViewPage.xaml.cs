@@ -14,13 +14,19 @@ namespace Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TreeViewPage : ContentPage
     {
+        protected override void OnAppearing()
+        {
+            var node = new TreeNodeView(headertemplate, contenttemplate);
+            TheTreeView.ChildTreeNodeViews.Add(node);
+            base.OnAppearing();
+        }
+
         public TreeViewPage()
         {
             InitializeComponent();
 
 
-            var node = new TreeNodeView(headertemplate, contenttemplate);
-            TheTreeView.ChildTreeNodeViews.Add(node);
+
 
             //var grid = new Grid();
             //grid.RowDefinitions.Add(new RowDefinition { Height=100 });

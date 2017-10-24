@@ -67,7 +67,7 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Constructor
-        public TreeNodeView(DataTemplate headerTemplate, DataTemplate contentTemplate) : base()
+        public TreeNodeView(DataTemplate headerTemplate, DataTemplate contentTemplate) 
         {
             HeaderTemplate = headerTemplate;
             ContentTemplate = contentTemplate;
@@ -81,6 +81,7 @@ namespace Adapt.Presentation.Controls.TreeView
                 BackgroundColor = Color.Gray,
                 RowSpacing = 2
             };
+
             MainLayoutGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             MainLayoutGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             MainLayoutGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -99,6 +100,8 @@ namespace Adapt.Presentation.Controls.TreeView
                 Spacing = 0
             };
             MainLayoutGrid.Children.Add(ChildrenStackLayout, 0, 1);
+
+            ChildrenStackLayout.Children.Add((View)ContentTemplate.CreateContent());
 
             Children.Add(MainLayoutGrid);
 
