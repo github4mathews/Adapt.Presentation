@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Xamarin.Forms;
-using Adapt.Presentation.Collections;
+//using Adapt.Presentation.Collections;
 
 namespace Adapt.Presentation.Controls.TreeView
 {
@@ -78,11 +78,7 @@ namespace Adapt.Presentation.Controls.TreeView
             // prevent exceptions for null binding contexts
             // and during startup, this node will inherit its BindingContext from its Parent - ignore this
             if (BindingContext == null || (Parent != null && BindingContext == Parent.BindingContext))
-                return;
-			
-            var node = BindingContext as ITreeNode;
-            if (node == null)
-                throw new InvalidOperationException("TreeNodeView currently only supports TreeNode-derived data binding sources.");
+                return;		
 
 			base.OnBindingContextChanged();
 
@@ -166,7 +162,7 @@ namespace Adapt.Presentation.Controls.TreeView
         // [recursive down] create item template instances, attach and layout, and set descendents until finding overrides
         protected void BuildVisualChildren()
         {
-            var bindingContextNode = (ITreeNode)BindingContext;
+            var bindingContextNode = BindingContext;
             if (bindingContextNode == null)
                 return;
 

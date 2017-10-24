@@ -156,4 +156,7 @@
         </Grid>
     </ContentPage>
 
+    <pages:TreeViewPage Title="Tree View" />
+
+
 </TabbedPage>
