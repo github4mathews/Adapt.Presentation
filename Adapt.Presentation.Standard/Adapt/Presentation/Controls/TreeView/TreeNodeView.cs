@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Xamarin.Forms;
-//using Adapt.Presentation.Collections;
 
 namespace Adapt.Presentation.Controls.TreeView
 {
@@ -170,15 +169,6 @@ namespace Adapt.Presentation.Controls.TreeView
 
             var nodeViewsToRemove = new List<TreeNodeView>();
 
-            var bindingChildList = new List<ITreeNode>(bindingContextNode != null ? bindingContextNode.ChildNodes : null);
-
-            // which ChildTreeNodeViews are in the visual tree... ?
-            foreach (TreeNodeView nodeView in ChildTreeNodeViews)
-                // but missing from the bound data source?
-                if (!bindingChildList.Contains(nodeView.BindingContext))
-                    // tag them for removal from the visual tree
-                    nodeViewsToRemove.Add(nodeView);
-
             BatchBegin();
             try
             {
@@ -196,39 +186,18 @@ namespace Adapt.Presentation.Controls.TreeView
 
             if (NodeCreationFactory != null)
             {
-                var nodeViewsToAdd = new Dictionary<TreeNodeView,ITreeNode>();
-
-                foreach (ITreeNode node in bindingContextNode.ChildNodes)
-                {
-                    if (!ChildTreeNodeViews.Any(nodeView => nodeView.BindingContext == node))
-                    {
-                        var nodeView = NodeCreationFactory.Invoke();
-                        nodeView.ParentTreeNodeView = this;
-
-                        if (HeaderCreationFactory != null)
-                            nodeView.HeaderContent = HeaderCreationFactory.Invoke();
-
-                        // the order of these may be critical
-                        nodeViewsToAdd.Add(nodeView, node);
-                    }
-                }
-
                 BatchBegin();
                 try
                 {
                     // perform the additions in a batch
-                    foreach (KeyValuePair<TreeNodeView,ITreeNode> nodeView in nodeViewsToAdd)
+                    foreach (var nodeView in ChildTreeNodeViews)
                     {
-                        // only set BindingContext after the node has Parent != null
-                        nodeView.Key.BindingContext = nodeView.Value;
-						nodeView.Value.ExpandAction = () => nodeView.Key.BuildVisualChildren();
-						nodeView.Key.ChildrenStackLayout.IsVisible = nodeView.Key.IsExpanded;
-						ChildrenStackLayout.Children.Add(nodeView.Key);
+						ChildrenStackLayout.Children.Add(nodeView);
 
-						ChildrenStackLayout.SetBinding(StackLayout.IsVisibleProperty, new Binding("IsExpanded", BindingMode.TwoWay));
+						ChildrenStackLayout.SetBinding(IsVisibleProperty, new Binding("IsExpanded", BindingMode.TwoWay));
 
                         // TODO: make sure to unsubscribe elsewhere
-                        nodeView.Value.PropertyChanged += HandleListCountChanged;
+                        nodeView.PropertyChanged += HandleListCountChanged;
                     }
                 }
                 finally
