@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace HighEnergy.Collections
+namespace Adapt.Presentation.Collections
 {
     public interface ITreeNodeList<T> : IList<ITreeNode<T>>, INotifyPropertyChanged
     {

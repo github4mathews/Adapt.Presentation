@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Input;
 
-namespace HighEnergy.Collections
+namespace Adapt.Presentation.Collections
 {
     public class TreeNode<T> : ObservableObject, ITreeNode<T>, IDisposable
         where T : new()

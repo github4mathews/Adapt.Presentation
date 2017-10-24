@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Collections;
 
-namespace HighEnergy.Collections
+namespace Adapt.Presentation.Collections
 {
     public class TreeNodeList<T> : List<ITreeNode<T>>, ITreeNodeList<T>, INotifyPropertyChanged
     {

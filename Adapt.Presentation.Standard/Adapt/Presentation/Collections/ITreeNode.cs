@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using System;
 
-namespace HighEnergy.Collections
+namespace Adapt.Presentation.Collections
 {
     public interface ITreeNode<T> : ITreeNode
     {

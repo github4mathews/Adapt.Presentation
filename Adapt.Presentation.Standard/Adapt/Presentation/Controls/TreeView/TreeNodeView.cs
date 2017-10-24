@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Xamarin.Forms;
-using HighEnergy.Collections;
+using Adapt.Presentation.Collections;
 
-namespace HighEnergy.Controls
+namespace Adapt.Presentation.Controls.TreeView
 {
     // analog to ITreeNode<T>
     public partial class TreeNodeView : StackLayout

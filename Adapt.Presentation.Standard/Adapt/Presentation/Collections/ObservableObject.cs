@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace HighEnergy.Collections
+namespace Adapt.Presentation.Collections
 {
     public class ObservableObject : INotifyPropertyChanged
     {

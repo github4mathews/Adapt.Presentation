@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HighEnergy.Collections
+namespace Adapt.Presentation.Collections
 {
     public enum UpDownTraversalType
     {
