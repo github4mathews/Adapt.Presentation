@@ -78,10 +78,20 @@
     <Compile Include="Adapt\Presentation\Behaviours\EntryPatternMatchValidationBehaviour.cs" />
     <Compile Include="Adapt\Presentation\Behaviours\RemoveFromCollectionBehavior.cs" />
     <Compile Include="Adapt\Presentation\CameraDevice.cs" />
+    <Compile Include="Adapt\Presentation\Collections\Enums.cs" />
+    <Compile Include="Adapt\Presentation\Collections\ITreeNode.cs" />
+    <Compile Include="Adapt\Presentation\Collections\ITreeNodeAware.cs" />
+    <Compile Include="Adapt\Presentation\Collections\ITreeNodeList.cs" />
+    <Compile Include="Adapt\Presentation\Collections\ObservableObject.cs" />
+    <Compile Include="Adapt\Presentation\Collections\Tree.cs" />
+    <Compile Include="Adapt\Presentation\Collections\TreeNode.cs" />
+    <Compile Include="Adapt\Presentation\Collections\TreeNodeList.cs" />
     <Compile Include="Adapt\Presentation\Controls\AdaptListView.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePickerButton.cs" />
+    <Compile Include="Adapt\Presentation\Controls\TreeView\TreeNodeView.cs" />
+    <Compile Include="Adapt\Presentation\Controls\TreeView\TreeView.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
     <Compile Include="Adapt\Presentation\Converters\DisplayDateInLocalFormatConverter.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />
@@ -135,4 +145,5 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
 </Project>
