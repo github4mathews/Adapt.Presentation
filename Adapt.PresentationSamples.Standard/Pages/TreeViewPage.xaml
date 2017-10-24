@@ -5,16 +5,20 @@
              x:Class="Pages.TreeViewPage">
     <ContentPage.Content>
 
-        <Grid>
+        <Grid BackgroundColor="Orange">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40*" />
-                <ColumnDefinition Width="40*" />
+                <ColumnDefinition Width="500" />
+                <ColumnDefinition Width="500" />
             </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="500" />
+            </Grid.RowDefinitions>
 
             <treeview:TreeView x:Name="TheTreeView" >
 
                 <treeview:TreeView.HeaderTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:Name="headertemplate">
                         <Grid BackgroundColor="Green">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="50" />
@@ -24,7 +28,7 @@
                 </treeview:TreeView.HeaderTemplate>
 
                 <treeview:TreeView.ContentTemplate>
-                    <DataTemplate>
+                    <DataTemplate x:Name="contenttemplate">
                         <Grid BackgroundColor="Red">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="50" />

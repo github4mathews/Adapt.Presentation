@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Adapt.Presentation.Controls.TreeView;
+
 
 namespace Pages
 {
@@ -16,6 +18,9 @@ namespace Pages
         {
             InitializeComponent();
 
+
+            var node = new TreeNodeView(headertemplate, contenttemplate);
+            TheTreeView.ChildTreeNodeViews.Add(node);
 
             //var grid = new Grid();
             //grid.RowDefinitions.Add(new RowDefinition { Height=100 });
