@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Xamarin.Forms;
+using System.Collections.ObjectModel;
 
 namespace Adapt.Presentation.Controls.TreeView
 {
@@ -13,6 +14,7 @@ namespace Adapt.Presentation.Controls.TreeView
         Grid MainLayoutGrid;
         ContentView HeaderView;
         StackLayout ChildrenStackLayout;
+        private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
 
         TreeNodeView ParentTreeNodeView { get; set; }
 
@@ -50,14 +52,11 @@ namespace Adapt.Presentation.Controls.TreeView
             set { HeaderView.Content = value; }
         }
 
-        public IEnumerable<TreeNodeView> ChildTreeNodeViews
+        public ObservableCollection<TreeNodeView> ChildTreeNodeViews
         {
             get
             {
-                foreach (TreeNodeView view in ChildrenStackLayout.Children)
-                    yield return view;
-
-                yield break;
+                return _ChildTreeNodeViews;
             }
         }
 
