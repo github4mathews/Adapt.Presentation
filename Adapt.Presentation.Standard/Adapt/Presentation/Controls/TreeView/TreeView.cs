@@ -13,6 +13,12 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Public Properties
+
+        /// <summary>
+        /// TODO: Make this two way - and maybe eventually a bindable property
+        /// </summary>
+        public TreeViewNode SelectedItem { get; private set; }
+
         public Color SelectedBackgroundColour { get; } = Color.Blue;
         public ObservableCollection<TreeViewNode> ChildTreeViewNodes => _ChildTreeViewNodes;
         #endregion
@@ -29,6 +35,18 @@ namespace Adapt.Presentation.Controls.TreeView
         private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             RenderNodes(_ChildTreeViewNodes, _StackLayout);
+        }
+        #endregion
+
+        #region Internal Methods
+        /// <summary>
+        /// TODO: A bit stinky but better than bubbling an event up...
+        /// </summary>
+        internal void ChildSelected(TreeViewNode child)
+        {
+            SelectedItem = child;
+            child.OldBackgroundColour = child.BackgroundColor;
+            child.BackgroundColor = SelectedBackgroundColour;
         }
         #endregion
 

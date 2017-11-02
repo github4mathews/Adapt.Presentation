@@ -8,8 +8,6 @@ namespace Adapt.Presentation.Controls.TreeView
     public partial class TreeViewNode : StackLayout, IDisposable
     {
         #region Fields
-        private Color _OldBackgroundColour;
-
         private readonly BoxView _Spacer = new BoxView();
 
         private readonly Grid _MainGrid = new Grid
@@ -36,8 +34,13 @@ namespace Adapt.Presentation.Controls.TreeView
         private readonly TapGestureRecognizer _TapGestureRecognizer = new TapGestureRecognizer();
         #endregion
 
+        #region Internal Fields
+        internal Color OldBackgroundColour;
+        #endregion
+
         #region Private Properties
         private TreeViewNode ParentTreeViewNode => Parent?.Parent?.Parent as TreeViewNode;
+        private TreeView ParentTreeView => Parent?.Parent as TreeView;
         private double IndentWidth => Depth * SpacerWidth;
         private int SpacerWidth { get; set; } = 30;
         private int Depth => (ParentTreeViewNode == null ? 0 : ParentTreeViewNode.Depth + 1);
@@ -134,9 +137,21 @@ namespace Adapt.Presentation.Controls.TreeView
         }
         #endregion
 
+        #region Internal Methods
+        /// <summary>
+        /// TODO: This is a little stinky...
+        /// </summary>
+        internal void ChildSelected(TreeViewNode child)
+        {
+            ParentTreeViewNode?.ChildSelected(child);
+            ParentTreeView?.ChildSelected(child);
+        }
+        #endregion
+
         #region Event Handlers
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
+            ChildSelected(this);
             IsExpanded = !IsExpanded;
         }
 
