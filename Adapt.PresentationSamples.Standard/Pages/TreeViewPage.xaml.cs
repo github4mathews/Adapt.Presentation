@@ -34,11 +34,11 @@ namespace Pages
             var node4 = new TreeViewNode();
             node4.Content = new Label { BackgroundColor = Color.Pink, Text = "Content 4", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
 
-            node.Children.Add(node2);
-            node2.Children.Add(node3);
+            node.ChildTreeViewNodes.Add(node2);
+            node2.ChildTreeViewNodes.Add(node3);
 
-            TheTreeView.Children.Add(node);
-            TheTreeView.Children.Add(node4);
+            TheTreeView.ChildTreeViewNodes.Add(node);
+            TheTreeView.ChildTreeViewNodes.Add(node4);
 
             base.OnAppearing();
         }
