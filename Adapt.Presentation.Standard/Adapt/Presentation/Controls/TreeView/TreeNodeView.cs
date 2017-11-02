@@ -36,6 +36,12 @@ namespace Adapt.Presentation.Controls.TreeView
 
         #region Private Properties
         private TreeNodeView ParentTreeNodeView => Parent?.Parent?.Parent as TreeNodeView;
+        private double IndentWidth => Depth * SpacerWidth;
+        private int SpacerWidth { get; set; } = 30;
+        private int Depth
+        {
+            get { return (ParentTreeNodeView == null ? 0 : ParentTreeNodeView.Depth + 1); }
+        }
         #endregion
 
         #region Bindable Properties
@@ -75,15 +81,6 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Public Properties
-        public int SpacerWidth { get; set; } =  30;
-
-        public int Depth
-        {
-            get { return (ParentTreeNodeView == null ? 0 : ParentTreeNodeView.Depth + 1); }
-        }
-
-        public double IndentWidth => Depth * SpacerWidth;
-
         public View Content
         {
             get { return _ContentView.Content; }
