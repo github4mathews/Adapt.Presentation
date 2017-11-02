@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
+using Adapt.Presentation.Controls.TreeView;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using Adapt.Presentation.Controls.TreeView;
 
 
 namespace Pages
@@ -14,10 +9,19 @@ namespace Pages
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TreeViewPage : ContentPage
     {
+        private bool _IsLoaded;
+
         protected override void OnAppearing()
         {
+            if (_IsLoaded)
+            {
+                return;
+            }
+
+            _IsLoaded = true;
+
             var node = new TreeViewNode();
-            node.Content = new Label { Text = "Content"};
+            node.Content = new Label { Text = "Content" };
 
             var node2 = new TreeViewNode();
             node2.Content = new Label { Text = "Content 2" };
