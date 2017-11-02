@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using Xamarin.Forms;
@@ -11,7 +12,6 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Fields
         private Grid MainLayoutGrid;
         private ContentView HeaderView;
-        private ContentView TheContentView;
         private StackLayout ChildrenStackLayout;
         private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
         private TreeNodeView ParentTreeNodeView { get; set; }
@@ -55,18 +55,6 @@ namespace Adapt.Presentation.Controls.TreeView
             set { HeaderView.Content = value; }
         }
 
-        public View Content
-        {
-            get
-            {
-                return TheContentView.Content;
-            }
-            set
-            {
-                TheContentView.Content = value;
-            }
-        }
-
         public ObservableCollection<TreeNodeView> ChildTreeNodeViews
         {
             get
@@ -98,21 +86,17 @@ namespace Adapt.Presentation.Controls.TreeView
             HeaderView = new ContentView
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = this.BackgroundColor
+                BackgroundColor = BackgroundColor
             };
             MainLayoutGrid.Children.Add(HeaderView);
 
             ChildrenStackLayout = new StackLayout
             {
-                Orientation = this.Orientation,
+                Orientation = Orientation,
                 BackgroundColor = Color.Blue,
                 Spacing = 0
             };
             MainLayoutGrid.Children.Add(ChildrenStackLayout, 0, 1);
-
-            TheContentView = new ContentView();
-
-            ChildrenStackLayout.Children.Add(TheContentView);
 
             Children.Add(MainLayoutGrid);
 
@@ -125,9 +109,13 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Event Handlers
-        private void _ChildTreeNodeViews_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void _ChildTreeNodeViews_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-
+            ChildrenStackLayout.Children.Clear();
+            foreach (var childTreeNode in _ChildTreeNodeViews)
+            {
+                ChildrenStackLayout.Children.Add(childTreeNode);
+            }
         }
         #endregion
 
