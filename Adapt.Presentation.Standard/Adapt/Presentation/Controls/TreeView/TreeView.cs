@@ -19,6 +19,7 @@ namespace Adapt.Presentation.Controls.TreeView
         /// </summary>
         public TreeViewNode SelectedItem { get; private set; }
         public Color SelectedBackgroundColour { get; } = Color.Blue;
+        public double SelectedBackgroundOpacity { get; } = .5;
         public ObservableCollection<TreeViewNode> Children => _Children;
         #endregion
 
@@ -61,6 +62,7 @@ namespace Adapt.Presentation.Controls.TreeView
             SelectedItem = child;
             child.IsSelected = true;
             child.SelecionBoxView.Color = SelectedBackgroundColour;
+            child.SelecionBoxView.Opacity = SelectedBackgroundOpacity;
             RemoveSelectionRecursive(_Children);
         }
         #endregion
