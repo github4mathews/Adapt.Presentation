@@ -17,9 +17,14 @@ namespace Pages
         protected override void OnAppearing()
         {
             var node = new TreeNodeView();
-
             node.Content = new Label { Text = "Content" };
             node.HeaderContent = new Label { Text = "Header"};
+
+            var node2 = new TreeNodeView();
+            node2.Content = new Label { Text = "Content 2" };
+            node2.HeaderContent = new Label { Text = "Header 2" };
+
+            node.ChildTreeNodeViews.Add(node2);
 
             TheTreeView.ChildTreeNodeViews.Add(node);
             base.OnAppearing();

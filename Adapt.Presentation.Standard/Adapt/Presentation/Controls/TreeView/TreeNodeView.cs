@@ -79,6 +79,8 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Constructor
         public TreeNodeView()
         {
+            _ChildTreeNodeViews.CollectionChanged += _ChildTreeNodeViews_CollectionChanged;
+
             IsExpanded = true;
 
             MainLayoutGrid = new Grid
@@ -120,6 +122,13 @@ namespace Adapt.Presentation.Controls.TreeView
             VerticalOptions = LayoutOptions.Start;
         }
 
+        #endregion
+
+        #region Event Handlers
+        private void _ChildTreeNodeViews_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+
+        }
         #endregion
 
         #region Protected Methods
