@@ -26,10 +26,17 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Event Handlers
         private void ChildTreeViewNodes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            _StackLayout.Children.Clear();
-            foreach (var treeViewNode in _ChildTreeViewNodes)
+            RenderNodes(_ChildTreeViewNodes, _StackLayout);
+        }
+        #endregion
+
+        #region Internal Static Methods
+        internal static void RenderNodes(ObservableCollection<TreeViewNode> childTreeViewNodes, StackLayout parent)
+        {
+            parent.Children.Clear();
+            foreach (var childTreeNode in childTreeViewNodes)
             {
-                _StackLayout.Children.Add(treeViewNode);
+                parent.Children.Add(childTreeNode);
             }
         }
         #endregion

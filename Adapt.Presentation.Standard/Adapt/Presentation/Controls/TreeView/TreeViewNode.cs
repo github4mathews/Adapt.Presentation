@@ -143,12 +143,9 @@ namespace Adapt.Presentation.Controls.TreeView
 
         private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            _ChildrenStackLayout.Children.Clear();
-            foreach (var childTreeNode in _ChildTreeViewNodes)
-            {
-                _ChildrenStackLayout.Children.Add(childTreeNode);
-            }
+            TreeView.RenderNodes(_ChildTreeViewNodes, _ChildrenStackLayout);
         }
+
         #endregion
     }
 }
