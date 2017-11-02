@@ -44,34 +44,6 @@ namespace Adapt.Presentation.Controls.TreeView
         }
         #endregion
 
-        #region Bindable Properties
-        public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create("IsExpanded", typeof(bool), typeof(TreeViewNode), true, BindingMode.TwoWay, null, (bindable, oldValue, newValue) =>
-        {
-            var treeViewNode = bindable as TreeViewNode;
-
-            if (oldValue == newValue || treeViewNode == null)
-            {
-                return;
-            }
-
-            treeViewNode.BatchBegin();
-            try
-            {
-                treeViewNode._ChildrenStackLayout.IsVisible = treeViewNode.IsExpanded;
-            }
-            finally
-            {
-                treeViewNode.BatchCommit();
-            }
-        }, null, null);
-
-        public bool IsExpanded
-        {
-            get { return (bool)GetValue(IsExpandedProperty); }
-            set { SetValue(IsExpandedProperty, value); }
-        }
-        #endregion
-
         #region Protected Overrides
         protected override void OnParentSet()
         {
@@ -81,6 +53,19 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Public Properties
+
+        public bool IsExpanded
+        {
+            get
+            {
+                return _ChildrenStackLayout.IsVisible;
+            }
+            set
+            {
+                _ChildrenStackLayout.IsVisible = value;
+            }
+        }
+
         public View Content
         {
             get { return _ContentView.Content; }
@@ -104,6 +89,7 @@ namespace Adapt.Presentation.Controls.TreeView
             IsExpanded = true;
 
             _TapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
+            //_TapGestureRecognizer.NumberOfTapsRequired = 2;
             GestureRecognizers.Add(_TapGestureRecognizer);
 
             _MainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
