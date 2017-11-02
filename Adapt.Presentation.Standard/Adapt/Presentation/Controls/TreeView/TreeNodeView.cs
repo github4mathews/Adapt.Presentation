@@ -13,6 +13,9 @@ namespace Adapt.Presentation.Controls.TreeView
         private readonly ContentView _ContentView;
         private readonly StackLayout _ChildrenStackLayout;
         private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
+        #endregion
+
+        #region Private Properties
         private TreeNodeView ParentTreeNodeView => Parent?.Parent?.Parent as TreeNodeView;
         #endregion
 
