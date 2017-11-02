@@ -135,11 +135,6 @@ namespace Adapt.Presentation.Controls.TreeView
             Render();
         }
 
-        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void Render()
         {
             _Spacer.WidthRequest = IndentWidth;
@@ -163,6 +158,11 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Event Handlers
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            IsExpanded = !IsExpanded;
+        }
+
         private void ChildTreeNodeViews_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _ChildrenStackLayout.Children.Clear();
