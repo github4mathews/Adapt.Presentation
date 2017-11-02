@@ -83,7 +83,7 @@ namespace Adapt.Presentation.Controls.TreeView
                 _ChildrenStackLayout.IsVisible = value;
 
 
-                _ExpandButton.Text = value ? ">" : "^";
+                _ExpandButton.Text = value ? "-" : "+";
             }
         }
 
@@ -136,11 +136,6 @@ namespace Adapt.Presentation.Controls.TreeView
             Render();
         }
 
-        private void ExpandButton_Clicked(object sender, EventArgs e)
-        {
-            IsExpanded = !IsExpanded;
-        }
-
         private void Render()
         {
             _SpacerBoxView.WidthRequest = IndentWidth;
@@ -160,6 +155,7 @@ namespace Adapt.Presentation.Controls.TreeView
 
             _Children.CollectionChanged -= ChildTreeViewNodes_CollectionChanged;
             _TapGestureRecognizer.Tapped -= TapGestureRecognizer_Tapped;
+            _ExpandButton.Clicked -= ExpandButton_Clicked;
             GestureRecognizers.Remove(_TapGestureRecognizer);
         }
         #endregion
@@ -175,10 +171,22 @@ namespace Adapt.Presentation.Controls.TreeView
         }
         #endregion
 
+        DateTime _ExpandButtonClickedTime;
+
         #region Event Handlers
+        private void ExpandButton_Clicked(object sender, EventArgs e)
+        {
+            _ExpandButtonClickedTime = DateTime.Now;
+            IsExpanded = !IsExpanded;
+        }
+
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
-            ChildSelected(this);
+            //TODO: Hack. We don't want the node to become selected when we are clicking on the expanded button
+            if (DateTime.Now - _ExpandButtonClickedTime > new TimeSpan(0, 0, 0, 0, 50))
+            {
+                ChildSelected(this);
+            }
         }
 
         private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
