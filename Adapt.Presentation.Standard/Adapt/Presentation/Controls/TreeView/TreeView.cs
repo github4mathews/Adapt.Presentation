@@ -61,8 +61,8 @@ namespace Adapt.Presentation.Controls.TreeView
         {
             SelectedItem = child;
             child.IsSelected = true;
-            child.SelecionBoxView.Color = SelectedBackgroundColour;
-            child.SelecionBoxView.Opacity = SelectedBackgroundOpacity;
+            child.SelectionBoxView.Color = SelectedBackgroundColour;
+            child.SelectionBoxView.Opacity = SelectedBackgroundOpacity;
             RemoveSelectionRecursive(_Children);
         }
         #endregion

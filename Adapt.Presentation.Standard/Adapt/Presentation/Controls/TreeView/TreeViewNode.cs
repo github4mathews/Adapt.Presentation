@@ -10,6 +10,11 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Fields
         private readonly BoxView _SpacerBoxView = new BoxView();
 
+        /// <summary>
+        /// TODO: Remove this. It's nasty. It's here because double tap causes strange behaviour. Ultimately, it would be best to double tap the item to expand it, but the gesture recognizer ends up firing for the parent node as well which looks like a bug in XF
+        /// </summary>
+        private readonly Button _ExpandButton = new Button { Text = ">" };
+
         private readonly Grid _MainGrid = new Grid
         {
             VerticalOptions = LayoutOptions.StartAndExpand,
@@ -35,7 +40,7 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Internal Fields
-        internal readonly BoxView SelecionBoxView = new BoxView { Color = Color.Blue, Opacity = .5, IsVisible = false };
+        internal readonly BoxView SelectionBoxView = new BoxView { Color = Color.Blue, Opacity = .5, IsVisible = false };
         #endregion
 
         #region Private Properties
@@ -60,11 +65,11 @@ namespace Adapt.Presentation.Controls.TreeView
         {
             get
             {
-                return SelecionBoxView.IsVisible;
+                return SelectionBoxView.IsVisible;
             }
             set
             {
-                SelecionBoxView.IsVisible = value;
+                SelectionBoxView.IsVisible = value;
             }
         }
         public bool IsExpanded
@@ -76,6 +81,9 @@ namespace Adapt.Presentation.Controls.TreeView
             set
             {
                 _ChildrenStackLayout.IsVisible = value;
+
+
+                _ExpandButton.Text = value ? ">" : "^";
             }
         }
 
@@ -97,12 +105,13 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Constructor
         public TreeViewNode()
         {
+            _ExpandButton.Clicked += ExpandButton_Clicked;
+
             _Children.CollectionChanged += ChildTreeViewNodes_CollectionChanged;
 
             IsExpanded = true;
 
             _TapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
-            //_TapGestureRecognizer.NumberOfTapsRequired = 2;
             GestureRecognizers.Add(_TapGestureRecognizer);
 
             _MainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -110,9 +119,10 @@ namespace Adapt.Presentation.Controls.TreeView
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
 
-            _MainGrid.Children.Add(SelecionBoxView);
+            _MainGrid.Children.Add(SelectionBoxView);
 
             _ContentStackLayout.Children.Add(_SpacerBoxView);
+            _ContentStackLayout.Children.Add(_ExpandButton);
             _ContentStackLayout.Children.Add(_ContentView);
 
             _MainGrid.Children.Add(_ContentStackLayout);
@@ -124,6 +134,11 @@ namespace Adapt.Presentation.Controls.TreeView
             VerticalOptions = LayoutOptions.Start;
 
             Render();
+        }
+
+        private void ExpandButton_Clicked(object sender, EventArgs e)
+        {
+            IsExpanded = !IsExpanded;
         }
 
         private void Render()
@@ -164,7 +179,6 @@ namespace Adapt.Presentation.Controls.TreeView
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
             ChildSelected(this);
-            IsExpanded = !IsExpanded;
         }
 
         private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
