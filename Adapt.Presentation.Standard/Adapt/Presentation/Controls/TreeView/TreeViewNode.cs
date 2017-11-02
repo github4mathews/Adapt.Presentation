@@ -8,8 +8,8 @@ namespace Adapt.Presentation.Controls.TreeView
     public partial class TreeViewNode : StackLayout, IDisposable
     {
         #region Fields
-        private readonly BoxView _Spacer = new BoxView();
-        private readonly BoxView _asdasd = new BoxView { Color = Color.Red, Opacity = .5, IsVisible = false };
+        private readonly BoxView _SpacerBoxView = new BoxView();
+        private readonly BoxView _SelecionBoxView = new BoxView { Color = Color.Red, Opacity = .5, IsVisible = false };
 
         private readonly Grid _MainGrid = new Grid
         {
@@ -31,7 +31,7 @@ namespace Adapt.Presentation.Controls.TreeView
             Spacing = 0
         };
 
-        private readonly ObservableCollection<TreeViewNode> _ChildTreeViewNodes = new ObservableCollection<TreeViewNode>();
+        private readonly ObservableCollection<TreeViewNode> _Children = new ObservableCollection<TreeViewNode>();
         private readonly TapGestureRecognizer _TapGestureRecognizer = new TapGestureRecognizer();
         #endregion
 
@@ -61,11 +61,11 @@ namespace Adapt.Presentation.Controls.TreeView
         {
             get
             {
-                return _asdasd.IsVisible;
+                return _SelecionBoxView.IsVisible;
             }
             set
             {
-                _asdasd.IsVisible = value;
+                _SelecionBoxView.IsVisible = value;
             }
         }
         public bool IsExpanded
@@ -86,11 +86,11 @@ namespace Adapt.Presentation.Controls.TreeView
             set { _ContentView.Content = value; }
         }
 
-        public ObservableCollection<TreeViewNode> ChildTreeViewNodes
+        public ObservableCollection<TreeViewNode> Children
         {
             get
             {
-                return _ChildTreeViewNodes;
+                return _Children;
             }
         }
         #endregion
@@ -98,7 +98,7 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Constructor
         public TreeViewNode()
         {
-            _ChildTreeViewNodes.CollectionChanged += ChildTreeViewNodes_CollectionChanged;
+            _Children.CollectionChanged += ChildTreeViewNodes_CollectionChanged;
 
             IsExpanded = true;
 
@@ -111,15 +111,15 @@ namespace Adapt.Presentation.Controls.TreeView
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
 
-            _MainGrid.Children.Add(_asdasd);
+            _MainGrid.Children.Add(_SelecionBoxView);
 
-            _ContentStackLayout.Children.Add(_Spacer);
+            _ContentStackLayout.Children.Add(_SpacerBoxView);
             _ContentStackLayout.Children.Add(_ContentView);
 
             _MainGrid.Children.Add(_ContentStackLayout);
             _MainGrid.Children.Add(_ChildrenStackLayout, 0, 1);
 
-            Children.Add(_MainGrid);
+            base.Children.Add(_MainGrid);
 
             HorizontalOptions = LayoutOptions.FillAndExpand;
             VerticalOptions = LayoutOptions.Start;
@@ -129,7 +129,7 @@ namespace Adapt.Presentation.Controls.TreeView
 
         private void Render()
         {
-            _Spacer.WidthRequest = IndentWidth;
+            _SpacerBoxView.WidthRequest = IndentWidth;
         }
 
         #endregion
@@ -137,14 +137,14 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Public Methods
         public void Dispose()
         {
-            foreach (var childTreeViewNode in _ChildTreeViewNodes)
+            foreach (var childTreeViewNode in _Children)
             {
                 childTreeViewNode.Dispose();
             }
 
-            Children.Clear();
+            base.Children.Clear();
 
-            _ChildTreeViewNodes.CollectionChanged -= ChildTreeViewNodes_CollectionChanged;
+            _Children.CollectionChanged -= ChildTreeViewNodes_CollectionChanged;
             _TapGestureRecognizer.Tapped -= TapGestureRecognizer_Tapped;
             GestureRecognizers.Remove(_TapGestureRecognizer);
         }
@@ -170,7 +170,7 @@ namespace Adapt.Presentation.Controls.TreeView
 
         private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            TreeView.RenderNodes(_ChildTreeViewNodes, _ChildrenStackLayout);
+            TreeView.RenderNodes(_Children, _ChildrenStackLayout);
         }
 
         #endregion

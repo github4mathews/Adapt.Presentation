@@ -36,11 +36,11 @@ namespace Pages
             node4.Content = new Label { Text = "Content 4" };
             //node4.BackgroundColor = Color.Pink;
 
-            node.ChildTreeViewNodes.Add(node2);
-            node2.ChildTreeViewNodes.Add(node3);
+            node.Children.Add(node2);
+            node2.Children.Add(node3);
 
-            TheTreeView.ChildTreeViewNodes.Add(node);
-            TheTreeView.ChildTreeViewNodes.Add(node4);
+            TheTreeView.Children.Add(node);
+            TheTreeView.Children.Add(node4);
 
             base.OnAppearing();
         }

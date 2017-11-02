@@ -9,7 +9,7 @@ namespace Adapt.Presentation.Controls.TreeView
     public class TreeView : ScrollView, IDisposable
     {
         #region Fields
-        private readonly ObservableCollection<TreeViewNode> _ChildTreeViewNodes = new ObservableCollection<TreeViewNode>();
+        private readonly ObservableCollection<TreeViewNode> _Children = new ObservableCollection<TreeViewNode>();
         private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
         #endregion
 
@@ -18,23 +18,22 @@ namespace Adapt.Presentation.Controls.TreeView
         /// TODO: Make this two way - and maybe eventually a bindable property
         /// </summary>
         public TreeViewNode SelectedItem { get; private set; }
-
         public Color SelectedBackgroundColour { get; } = Color.Blue;
-        public ObservableCollection<TreeViewNode> ChildTreeViewNodes => _ChildTreeViewNodes;
+        public ObservableCollection<TreeViewNode> Children => _Children;
         #endregion
 
         #region Constructor
         public TreeView()
         {
             Content = _StackLayout;
-            _ChildTreeViewNodes.CollectionChanged += ChildTreeViewNodes_CollectionChanged;
+            _Children.CollectionChanged += ChildTreeViewNodes_CollectionChanged;
         }
         #endregion
 
         #region Event Handlers
         private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RenderNodes(_ChildTreeViewNodes, _StackLayout);
+            RenderNodes(_Children, _StackLayout);
         }
         #endregion
 
@@ -48,7 +47,7 @@ namespace Adapt.Presentation.Controls.TreeView
                     treeViewNode.IsSelected = false;
                 }
 
-                RemoveSelectionRecursive(treeViewNode.ChildTreeViewNodes);
+                RemoveSelectionRecursive(treeViewNode.Children);
             }
         }
         #endregion
@@ -61,7 +60,7 @@ namespace Adapt.Presentation.Controls.TreeView
         {
             SelectedItem = child;
             child.IsSelected = true;
-            RemoveSelectionRecursive(_ChildTreeViewNodes);
+            RemoveSelectionRecursive(_Children);
         }
         #endregion
 
@@ -81,9 +80,9 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Public Methods
         public void Dispose()
         {
-            _ChildTreeViewNodes.CollectionChanged -= ChildTreeViewNodes_CollectionChanged;
+            _Children.CollectionChanged -= ChildTreeViewNodes_CollectionChanged;
 
-            foreach (var TreeViewNode in _ChildTreeViewNodes)
+            foreach (var TreeViewNode in _Children)
             {
                 TreeViewNode.Dispose();
             }
