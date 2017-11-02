@@ -16,13 +16,13 @@ namespace Pages
     {
         protected override void OnAppearing()
         {
-            var node = new TreeNodeView();
+            var node = new TreeViewNode();
             node.Content = new Label { Text = "Content"};
 
-            var node2 = new TreeNodeView();
+            var node2 = new TreeViewNode();
             node2.Content = new Label { Text = "Content 2" };
 
-            var node3 = new TreeNodeView();
+            var node3 = new TreeViewNode();
             node3.Content = new Label { Text = "Content 3" };
             node3.BackgroundColor = Color.Red;
 

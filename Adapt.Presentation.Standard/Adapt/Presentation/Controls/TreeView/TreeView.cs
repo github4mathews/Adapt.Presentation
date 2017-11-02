@@ -1,37 +1,51 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls.TreeView
 {
-    public class TreeView : ScrollView
+    public class TreeView : ScrollView, IDisposable
     {
-        private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
+        #region Fields
+        private readonly ObservableCollection<TreeViewNode> _ChildTreeNodeViews = new ObservableCollection<TreeViewNode>();
+        private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
+        #endregion
 
-        public ObservableCollection<TreeNodeView> ChildTreeNodeViews
-        {
-            get
-            {
-                return _ChildTreeNodeViews;
-            }
-        }
+        #region Public Properties
+        public ObservableCollection<TreeViewNode> ChildTreeNodeViews => _ChildTreeNodeViews;
+        #endregion
 
+        #region Constructor
         public TreeView()
         {
-            _ChildTreeNodeViews.CollectionChanged += _ChildTreeNodeViews_CollectionChanged;
+            Content = _StackLayout;
+            _ChildTreeNodeViews.CollectionChanged += ChildTreeNodeViews_CollectionChanged;
         }
+        #endregion
 
-        private void _ChildTreeNodeViews_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        #region Event Handlers
+        private void ChildTreeNodeViews_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            Content = null;
-
-            var stackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
-
-            Content = stackLayout;
-
-            foreach (var asdas in _ChildTreeNodeViews)
+            _StackLayout.Children.Clear();
+            foreach (var treeNodeView in _ChildTreeNodeViews)
             {
-                stackLayout.Children.Add(asdas);
+                _StackLayout.Children.Add(treeNodeView);
             }
         }
+        #endregion
+
+        #region Public Methods
+        public void Dispose()
+        {
+            _ChildTreeNodeViews.CollectionChanged -= ChildTreeNodeViews_CollectionChanged;
+
+            foreach (var treeNodeView in _ChildTreeNodeViews)
+            {
+                treeNodeView.Dispose();
+            }
+
+            _StackLayout.Children.Clear();
+        }
+        #endregion
     }
 }

@@ -82,7 +82,7 @@
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePickerButton.cs" />
-    <Compile Include="Adapt\Presentation\Controls\TreeView\TreeNodeView.cs" />
+    <Compile Include="Adapt\Presentation\Controls\TreeView\TreeViewNode.cs" />
     <Compile Include="Adapt\Presentation\Controls\TreeView\TreeView.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
     <Compile Include="Adapt\Presentation\Converters\DisplayDateInLocalFormatConverter.cs" />

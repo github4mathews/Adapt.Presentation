@@ -5,7 +5,7 @@ using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls.TreeView
 {
-    public partial class TreeNodeView : StackLayout, IDisposable
+    public partial class TreeViewNode : StackLayout, IDisposable
     {
         #region Fields
         private readonly BoxView _Spacer = new BoxView();
@@ -30,12 +30,12 @@ namespace Adapt.Presentation.Controls.TreeView
             Spacing = 0
         };
 
-        private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
+        private readonly ObservableCollection<TreeViewNode> _ChildTreeNodeViews = new ObservableCollection<TreeViewNode>();
         private readonly TapGestureRecognizer _TapGestureRecognizer = new TapGestureRecognizer();
         #endregion
 
         #region Private Properties
-        private TreeNodeView ParentTreeNodeView => Parent?.Parent?.Parent as TreeNodeView;
+        private TreeViewNode ParentTreeNodeView => Parent?.Parent?.Parent as TreeViewNode;
         private double IndentWidth => Depth * SpacerWidth;
         private int SpacerWidth { get; set; } = 30;
         private int Depth
@@ -45,9 +45,9 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Bindable Properties
-        public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create("IsExpanded", typeof(bool), typeof(TreeNodeView), true, BindingMode.TwoWay, null, (bindable, oldValue, newValue) =>
+        public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create("IsExpanded", typeof(bool), typeof(TreeViewNode), true, BindingMode.TwoWay, null, (bindable, oldValue, newValue) =>
         {
-            var treeNodeView = bindable as TreeNodeView;
+            var treeNodeView = bindable as TreeViewNode;
 
             if (oldValue == newValue || treeNodeView == null)
             {
@@ -87,7 +87,7 @@ namespace Adapt.Presentation.Controls.TreeView
             set { _ContentView.Content = value; }
         }
 
-        public ObservableCollection<TreeNodeView> ChildTreeNodeViews
+        public ObservableCollection<TreeViewNode> ChildTreeNodeViews
         {
             get
             {
@@ -97,7 +97,7 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Constructor
-        public TreeNodeView()
+        public TreeViewNode()
         {
             _ChildTreeNodeViews.CollectionChanged += ChildTreeNodeViews_CollectionChanged;
 
