@@ -28,7 +28,7 @@ namespace Adapt.Presentation.Controls.TreeView
 
         private readonly StackLayout _ChildrenStackLayout = new StackLayout
         {
-            Orientation =  StackOrientation.Vertical,
+            Orientation = StackOrientation.Vertical,
             Spacing = 0
         };
 
@@ -40,10 +40,7 @@ namespace Adapt.Presentation.Controls.TreeView
         private TreeViewNode ParentTreeViewNode => Parent?.Parent?.Parent as TreeViewNode;
         private double IndentWidth => Depth * SpacerWidth;
         private int SpacerWidth { get; set; } = 30;
-        private int Depth
-        {
-            get { return (ParentTreeViewNode == null ? 0 : ParentTreeViewNode.Depth + 1); }
-        }
+        private int Depth => (ParentTreeViewNode == null ? 0 : ParentTreeViewNode.Depth + 1);
         #endregion
 
         #region Protected Overrides
@@ -108,8 +105,6 @@ namespace Adapt.Presentation.Controls.TreeView
 
             Children.Add(_MainGrid);
 
-            Spacing = 0;
-            Padding = new Thickness();
             HorizontalOptions = LayoutOptions.FillAndExpand;
             VerticalOptions = LayoutOptions.Start;
 

@@ -35,6 +35,8 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Internal Static Methods
         internal static void RenderNodes(ObservableCollection<TreeViewNode> childTreeViewNodes, StackLayout parent)
         {
+            //TODO: This shouldn't clear and re-add. It should only do that on a reset. This is a performance problem but leaving it as is until someone reports it as a problem
+
             parent.Children.Clear();
             foreach (var childTreeNode in childTreeViewNodes)
             {
