@@ -10,8 +10,8 @@ namespace Adapt.Presentation.Controls.TreeView
     public partial class TreeNodeView : StackLayout
     {
         #region Fields
-        private Grid MainLayoutGrid;
-        private ContentView HeaderView;
+        private Grid _MainGrid;
+        private ContentView _ContentView;
         private StackLayout ChildrenStackLayout;
         private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
         private TreeNodeView ParentTreeNodeView { get; set; }
@@ -49,10 +49,10 @@ namespace Adapt.Presentation.Controls.TreeView
 
         #region Public Properties
 
-        public View HeaderContent
+        public View Content
         {
-            get { return HeaderView.Content; }
-            set { HeaderView.Content = value; }
+            get { return _ContentView.Content; }
+            set { _ContentView.Content = value; }
         }
 
         public ObservableCollection<TreeNodeView> ChildTreeNodeViews
@@ -71,7 +71,7 @@ namespace Adapt.Presentation.Controls.TreeView
 
             IsExpanded = true;
 
-            MainLayoutGrid = new Grid
+            _MainGrid = new Grid
             {
                 VerticalOptions = LayoutOptions.StartAndExpand,
                 HorizontalOptions = LayoutOptions.FillAndExpand,
@@ -79,16 +79,16 @@ namespace Adapt.Presentation.Controls.TreeView
                 RowSpacing = 2
             };
 
-            MainLayoutGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            MainLayoutGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            MainLayoutGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            _MainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            HeaderView = new ContentView
+            _ContentView = new ContentView
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,
                 BackgroundColor = BackgroundColor
             };
-            MainLayoutGrid.Children.Add(HeaderView);
+            _MainGrid.Children.Add(_ContentView);
 
             ChildrenStackLayout = new StackLayout
             {
@@ -96,9 +96,9 @@ namespace Adapt.Presentation.Controls.TreeView
                 BackgroundColor = Color.Blue,
                 Spacing = 0
             };
-            MainLayoutGrid.Children.Add(ChildrenStackLayout, 0, 1);
+            _MainGrid.Children.Add(ChildrenStackLayout, 0, 1);
 
-            Children.Add(MainLayoutGrid);
+            Children.Add(_MainGrid);
 
             Spacing = 0;
             Padding = new Thickness(0);
@@ -147,7 +147,7 @@ namespace Adapt.Presentation.Controls.TreeView
             {
                 // perform removal in a batch
                 foreach (TreeNodeView nodeView in nodeViewsToRemove)
-                    MainLayoutGrid.Children.Remove(nodeView);
+                    _MainGrid.Children.Remove(nodeView);
             }
             finally
             {
