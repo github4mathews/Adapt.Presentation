@@ -30,38 +30,38 @@ namespace Adapt.Presentation.Controls.TreeView
             Spacing = 0
         };
 
-        private readonly ObservableCollection<TreeViewNode> _ChildTreeNodeViews = new ObservableCollection<TreeViewNode>();
+        private readonly ObservableCollection<TreeViewNode> _ChildTreeViewNodes = new ObservableCollection<TreeViewNode>();
         private readonly TapGestureRecognizer _TapGestureRecognizer = new TapGestureRecognizer();
         #endregion
 
         #region Private Properties
-        private TreeViewNode ParentTreeNodeView => Parent?.Parent?.Parent as TreeViewNode;
+        private TreeViewNode ParentTreeViewNode => Parent?.Parent?.Parent as TreeViewNode;
         private double IndentWidth => Depth * SpacerWidth;
         private int SpacerWidth { get; set; } = 30;
         private int Depth
         {
-            get { return (ParentTreeNodeView == null ? 0 : ParentTreeNodeView.Depth + 1); }
+            get { return (ParentTreeViewNode == null ? 0 : ParentTreeViewNode.Depth + 1); }
         }
         #endregion
 
         #region Bindable Properties
         public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create("IsExpanded", typeof(bool), typeof(TreeViewNode), true, BindingMode.TwoWay, null, (bindable, oldValue, newValue) =>
         {
-            var treeNodeView = bindable as TreeViewNode;
+            var treeViewNode = bindable as TreeViewNode;
 
-            if (oldValue == newValue || treeNodeView == null)
+            if (oldValue == newValue || treeViewNode == null)
             {
                 return;
             }
 
-            treeNodeView.BatchBegin();
+            treeViewNode.BatchBegin();
             try
             {
-                treeNodeView._ChildrenStackLayout.IsVisible = treeNodeView.IsExpanded;
+                treeViewNode._ChildrenStackLayout.IsVisible = treeViewNode.IsExpanded;
             }
             finally
             {
-                treeNodeView.BatchCommit();
+                treeViewNode.BatchCommit();
             }
         }, null, null);
 
@@ -87,11 +87,11 @@ namespace Adapt.Presentation.Controls.TreeView
             set { _ContentView.Content = value; }
         }
 
-        public ObservableCollection<TreeViewNode> ChildTreeNodeViews
+        public ObservableCollection<TreeViewNode> ChildTreeViewNodes
         {
             get
             {
-                return _ChildTreeNodeViews;
+                return _ChildTreeViewNodes;
             }
         }
         #endregion
@@ -99,7 +99,7 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Constructor
         public TreeViewNode()
         {
-            _ChildTreeNodeViews.CollectionChanged += ChildTreeNodeViews_CollectionChanged;
+            _ChildTreeViewNodes.CollectionChanged += ChildTreeViewNodes_CollectionChanged;
 
             IsExpanded = true;
 
@@ -136,14 +136,14 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Public Methods
         public void Dispose()
         {
-            foreach (var childTreeNodeViews in _ChildTreeNodeViews)
+            foreach (var childTreeViewNode in _ChildTreeViewNodes)
             {
-                childTreeNodeViews.Dispose();
+                childTreeViewNode.Dispose();
             }
 
             Children.Clear();
 
-            _ChildTreeNodeViews.CollectionChanged -= ChildTreeNodeViews_CollectionChanged;
+            _ChildTreeViewNodes.CollectionChanged -= ChildTreeViewNodes_CollectionChanged;
             _TapGestureRecognizer.Tapped -= TapGestureRecognizer_Tapped;
             GestureRecognizers.Remove(_TapGestureRecognizer);
         }
@@ -155,10 +155,10 @@ namespace Adapt.Presentation.Controls.TreeView
             IsExpanded = !IsExpanded;
         }
 
-        private void ChildTreeNodeViews_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _ChildrenStackLayout.Children.Clear();
-            foreach (var childTreeNode in _ChildTreeNodeViews)
+            foreach (var childTreeNode in _ChildTreeViewNodes)
             {
                 _ChildrenStackLayout.Children.Add(childTreeNode);
             }

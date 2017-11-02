@@ -26,10 +26,10 @@ namespace Pages
             node3.Content = new Label { Text = "Content 3" };
             node3.BackgroundColor = Color.Red;
 
-            node.ChildTreeNodeViews.Add(node2);
-            node2.ChildTreeNodeViews.Add(node3);
+            node.ChildTreeViewNodes.Add(node2);
+            node2.ChildTreeViewNodes.Add(node3);
 
-            TheTreeView.ChildTreeNodeViews.Add(node);
+            TheTreeView.ChildTreeViewNodes.Add(node);
             base.OnAppearing();
         }
 

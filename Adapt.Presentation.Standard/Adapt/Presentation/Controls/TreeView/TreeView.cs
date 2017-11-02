@@ -7,29 +7,29 @@ namespace Adapt.Presentation.Controls.TreeView
     public class TreeView : ScrollView, IDisposable
     {
         #region Fields
-        private readonly ObservableCollection<TreeViewNode> _ChildTreeNodeViews = new ObservableCollection<TreeViewNode>();
+        private readonly ObservableCollection<TreeViewNode> _ChildTreeViewNodes = new ObservableCollection<TreeViewNode>();
         private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
         #endregion
 
         #region Public Properties
-        public ObservableCollection<TreeViewNode> ChildTreeNodeViews => _ChildTreeNodeViews;
+        public ObservableCollection<TreeViewNode> ChildTreeViewNodes => _ChildTreeViewNodes;
         #endregion
 
         #region Constructor
         public TreeView()
         {
             Content = _StackLayout;
-            _ChildTreeNodeViews.CollectionChanged += ChildTreeNodeViews_CollectionChanged;
+            _ChildTreeViewNodes.CollectionChanged += ChildTreeViewNodes_CollectionChanged;
         }
         #endregion
 
         #region Event Handlers
-        private void ChildTreeNodeViews_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void ChildTreeViewNodes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             _StackLayout.Children.Clear();
-            foreach (var treeNodeView in _ChildTreeNodeViews)
+            foreach (var treeViewNode in _ChildTreeViewNodes)
             {
-                _StackLayout.Children.Add(treeNodeView);
+                _StackLayout.Children.Add(treeViewNode);
             }
         }
         #endregion
@@ -37,11 +37,11 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Public Methods
         public void Dispose()
         {
-            _ChildTreeNodeViews.CollectionChanged -= ChildTreeNodeViews_CollectionChanged;
+            _ChildTreeViewNodes.CollectionChanged -= ChildTreeViewNodes_CollectionChanged;
 
-            foreach (var treeNodeView in _ChildTreeNodeViews)
+            foreach (var TreeViewNode in _ChildTreeViewNodes)
             {
-                treeNodeView.Dispose();
+                TreeViewNode.Dispose();
             }
 
             _StackLayout.Children.Clear();
