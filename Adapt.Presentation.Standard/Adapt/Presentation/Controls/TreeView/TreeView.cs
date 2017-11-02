@@ -60,6 +60,7 @@ namespace Adapt.Presentation.Controls.TreeView
         {
             SelectedItem = child;
             child.IsSelected = true;
+            child.SelecionBoxView.Color = SelectedBackgroundColour;
             RemoveSelectionRecursive(_Children);
         }
         #endregion
