@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Xamarin.Forms;
@@ -13,7 +14,6 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Public Properties
-
         /// <summary>
         /// TODO: Make this two way - and maybe eventually a bindable property
         /// </summary>
@@ -38,6 +38,21 @@ namespace Adapt.Presentation.Controls.TreeView
         }
         #endregion
 
+        #region Private Methods
+        private void RemoveSelectionRecursive(IEnumerable<TreeViewNode> nodes)
+        {
+            foreach (var treeViewNode in nodes)
+            {
+                if (treeViewNode != SelectedItem)
+                {
+                    treeViewNode.IsSelected = false;
+                }
+
+                RemoveSelectionRecursive(treeViewNode.ChildTreeViewNodes);
+            }
+        }
+        #endregion
+
         #region Internal Methods
         /// <summary>
         /// TODO: A bit stinky but better than bubbling an event up...
@@ -45,8 +60,8 @@ namespace Adapt.Presentation.Controls.TreeView
         internal void ChildSelected(TreeViewNode child)
         {
             SelectedItem = child;
-            child.OldBackgroundColour = child.BackgroundColor;
-            child.BackgroundColor = SelectedBackgroundColour;
+            child.IsSelected = true;
+            RemoveSelectionRecursive(_ChildTreeViewNodes);
         }
         #endregion
 

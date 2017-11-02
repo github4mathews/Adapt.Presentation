@@ -9,6 +9,7 @@ namespace Adapt.Presentation.Controls.TreeView
     {
         #region Fields
         private readonly BoxView _Spacer = new BoxView();
+        private readonly BoxView _asdasd = new BoxView { Color = Color.Red, Opacity = .5, IsVisible = false };
 
         private readonly Grid _MainGrid = new Grid
         {
@@ -35,7 +36,7 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Internal Fields
-        internal Color OldBackgroundColour;
+        //internal Color OldBackgroundColour;
         #endregion
 
         #region Private Properties
@@ -56,8 +57,17 @@ namespace Adapt.Presentation.Controls.TreeView
 
         #region Public Properties
 
-        public bool IsSelected { get; }
-
+        public bool IsSelected
+        {
+            get
+            {
+                return _asdasd.IsVisible;
+            }
+            set
+            {
+                _asdasd.IsVisible = value;
+            }
+        }
         public bool IsExpanded
         {
             get
@@ -99,6 +109,9 @@ namespace Adapt.Presentation.Controls.TreeView
             _MainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+
+            _MainGrid.Children.Add(_asdasd);
 
             _ContentStackLayout.Children.Add(_Spacer);
             _ContentStackLayout.Children.Add(_ContentView);
