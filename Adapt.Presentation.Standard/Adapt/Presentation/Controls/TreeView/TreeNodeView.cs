@@ -10,9 +10,9 @@ namespace Adapt.Presentation.Controls.TreeView
     public partial class TreeNodeView : StackLayout
     {
         #region Fields
-        private Grid _MainGrid;
-        private ContentView _ContentView;
-        private StackLayout ChildrenStackLayout;
+        private readonly Grid _MainGrid;
+        private readonly ContentView _ContentView;
+        private readonly StackLayout _ChildrenStackLayout;
         private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
         private TreeNodeView ParentTreeNodeView { get; set; }
         #endregion
@@ -30,7 +30,7 @@ namespace Adapt.Presentation.Controls.TreeView
                 try
                 {
                     // show or hide all children
-                    node.ChildrenStackLayout.IsVisible = node.IsExpanded;
+                    node._ChildrenStackLayout.IsVisible = node.IsExpanded;
                 }
                 finally
                 {
@@ -90,13 +90,13 @@ namespace Adapt.Presentation.Controls.TreeView
             };
             _MainGrid.Children.Add(_ContentView);
 
-            ChildrenStackLayout = new StackLayout
+            _ChildrenStackLayout = new StackLayout
             {
                 Orientation = Orientation,
                 BackgroundColor = Color.Blue,
                 Spacing = 0
             };
-            _MainGrid.Children.Add(ChildrenStackLayout, 0, 1);
+            _MainGrid.Children.Add(_ChildrenStackLayout, 0, 1);
 
             Children.Add(_MainGrid);
 
@@ -111,10 +111,10 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Event Handlers
         private void _ChildTreeNodeViews_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            ChildrenStackLayout.Children.Clear();
+            _ChildrenStackLayout.Children.Clear();
             foreach (var childTreeNode in _ChildTreeNodeViews)
             {
-                ChildrenStackLayout.Children.Add(childTreeNode);
+                _ChildrenStackLayout.Children.Add(childTreeNode);
             }
         }
         #endregion
@@ -122,11 +122,11 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Protected Methods
         protected void DetachVisualChildren()
         {
-            var views = ChildrenStackLayout.Children.OfType<TreeNodeView>().ToList();
+            var views = _ChildrenStackLayout.Children.OfType<TreeNodeView>().ToList();
 
             foreach (TreeNodeView nodeView in views)
             {
-                ChildrenStackLayout.Children.Remove(nodeView);
+                _ChildrenStackLayout.Children.Remove(nodeView);
                 nodeView.ParentTreeNodeView = null;
             }
         }
@@ -164,9 +164,9 @@ namespace Adapt.Presentation.Controls.TreeView
                 // perform the additions in a batch
                 foreach (var nodeView in ChildTreeNodeViews)
                 {
-                    ChildrenStackLayout.Children.Add(nodeView);
+                    _ChildrenStackLayout.Children.Add(nodeView);
 
-                    ChildrenStackLayout.SetBinding(IsVisibleProperty, new Binding("IsExpanded", BindingMode.TwoWay));
+                    _ChildrenStackLayout.SetBinding(IsVisibleProperty, new Binding("IsExpanded", BindingMode.TwoWay));
 
                     // TODO: make sure to unsubscribe elsewhere
                     nodeView.PropertyChanged += HandleListCountChanged;
