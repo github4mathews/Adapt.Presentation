@@ -8,8 +8,6 @@ namespace Adapt.Presentation.Controls.TreeView
     public partial class TreeViewNode : StackLayout, IDisposable
     {
         #region Fields
-        private bool _IsSelected;
-
         private Color _OldBackgroundColour;
 
         private readonly BoxView _Spacer = new BoxView();
@@ -59,8 +57,6 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Public Properties
 
         public bool IsSelected { get; }
-
-        public Color SelectedBackgroundColour { get; set; } = Color.Blue;
 
         public bool IsExpanded
         {
@@ -146,27 +142,12 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Event Handlers
         private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
         {
-            _IsSelected = !_IsSelected;
-
-            if (SelectedBackgroundColour != null)
-            {
-                if (_IsSelected)
-                {
-                    _OldBackgroundColour = BackgroundColor;
-                    BackgroundColor = SelectedBackgroundColour;
-                }
-                else
-                {
-                    BackgroundColor = _OldBackgroundColour;
-                }
-            }
-
             IsExpanded = !IsExpanded;
         }
 
         private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            TreeView.RenderNodes(_ChildTreeViewNodes, _ChildrenStackLayout, SelectedBackgroundColour);
+            TreeView.RenderNodes(_ChildTreeViewNodes, _ChildrenStackLayout);
         }
 
         #endregion

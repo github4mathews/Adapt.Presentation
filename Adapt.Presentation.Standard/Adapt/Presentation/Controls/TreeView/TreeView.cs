@@ -13,7 +13,7 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Public Properties
-        public Color SelectedBackgroundColour { get; set; }
+        public Color SelectedBackgroundColour { get; } = Color.Blue;
         public ObservableCollection<TreeViewNode> ChildTreeViewNodes => _ChildTreeViewNodes;
         #endregion
 
@@ -28,22 +28,16 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Event Handlers
         private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RenderNodes(_ChildTreeViewNodes, _StackLayout, SelectedBackgroundColour);
+            RenderNodes(_ChildTreeViewNodes, _StackLayout);
         }
         #endregion
 
         #region Internal Static Methods
-        internal static void RenderNodes(ObservableCollection<TreeViewNode> childTreeViewNodes, StackLayout parent, Color selectedBackgroundColour)
+        internal static void RenderNodes(ObservableCollection<TreeViewNode> childTreeViewNodes, StackLayout parent)
         {
-            if (selectedBackgroundColour.R == 0 && selectedBackgroundColour.G == 0 && selectedBackgroundColour.B == 0)
-            {
-                throw new Exception("no");
-            }
-
             parent.Children.Clear();
             foreach (var childTreeNode in childTreeViewNodes)
             {
-                childTreeNode.SelectedBackgroundColour = selectedBackgroundColour;
                 parent.Children.Add(childTreeNode);
             }
         }

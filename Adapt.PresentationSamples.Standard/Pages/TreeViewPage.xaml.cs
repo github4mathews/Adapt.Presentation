@@ -20,6 +20,8 @@ namespace Pages
 
             _IsLoaded = true;
 
+
+
             var node = new TreeViewNode();
             node.Content = new Label { Text = "Content" };
 
