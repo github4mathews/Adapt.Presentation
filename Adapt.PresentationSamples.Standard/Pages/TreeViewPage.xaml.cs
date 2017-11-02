@@ -30,10 +30,16 @@ namespace Pages
             node3.Content = new Label { Text = "Content 3" };
             node3.BackgroundColor = Color.Red;
 
+            var node4 = new TreeViewNode();
+            node4.Content = new Label { Text = "Content 4" };
+            node4.BackgroundColor = Color.Pink;
+
             node.ChildTreeViewNodes.Add(node2);
             node2.ChildTreeViewNodes.Add(node3);
 
             TheTreeView.ChildTreeViewNodes.Add(node);
+            TheTreeView.ChildTreeViewNodes.Add(node4);
+
             base.OnAppearing();
         }
 
