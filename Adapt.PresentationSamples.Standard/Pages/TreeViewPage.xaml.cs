@@ -19,7 +19,7 @@ namespace Pages
             var node = new TreeNodeView();
 
             node.Content = new Label { Text = "Content" };
-            node.HeaderContent = new Label { Text = "Header" };
+            node.HeaderContent = new Label { Text = "Header"};
 
             TheTreeView.ChildTreeNodeViews.Add(node);
             base.OnAppearing();

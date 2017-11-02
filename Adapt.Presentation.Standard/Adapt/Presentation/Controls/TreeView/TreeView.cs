@@ -15,8 +15,23 @@ namespace Adapt.Presentation.Controls.TreeView
             }
         }
 
-        public TreeView() 
+        public TreeView()
         {
+            _ChildTreeNodeViews.CollectionChanged += _ChildTreeNodeViews_CollectionChanged;
+        }
+
+        private void _ChildTreeNodeViews_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            Content = null;
+
+            var stackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
+
+            Content = stackLayout;
+
+            foreach (var asdas in _ChildTreeNodeViews)
+            {
+                stackLayout.Children.Add(asdas);
+            }
         }
     }
 }

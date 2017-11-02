@@ -80,7 +80,44 @@ namespace Adapt.Presentation.Controls.TreeView
         public TreeNodeView()
         {
             IsExpanded = true;
-            Render();
+
+            MainLayoutGrid = new Grid
+            {
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                BackgroundColor = Color.Gray,
+                RowSpacing = 2
+            };
+
+            MainLayoutGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            MainLayoutGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            MainLayoutGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            HeaderView = new ContentView
+            {
+                HorizontalOptions = LayoutOptions.FillAndExpand,
+                BackgroundColor = this.BackgroundColor
+            };
+            MainLayoutGrid.Children.Add(HeaderView);
+
+            ChildrenStackLayout = new StackLayout
+            {
+                Orientation = this.Orientation,
+                BackgroundColor = Color.Blue,
+                Spacing = 0
+            };
+            MainLayoutGrid.Children.Add(ChildrenStackLayout, 0, 1);
+
+            TheContentView = new ContentView();
+
+            ChildrenStackLayout.Children.Add(TheContentView);
+
+            Children.Add(MainLayoutGrid);
+
+            Spacing = 0;
+            Padding = new Thickness(0);
+            HorizontalOptions = LayoutOptions.FillAndExpand;
+            VerticalOptions = LayoutOptions.Start;
         }
 
         #endregion
@@ -168,47 +205,6 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Private Methods
-
-        private void Render()
-        {
-            MainLayoutGrid = new Grid
-            {
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = Color.Gray,
-                RowSpacing = 2
-            };
-
-            MainLayoutGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            MainLayoutGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            MainLayoutGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            HeaderView = new ContentView
-            {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = this.BackgroundColor
-            };
-            MainLayoutGrid.Children.Add(HeaderView);
-
-            ChildrenStackLayout = new StackLayout
-            {
-                Orientation = this.Orientation,
-                BackgroundColor = Color.Blue,
-                Spacing = 0
-            };
-            MainLayoutGrid.Children.Add(ChildrenStackLayout, 0, 1);
-
-            TheContentView = new ContentView();
-
-            ChildrenStackLayout.Children.Add(TheContentView);
-
-            Children.Add(MainLayoutGrid);
-
-            Spacing = 0;
-            Padding = new Thickness(0);
-            HorizontalOptions = LayoutOptions.FillAndExpand;
-            VerticalOptions = LayoutOptions.Start;
-        }
 
         private void HandleListCountChanged(object sender, PropertyChangedEventArgs e)
         {
