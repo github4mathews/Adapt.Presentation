@@ -14,9 +14,6 @@
         </ResourceDictionary>
     </TabbedPage.Resources>
 
-    <pages:TreeViewPage Title="Tree View" />
-
-
     <ContentPage Title="Camera" >
         <Button Margin="4" Text="Take Photo" x:Name="TakePhotoButton"  />
     </ContentPage>
@@ -38,6 +35,8 @@
 
         </Grid>
     </ContentPage>
+
+    <pages:TreeViewPage Title="Tree View" />
 
     <ContentPage Title="In-App Notificaitons" >
         <Button Margin="4" Text="Display Notification" x:Name="NotificationButton"  />
