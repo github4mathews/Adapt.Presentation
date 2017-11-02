@@ -1,18 +1,20 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls.TreeView
 {
-    public partial class TreeNodeView : StackLayout
+    public partial class TreeNodeView : StackLayout, IDisposable
     {
         #region Fields
-        private readonly BoxView _Spacer = new BoxView ();
-        private readonly Grid _MainGrid;
+        private readonly BoxView _Spacer = new BoxView();
+        private readonly Grid _MainGrid = new Grid();
         private readonly StackLayout _ContentStackLayout;
         private readonly ContentView _ContentView;
         private readonly StackLayout _ChildrenStackLayout;
         private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
+        private readonly TapGestureRecognizer _TapGestureRecognizer = new TapGestureRecognizer();
         #endregion
 
         #region Private Properties
@@ -84,9 +86,12 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Constructor
         public TreeNodeView()
         {
-            _ChildTreeNodeViews.CollectionChanged += _ChildTreeNodeViews_CollectionChanged;
+            _ChildTreeNodeViews.CollectionChanged += ChildTreeNodeViews_CollectionChanged;
 
             IsExpanded = true;
+
+            _TapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
+            GestureRecognizers.Add(_TapGestureRecognizer);
 
             _MainGrid = new Grid
             {
@@ -130,6 +135,11 @@ namespace Adapt.Presentation.Controls.TreeView
             Render();
         }
 
+        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private void Render()
         {
             _Spacer.WidthRequest = IndentWidth;
@@ -137,8 +147,23 @@ namespace Adapt.Presentation.Controls.TreeView
 
         #endregion
 
+        #region Public Methods
+        public void Dispose()
+        {
+            foreach (var childTreeNodeViews in _ChildTreeNodeViews)
+            {
+                childTreeNodeViews.Dispose();
+            }
+
+            Children.Clear();
+
+            _ChildTreeNodeViews.CollectionChanged -= ChildTreeNodeViews_CollectionChanged;
+            _TapGestureRecognizer.Tapped -= TapGestureRecognizer_Tapped;
+        }
+        #endregion
+
         #region Event Handlers
-        private void _ChildTreeNodeViews_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ChildTreeNodeViews_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             _ChildrenStackLayout.Children.Clear();
             foreach (var childTreeNode in _ChildTreeNodeViews)
