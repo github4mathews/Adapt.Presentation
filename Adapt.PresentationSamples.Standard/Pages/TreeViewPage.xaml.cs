@@ -23,18 +23,20 @@ namespace Pages
 
 
             var node = new TreeViewNode();
-            node.Content = new Label { Text = "Content" };
+            node.Content = new Label { Text = "Content", VerticalOptions = LayoutOptions.Center };
+            node.BackgroundColor = Color.Purple;
 
             var node2 = new TreeViewNode();
-            node2.Content = new Label { Text = "Content 2" };
+            node2.Content = new Label { Text = "Content 2", VerticalOptions = LayoutOptions.Center };
+            node2.BackgroundColor = Color.Green;
 
             var node3 = new TreeViewNode();
-            node3.Content = new Label { Text = "Content 3" };
-            //node3.BackgroundColor = Color.Red;
+            node3.Content = new Label { Text = "Content 3", VerticalOptions = LayoutOptions.Center };
+            node3.BackgroundColor = Color.Red;
 
             var node4 = new TreeViewNode();
-            node4.Content = new Label { Text = "Content 4" };
-            //node4.BackgroundColor = Color.Pink;
+            node4.Content = new Label { Text = "Content 4", VerticalOptions = LayoutOptions.Center };
+            node4.BackgroundColor = Color.Pink;
 
             node.Children.Add(node2);
             node2.Children.Add(node3);

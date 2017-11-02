@@ -13,7 +13,7 @@ namespace Adapt.Presentation.Controls.TreeView
         /// <summary>
         /// TODO: Remove this. It's nasty. It's here because double tap causes strange behaviour. Ultimately, it would be best to double tap the item to expand it, but the gesture recognizer ends up firing for the parent node as well which looks like a bug in XF
         /// </summary>
-        private readonly Button _ExpandButton = new Button { Text = ">" };
+        private readonly Button _ExpandButton = new Button { Text = "-", HeightRequest = 20, WidthRequest = 30 };
 
         private readonly Grid _MainGrid = new Grid
         {
