@@ -22,7 +22,12 @@ namespace Pages
             var node2 = new TreeNodeView();
             node2.Content = new Label { Text = "Content 2" };
 
+            var node3 = new TreeNodeView();
+            node3.Content = new Label { Text = "Content 3" };
+            node3.BackgroundColor = Color.Red;
+
             node.ChildTreeNodeViews.Add(node2);
+            node2.ChildTreeNodeViews.Add(node3);
 
             TheTreeView.ChildTreeNodeViews.Add(node);
             base.OnAppearing();
@@ -31,17 +36,6 @@ namespace Pages
         public TreeViewPage()
         {
             InitializeComponent();
-
-
-
-
-            //var grid = new Grid();
-            //grid.RowDefinitions.Add(new RowDefinition { Height=100 });
-            //grid.ColumnDefinitions.Add(new ColumnDefinition { Width = 100 });
-            //grid.BackgroundColor = Color.Red;
-
-            //TheTreeView.ChildTreeNodeViews.Add(new Adapt.Presentation.Controls.TreeView.TreeNodeView() { Children = { grid } });
-
         }
     }
 }

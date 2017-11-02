@@ -41,21 +41,21 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Bindable Properties
         public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create("IsExpanded", typeof(bool), typeof(TreeNodeView), true, BindingMode.TwoWay, null, (bindable, oldValue, newValue) =>
         {
-            var node = bindable as TreeNodeView;
+            var treeNodeView = bindable as TreeNodeView;
 
-            if (oldValue == newValue || node == null)
+            if (oldValue == newValue || treeNodeView == null)
+            {
                 return;
+            }
 
-            node.BatchBegin();
+            treeNodeView.BatchBegin();
             try
             {
-                // show or hide all children
-                node._ChildrenStackLayout.IsVisible = node.IsExpanded;
+                treeNodeView._ChildrenStackLayout.IsVisible = treeNodeView.IsExpanded;
             }
             finally
             {
-                // ensure we commit
-                node.BatchCommit();
+                treeNodeView.BatchCommit();
             }
         }, null, null);
 
@@ -75,13 +75,14 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Public Properties
+        public int SpacerWidth { get; set; } =  30;
 
         public int Depth
         {
             get { return (ParentTreeNodeView == null ? 0 : ParentTreeNodeView.Depth + 1); }
         }
 
-        public double IndentWidth => Depth * 30;
+        public double IndentWidth => Depth * SpacerWidth;
 
         public View Content
         {
@@ -131,9 +132,6 @@ namespace Adapt.Presentation.Controls.TreeView
         private void Render()
         {
             _Spacer.WidthRequest = IndentWidth;
-
-            //TODO: Necessary?
-            _ContentView.BackgroundColor = BackgroundColor;
         }
 
         #endregion
