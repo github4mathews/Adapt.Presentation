@@ -6,16 +6,8 @@
     <ContentPage.Content>
 
         <Grid >
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="500" />
-                <ColumnDefinition Width="500" />
-            </Grid.ColumnDefinitions>
 
-            <Grid.RowDefinitions>
-                <RowDefinition Height="500" />
-            </Grid.RowDefinitions>
-
-            <treeview:TreeView x:Name="TheTreeView" >
+            <treeview:TreeView x:Name="TheTreeView" Margin="10" >
 
                 
             </treeview:TreeView>
