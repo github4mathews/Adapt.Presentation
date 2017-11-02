@@ -9,10 +9,27 @@ namespace Adapt.Presentation.Controls.TreeView
     {
         #region Fields
         private readonly BoxView _Spacer = new BoxView();
-        private readonly Grid _MainGrid = new Grid();
-        private readonly StackLayout _ContentStackLayout;
-        private readonly ContentView _ContentView;
-        private readonly StackLayout _ChildrenStackLayout;
+
+        private readonly Grid _MainGrid = new Grid
+        {
+            VerticalOptions = LayoutOptions.StartAndExpand,
+            HorizontalOptions = LayoutOptions.FillAndExpand,
+            RowSpacing = 2
+        };
+
+        private readonly StackLayout _ContentStackLayout = new StackLayout { Orientation = StackOrientation.Horizontal };
+
+        private readonly ContentView _ContentView = new ContentView
+        {
+            HorizontalOptions = LayoutOptions.FillAndExpand,
+        };
+
+        private readonly StackLayout _ChildrenStackLayout = new StackLayout
+        {
+            Orientation =  StackOrientation.Vertical,
+            Spacing = 0
+        };
+
         private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
         private readonly TapGestureRecognizer _TapGestureRecognizer = new TapGestureRecognizer();
         #endregion
@@ -22,27 +39,25 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Bindable Properties
-        public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create("IsExpanded", typeof(bool), typeof(TreeNodeView), true, BindingMode.TwoWay, null,
-            (bindable, oldValue, newValue) =>
+        public static readonly BindableProperty IsExpandedProperty = BindableProperty.Create("IsExpanded", typeof(bool), typeof(TreeNodeView), true, BindingMode.TwoWay, null, (bindable, oldValue, newValue) =>
+        {
+            var node = bindable as TreeNodeView;
+
+            if (oldValue == newValue || node == null)
+                return;
+
+            node.BatchBegin();
+            try
             {
-                var node = bindable as TreeNodeView;
-
-                if (oldValue == newValue || node == null)
-                    return;
-
-                node.BatchBegin();
-                try
-                {
-                    // show or hide all children
-                    node._ChildrenStackLayout.IsVisible = node.IsExpanded;
-                }
-                finally
-                {
-                    // ensure we commit
-                    node.BatchCommit();
-                }
+                // show or hide all children
+                node._ChildrenStackLayout.IsVisible = node.IsExpanded;
             }
-            , null, null);
+            finally
+            {
+                // ensure we commit
+                node.BatchCommit();
+            }
+        }, null, null);
 
         public bool IsExpanded
         {
@@ -93,36 +108,14 @@ namespace Adapt.Presentation.Controls.TreeView
             _TapGestureRecognizer.Tapped += TapGestureRecognizer_Tapped;
             GestureRecognizers.Add(_TapGestureRecognizer);
 
-            _MainGrid = new Grid
-            {
-                VerticalOptions = LayoutOptions.StartAndExpand,
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                RowSpacing = 2
-            };
-
             _MainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            _ContentStackLayout = new StackLayout();
-            _ContentStackLayout.Orientation = StackOrientation.Horizontal;
-
-            _ContentView = new ContentView
-            {
-                HorizontalOptions = LayoutOptions.FillAndExpand,
-                BackgroundColor = BackgroundColor
-            };
             _ContentStackLayout.Children.Add(_Spacer);
             _ContentStackLayout.Children.Add(_ContentView);
 
             _MainGrid.Children.Add(_ContentStackLayout);
-
-            _ChildrenStackLayout = new StackLayout
-            {
-                Orientation = Orientation,
-                Spacing = 0
-            };
             _MainGrid.Children.Add(_ChildrenStackLayout, 0, 1);
 
             Children.Add(_MainGrid);
@@ -138,6 +131,9 @@ namespace Adapt.Presentation.Controls.TreeView
         private void Render()
         {
             _Spacer.WidthRequest = IndentWidth;
+
+            //TODO: Necessary?
+            _ContentView.BackgroundColor = BackgroundColor;
         }
 
         #endregion
@@ -154,6 +150,7 @@ namespace Adapt.Presentation.Controls.TreeView
 
             _ChildTreeNodeViews.CollectionChanged -= ChildTreeNodeViews_CollectionChanged;
             _TapGestureRecognizer.Tapped -= TapGestureRecognizer_Tapped;
+            GestureRecognizers.Remove(_TapGestureRecognizer);
         }
         #endregion
 
