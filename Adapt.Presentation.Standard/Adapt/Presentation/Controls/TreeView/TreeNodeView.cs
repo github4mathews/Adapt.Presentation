@@ -11,6 +11,7 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Fields
         private Grid MainLayoutGrid;
         private ContentView HeaderView;
+        private ContentView TheContentView;
         private StackLayout ChildrenStackLayout;
         private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
         private TreeNodeView ParentTreeNodeView { get; set; }
@@ -48,13 +49,22 @@ namespace Adapt.Presentation.Controls.TreeView
 
         #region Public Properties
 
-        public DataTemplate ContentTemplate { get; set; }
-        public DataTemplate HeaderTemplate { get; set; }
-
         public View HeaderContent
         {
             get { return HeaderView.Content; }
             set { HeaderView.Content = value; }
+        }
+
+        public View Content
+        {
+            get
+            {
+                return TheContentView.Content;
+            }
+            set
+            {
+                TheContentView.Content = value;
+            }
         }
 
         public ObservableCollection<TreeNodeView> ChildTreeNodeViews
@@ -67,12 +77,9 @@ namespace Adapt.Presentation.Controls.TreeView
         #endregion
 
         #region Constructor
-        public TreeNodeView(DataTemplate headerTemplate, DataTemplate contentTemplate)
+        public TreeNodeView()
         {
-            HeaderTemplate = headerTemplate;
-            ContentTemplate = contentTemplate;
             IsExpanded = true;
-
             Render();
         }
 
@@ -88,11 +95,6 @@ namespace Adapt.Presentation.Controls.TreeView
                 ChildrenStackLayout.Children.Remove(nodeView);
                 nodeView.ParentTreeNodeView = null;
             }
-        }
-
-        protected void BuildHeader()
-        {
-            HeaderContent = (View)HeaderTemplate.CreateContent();
         }
 
         // [recursive down] create item template instances, attach and layout, and set descendents until finding overrides
@@ -196,7 +198,9 @@ namespace Adapt.Presentation.Controls.TreeView
             };
             MainLayoutGrid.Children.Add(ChildrenStackLayout, 0, 1);
 
-            ChildrenStackLayout.Children.Add((View)ContentTemplate.CreateContent());
+            TheContentView = new ContentView();
+
+            ChildrenStackLayout.Children.Add(TheContentView);
 
             Children.Add(MainLayoutGrid);
 

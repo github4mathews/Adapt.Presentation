@@ -7,9 +7,6 @@ namespace Adapt.Presentation.Controls.TreeView
     {
         private readonly ObservableCollection<TreeNodeView> _ChildTreeNodeViews = new ObservableCollection<TreeNodeView>();
 
-        public DataTemplate ContentTemplate { get; set; }
-        public DataTemplate HeaderTemplate { get; set; }
-
         public ObservableCollection<TreeNodeView> ChildTreeNodeViews
         {
             get
