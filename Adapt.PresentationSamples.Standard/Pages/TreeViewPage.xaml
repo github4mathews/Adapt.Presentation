@@ -7,17 +7,17 @@
 
         <Grid >
 
-            <adaptcontrols:AdaptTreeViewItemProvider ProbingPaths="Somethings" DefaultCollectionTemplateKey="DefaultCollectionTemplate"  IsAllNodesExpanded="True" RootNodeText="Query">
+            <adaptcontrols:AdaptTreeViewItemProvider x:Name="TheAdaptTreeViewItemProvider"  ProbingPaths="Somethings" DefaultCollectionTemplateKey="DefaultCollectionTemplate"  IsAllNodesExpanded="True" RootNodeText="Query">
 
                 <adaptcontrols:AdaptTreeViewItemProvider.ItemsTemplates  >
 
-                    <DataTemplate x:Key="Adapt.Presentation.Controls.Something" >
-                        <Label Text="{Binding Path=CollectionName}" Margin="2,0,0,0"  />
-                    </DataTemplate>
-
-                    <!--<DataTemplate x:Key="Adapt.Model.Data.WhereClauseList">
-                        <Entry Text="{Binding Path=CollectionName}" Margin="2,0,0,0"  />
-                    </DataTemplate>-->
+                    <adaptcontrols:ItemTemplateInfo TypeName="Adapt.Presentation.Controls.Something" >
+                        <adaptcontrols:ItemTemplateInfo.ItemTemplate>
+                            <DataTemplate>
+                                <Label Text="{Binding Path=CollectionName}" Margin="2,0,0,0"  />
+                            </DataTemplate>
+                        </adaptcontrols:ItemTemplateInfo.ItemTemplate>
+                    </adaptcontrols:ItemTemplateInfo>
 
                 </adaptcontrols:AdaptTreeViewItemProvider.ItemsTemplates>
 

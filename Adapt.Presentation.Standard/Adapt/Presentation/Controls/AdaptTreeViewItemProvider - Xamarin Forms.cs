@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls
 {
-    public partial class AdaptTreeViewItemProvider : BindableObject
+    public partial class AdaptTreeViewItemProvider : View
     {
         #region BindableProperties
         public static readonly BindableProperty ItemsSourceProperty = BindableProperty.Create(nameof(ItemsSource), typeof(IEnumerable), typeof(AdaptTreeViewItemProvider), null, propertyChanged: OnItemsSourceChanged);
@@ -23,21 +24,39 @@ namespace Adapt.Presentation.Controls
             control.Refresh();
         }
 
-        public static readonly BindableProperty ItemsTemplatesProperty = BindableProperty.Create(nameof(ItemsTemplates), typeof(IEnumerable), typeof(AdaptTreeViewItemProvider), null, propertyChanged: OnItemsTemplatesChanged);
+        #endregion
 
-        private static void OnItemsTemplatesChanged(BindableObject bindable, object oldValue, object newValue)
+        #region Fields
+        private ObservableCollection<ItemTemplateInfo> _ItemsTemplates = new ObservableCollection<ItemTemplateInfo>();
+        #endregion
+
+        #region Private Propertiers
+        private Dictionary<string, DataTemplate> ItemTemplatesDictionary
         {
-            var control = (AdaptTreeViewItemProvider)bindable;
-            if (control.ItemsTemplates is INotifyCollectionChanged ItemsTemplates)
+            get
             {
-                ItemsTemplates.CollectionChanged += (s, e) =>
+                var retVal = new Dictionary<string, DataTemplate>();
+                foreach (var keyValuePair in _ItemsTemplates)
                 {
-                    control.Refresh();
-                };
-            }
-            control.Refresh();
-        }
+                    retVal.Add(keyValuePair.TypeName, keyValuePair.ItemTemplate);
+                }
 
+                return retVal;
+            }
+        }
+        #endregion
+
+        #region Public Properties
+        /// <summary>
+        /// The list of templates indexed by the property name on the objects that will be recursed through
+        /// </summary>
+        public ObservableCollection<ItemTemplateInfo> ItemsTemplates
+        {
+            get
+            {
+                return _ItemsTemplates;
+            }
+        }
         #endregion
 
         #region Private Methods

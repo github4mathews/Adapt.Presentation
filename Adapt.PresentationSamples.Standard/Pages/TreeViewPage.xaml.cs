@@ -1,13 +1,14 @@
 ﻿
 using Adapt.Presentation.Controls;
 using System;
+using System.Linq;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 
 namespace Pages
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+    //[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TreeViewPage : ContentPage
     {
         private bool _IsLoaded;
@@ -73,6 +74,7 @@ namespace Pages
         public TreeViewPage()
         {
             InitializeComponent();
+            var firstKey = TheAdaptTreeViewItemProvider.ItemsTemplates.FirstOrDefault();
         }
     }
 

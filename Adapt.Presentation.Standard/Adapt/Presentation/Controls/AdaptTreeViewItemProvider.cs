@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 #if (SILVERLIGHT)
 using TreeViewItem = System.Windows.Controls.TreeViewItem;
@@ -69,21 +70,6 @@ namespace Adapt.Presentation.Controls
         }
 
 
-        /// <summary>
-        /// The list of templates indexed by the property name on the objects that will be recursed through
-        /// </summary>
-        public Dictionary<string, DataTemplate> ItemsTemplates
-        {
-            get
-            {
-                return (Dictionary<string, DataTemplate>)GetValue(ItemsTemplatesProperty);
-            }
-            set
-            {
-                SetValue(ItemsTemplatesProperty, value);
-                Refresh();
-            }
-        }
 
         public string ProbingPaths
         {
@@ -259,18 +245,18 @@ namespace Adapt.Presentation.Controls
                 treeNode.IsExpanded = true;
             }
 
-            if (ItemsTemplates.ContainsKey(child.GetType().FullName))
+            if (ItemTemplatesDictionary.ContainsKey(child.GetType().FullName))
             {
                 if (enumerable != null && childAsString == null)
                 {
 
-                    treeNode.Header = LoadContent(ItemsTemplates[enumerable.GetType().FullName]);
+                    treeNode.Header = LoadContent(ItemTemplatesDictionary[enumerable.GetType().FullName]);
                     SetDataContext(treeNode, new CollectionInformation(propertyName, enumerable));
                 }
                 else
                 {
                     //Set the header based on the template
-                    treeNode.Header = LoadContent(ItemsTemplates[child.GetType().FullName]);
+                    treeNode.Header = LoadContent(ItemTemplatesDictionary[child.GetType().FullName]);
                     SetDataContext(treeNode, child);
                 }
             }
@@ -278,7 +264,7 @@ namespace Adapt.Presentation.Controls
             {
                 if (enumerable != null && childAsString == null)
                 {
-                    treeNode.Header = LoadContent(ItemsTemplates[DefaultCollectionTemplateKey]);
+                    treeNode.Header = LoadContent(ItemTemplatesDictionary[DefaultCollectionTemplateKey]);
                     SetDataContext(treeNode, new CollectionInformation(propertyName, enumerable));
                 }
                 else

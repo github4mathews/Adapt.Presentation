@@ -84,6 +84,7 @@
     <Compile Include="Adapt\Presentation\Controls\AdaptTreeViewItemProvider.cs" />
     <Compile Include="Adapt\Presentation\Controls\CollectionInformation.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
+    <Compile Include="Adapt\Presentation\Controls\ItemTemplateInfo.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePickerButton.cs" />
     <Compile Include="Adapt\Presentation\Controls\TreeViewItem.cs" />
