@@ -8,6 +8,9 @@ namespace Adapt.Presentation.Controls
     public partial class TreeViewItem : StackLayout, IDisposable
     {
         #region Fields
+
+        private TreeViewItem _ParentTreeViewItem;
+
         private DateTime _ExpandButtonClickedTime;
 
         private readonly BoxView _SpacerBoxView = new BoxView();
@@ -61,8 +64,19 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Public Properties
-        
-        public TreeViewItem ParentTreeViewItem { get; }
+
+        internal TreeViewItem ParentTreeViewItem
+        {
+            get
+            {
+                return _ParentTreeViewItem;
+            }
+            set
+            {
+                _ParentTreeViewItem = value;
+                Render();
+            }
+        }
 
         public bool IsSelected
         {
@@ -111,7 +125,7 @@ namespace Adapt.Presentation.Controls
 
                 _ItemsSource = value;
                 _ItemsSource.CollectionChanged += ChildTreeViewItems_CollectionChanged;
-                TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset), this);
             }
         }
 
@@ -122,9 +136,8 @@ namespace Adapt.Presentation.Controls
         /// Constructs a new TreeViewItem
         /// TODO: Remove the parentTreeViewItem argument. This breaks XAML. It means we can't definite TreeViewItems in XAML. We should be able to get the ParentTreeViewNode by traversing up through the Visual Tree by 'Parent', but this not working for some reason.
         /// </summary>
-        public TreeViewItem(TreeViewItem parentTreeViewItem)
+        public TreeViewItem()
         {
-            ParentTreeViewItem = parentTreeViewItem;
             _ExpandButton.Clicked += ExpandButton_Clicked;
 
             _ItemsSource.CollectionChanged += ChildTreeViewItems_CollectionChanged;
@@ -155,11 +168,6 @@ namespace Adapt.Presentation.Controls
             Render();
         }
 
-        private void Render()
-        {
-            _SpacerBoxView.WidthRequest = IndentWidth;
-        }
-
         #endregion
 
         #region Public Methods
@@ -180,6 +188,19 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Internal Methods
+        internal void Render()
+        {
+            _SpacerBoxView.WidthRequest = IndentWidth;
+
+            if (ItemsSource != null)
+            {
+                foreach (var item in ItemsSource)
+                {
+                    item.Render();
+                }
+            }
+        }
+
         /// <summary>
         /// TODO: This is a little stinky...
         /// </summary>
@@ -208,7 +229,7 @@ namespace Adapt.Presentation.Controls
 
         private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, e);
+            TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, e, this);
         }
 
         #endregion

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using Xamarin.Forms;
 
 namespace Adapt.Presentation.Controls
@@ -61,11 +62,11 @@ namespace Adapt.Presentation.Controls
                 {
                     notifyCollectionChanged.CollectionChanged += (s, e) =>
                     {
-                        RenderNodes(_ItemsSource, _StackLayout, e);
+                        RenderNodes(_ItemsSource, _StackLayout, e, null);
                     };
                 }
 
-                RenderNodes(_ItemsSource, _StackLayout, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+                RenderNodes(_ItemsSource, _StackLayout, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset), null);
             }
         }
 
@@ -89,7 +90,7 @@ namespace Adapt.Presentation.Controls
         #region Event Handlers
         private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RenderNodes(ItemsSource, _StackLayout, e);
+            RenderNodes(ItemsSource, _StackLayout, e, null);
         }
         #endregion
 
@@ -104,6 +105,17 @@ namespace Adapt.Presentation.Controls
                 }
 
                 RemoveSelectionRecursive(treeViewItem.ItemsSource);
+            }
+        }
+        #endregion
+
+        #region Private Static Methods
+        private static void AddItems(IEnumerable<TreeViewItem> childTreeViewItems, StackLayout parent, TreeViewItem parentTreeViewItem)
+        {
+            foreach (var childTreeNode in childTreeViewItems)
+            {
+                parent.Children.Add(childTreeNode);
+                childTreeNode.ParentTreeViewItem = parentTreeViewItem;
             }
         }
         #endregion
@@ -123,8 +135,7 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Internal Static Methods
-
-        internal static void RenderNodes(IEnumerable<TreeViewItem> childTreeViewItems, StackLayout parent, NotifyCollectionChangedEventArgs e)
+        internal static void RenderNodes(IEnumerable<TreeViewItem> childTreeViewItems, StackLayout parent, NotifyCollectionChangedEventArgs e, TreeViewItem parentTreeViewItem)
         {
             System.Diagnostics.Debug.WriteLine($"Render Nodes {e.Action}");
 
@@ -132,17 +143,11 @@ namespace Adapt.Presentation.Controls
             if (e.Action != NotifyCollectionChangedAction.Add)
             {
                 parent.Children.Clear();
-                foreach (TreeViewItem childTreeNode in childTreeViewItems)
-                {
-                    parent.Children.Add(childTreeNode);
-                }
+                AddItems(childTreeViewItems, parent, parentTreeViewItem);
             }
             else
             {
-                foreach (TreeViewItem childTreeNode in e.NewItems)
-                {
-                    parent.Children.Add(childTreeNode);
-                }
+                AddItems(e.NewItems.Cast<TreeViewItem>(), parent, parentTreeViewItem);
             }
         }
         #endregion

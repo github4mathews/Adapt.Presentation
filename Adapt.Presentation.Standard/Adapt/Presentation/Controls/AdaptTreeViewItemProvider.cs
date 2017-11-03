@@ -175,7 +175,7 @@ namespace Adapt.Presentation.Controls
         {
             if (child == null)
             {
-                return CreateTreeViewItem(parentTreeViewItem);
+                return new TreeViewItem();
             }
 
             var enumerable = child as IEnumerable;
@@ -191,7 +191,7 @@ namespace Adapt.Presentation.Controls
             _FlattenedObjects.Add(child);
 
             //Create treeviewitem for child
-            var treeNode = CreateTreeViewItem(parentTreeViewItem);
+            var treeNode = new TreeViewItem();
 
             //should we have this check? Could stuff get left off like this?
             if (!_TreeViewItemsByDataContext.ContainsKey(child))
