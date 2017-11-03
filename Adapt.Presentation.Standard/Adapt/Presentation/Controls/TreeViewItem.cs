@@ -191,7 +191,7 @@ namespace Adapt.Presentation.Controls
 
         private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout);
+            TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, e);
         }
 
         #endregion

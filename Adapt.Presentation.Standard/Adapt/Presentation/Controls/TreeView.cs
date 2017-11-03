@@ -59,15 +59,17 @@ namespace Adapt.Presentation.Controls
 
                 if (value is INotifyCollectionChanged notifyCollectionChanged)
                 {
-                    notifyCollectionChanged.CollectionChanged += (s, e) => 
+                    notifyCollectionChanged.CollectionChanged += (s, e) =>
                     {
-                        RenderNodes(_ItemsSource, _StackLayout);
+                        RenderNodes(_ItemsSource, _StackLayout, e);
                     };
                 }
 
-                RenderNodes(_ItemsSource, _StackLayout);
+                RenderNodes(_ItemsSource, _StackLayout, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
             }
         }
+
+
         #endregion
 
         #region Events
@@ -87,7 +89,7 @@ namespace Adapt.Presentation.Controls
         #region Event Handlers
         private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RenderNodes(ItemsSource, _StackLayout);
+            RenderNodes(ItemsSource, _StackLayout, e);
         }
         #endregion
 
@@ -121,13 +123,24 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Internal Static Methods
-        internal static void RenderNodes(IEnumerable childTreeViewItems, StackLayout parent)
+
+        internal static void RenderNodes(IEnumerable<TreeViewItem> childTreeViewItems, StackLayout parent, NotifyCollectionChangedEventArgs e)
         {
             //TODO: This shouldn't clear and re-add. It should only do that on a reset. This is a performance problem but leaving it as is until someone reports it as a problem
-            parent.Children.Clear();
-            foreach (TreeViewItem childTreeNode in childTreeViewItems)
+            if (e.Action != NotifyCollectionChangedAction.Add)
             {
-                parent.Children.Add(childTreeNode);
+                parent.Children.Clear();
+                foreach (TreeViewItem childTreeNode in childTreeViewItems)
+                {
+                    parent.Children.Add(childTreeNode);
+                }
+            }
+            else
+            {
+                foreach (TreeViewItem childTreeNode in e.NewItems)
+                {
+                    parent.Children.Add(childTreeNode);
+                }
             }
         }
         #endregion

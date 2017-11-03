@@ -18,7 +18,7 @@
                             <adaptcontrols:ItemTemplateInfo TypeName="Pages.Something" >
                                 <adaptcontrols:ItemTemplateInfo.ItemTemplate>
                                     <DataTemplate>
-                                        <Label Text="{Binding Path=TestString}" Margin="2,0,0,0" BackgroundColor="Purple" />
+                                        <Label Text="{Binding Path=TestString}" Margin="2,0,0,0" BackgroundColor="Purple" VerticalOptions="Center" HorizontalOptions="Start"  />
                                     </DataTemplate>
                                 </adaptcontrols:ItemTemplateInfo.ItemTemplate>
                             </adaptcontrols:ItemTemplateInfo>
@@ -27,7 +27,7 @@
                             <adaptcontrols:ItemTemplateInfo TypeName="Pages.Something2" >
                                 <adaptcontrols:ItemTemplateInfo.ItemTemplate>
                                     <DataTemplate>
-                                        <Label Text="{Binding Path=TestString}" Margin="2,0,0,0" BackgroundColor="Green"  />
+                                        <Label Text="{Binding Path=TestString}" Margin="2,0,0,0" BackgroundColor="Green" VerticalOptions="Center" HorizontalOptions="Start"  />
                                     </DataTemplate>
                                 </adaptcontrols:ItemTemplateInfo.ItemTemplate>
                             </adaptcontrols:ItemTemplateInfo>
@@ -35,7 +35,7 @@
                             <adaptcontrols:ItemTemplateInfo TypeName="Pages.Something3" >
                                 <adaptcontrols:ItemTemplateInfo.ItemTemplate>
                                     <DataTemplate>
-                                        <Label Text="{Binding Path=TestString}" Margin="2,0,0,0" BackgroundColor="Red" />
+                                        <Label Text="{Binding Path=TestString}" Margin="2,0,0,0" BackgroundColor="Red" VerticalOptions="Center" HorizontalOptions="Start"  />
                                     </DataTemplate>
                                 </adaptcontrols:ItemTemplateInfo.ItemTemplate>
                             </adaptcontrols:ItemTemplateInfo>
@@ -44,7 +44,7 @@
                             <adaptcontrols:ItemTemplateInfo TypeName="Pages.Something4" >
                                 <adaptcontrols:ItemTemplateInfo.ItemTemplate>
                                     <DataTemplate>
-                                        <Label Text="{Binding Path=TestString}" Margin="2,0,0,0" BackgroundColor="Pink"    />
+                                        <Label Text="{Binding Path=TestString}" Margin="2,0,0,0" BackgroundColor="Pink" VerticalOptions="Center" HorizontalOptions="Start"     />
                                     </DataTemplate>
                                 </adaptcontrols:ItemTemplateInfo.ItemTemplate>
                             </adaptcontrols:ItemTemplateInfo>
