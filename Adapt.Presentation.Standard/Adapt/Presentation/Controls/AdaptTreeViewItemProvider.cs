@@ -7,6 +7,8 @@ using System.ComponentModel;
 #if(SILVERLIGHT)
 using TreeViewItem = System.Windows.Controls.TreeViewItem;
 using DataTemplate = System.Windows.DataTemplate;
+#else
+using DataTemplate = Xamarin.Forms.DataTemplate;
 #endif
 
 namespace Adapt.Presentation.Controls
@@ -14,14 +16,14 @@ namespace Adapt.Presentation.Controls
     /// <summary>
     /// Provides TreeViewItems formatted in to DataTemplates for a given Object with a hierarchical strcuture
     /// </summary>
-    public partial class AdaptTreeViewItemProvider :  IEnumerable<TreeViewItem>, INotifyCollectionChanged
+    public partial class AdaptTreeViewItemProvider : IEnumerable<TreeViewItem>, INotifyCollectionChanged
     {
         #region Delegates
         public delegate void TreeViewItemBuildingHandler(object dataContext, ref TreeViewItem proposedNode);
         #endregion
 
         #region Events
-        public event EventHandler<TreeViewItemPropertyChangedEventArgs> ItemPropertyChanged;
+        public event EventHandler<PropertyChangedEventArgs> ItemPropertyChanged;
         public event TreeViewItemBuildingHandler TreeViewItemBuilding;
         public event NotifyCollectionChangedEventHandler CollectionChanged;
         #endregion
@@ -62,7 +64,6 @@ namespace Adapt.Presentation.Controls
                 {
                     notifyCollectionChanged.CollectionChanged += (s, e) => Refresh();
                 }
-
             }
         }
 
@@ -104,6 +105,7 @@ namespace Adapt.Presentation.Controls
         {
             RefreshChecking();
         }
+
         #endregion
 
         #region Private Methods
@@ -114,10 +116,10 @@ namespace Adapt.Presentation.Controls
 
         private void Refresh()
         {
+            InitializeRefresh();
             _TreeViewItems.Clear();
             _FlattenedObjects.Clear();
             _ParentChildLink.Clear();
-            _CheckBoxesByDataContext.Clear();
             _TreeViewItemsByDataContext.Clear();
 
             if (ItemsTemplates == null || ItemsTemplates.Count <= 0 || ItemsSource == null)
@@ -351,7 +353,7 @@ namespace Adapt.Presentation.Controls
         #region Event Handlers
         private void AdaptTreeViewItemProvider_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            ItemPropertyChanged?.Invoke(sender, new TreeViewItemPropertyChangedEventArgs(e.PropertyName));
+            ItemPropertyChanged?.Invoke(sender, e);
         }
         #endregion
 
