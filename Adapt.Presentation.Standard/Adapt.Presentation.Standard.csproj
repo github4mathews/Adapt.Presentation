@@ -62,7 +62,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
     <OutputPath>bin\ARM\Debug\</OutputPath>
-	<DefineConstants>NETFX_CORE</DefineConstants>
+    <DefineConstants>NETFX_CORE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <PlatformTarget>ARM</PlatformTarget>
@@ -83,8 +83,8 @@
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePickerButton.cs" />
-    <Compile Include="Adapt\Presentation\Controls\TreeView\TreeViewNode.cs" />
-    <Compile Include="Adapt\Presentation\Controls\TreeView\TreeView.cs" />
+    <Compile Include="Adapt\Presentation\Controls\TreeViewNode.cs" />
+    <Compile Include="Adapt\Presentation\Controls\TreeView.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
     <Compile Include="Adapt\Presentation\Converters\DisplayDateInLocalFormatConverter.cs" />
     <Compile Include="Adapt\Presentation\FileData.cs" />

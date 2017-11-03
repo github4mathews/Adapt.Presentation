@@ -4,12 +4,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Xamarin.Forms;
 
-namespace Adapt.Presentation.Controls.TreeView
+namespace Adapt.Presentation.Controls
 {
     public class TreeView : ScrollView, IDisposable
     {
         #region Fields
-        private readonly ObservableCollection<TreeViewNode> _ChildTreeViewNodes = new ObservableCollection<TreeViewNode>();
+        private readonly ObservableCollection<TreeViewItem> _ChildTreeViewItems = new ObservableCollection<TreeViewItem>();
         private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
         #endregion
 
@@ -17,38 +17,38 @@ namespace Adapt.Presentation.Controls.TreeView
         /// <summary>
         /// TODO: Make this two way - and maybe eventually a bindable property
         /// </summary>
-        public TreeViewNode SelectedItem { get; private set; }
+        public TreeViewItem SelectedItem { get; private set; }
         public Color SelectedBackgroundColour { get; } = Color.Blue;
         public double SelectedBackgroundOpacity { get; } = .5;
-        public ObservableCollection<TreeViewNode> ChildTreeViewNodes => _ChildTreeViewNodes;
+        public ObservableCollection<TreeViewItem> ChildTreeViewItems => _ChildTreeViewItems;
         #endregion
 
         #region Constructor
         public TreeView()
         {
             Content = _StackLayout;
-            _ChildTreeViewNodes.CollectionChanged += ChildTreeViewNodes_CollectionChanged;
+            _ChildTreeViewItems.CollectionChanged += ChildTreeViewItems_CollectionChanged;
         }
         #endregion
 
         #region Event Handlers
-        private void ChildTreeViewNodes_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RenderNodes(_ChildTreeViewNodes, _StackLayout);
+            RenderNodes(_ChildTreeViewItems, _StackLayout);
         }
         #endregion
 
         #region Private Methods
-        private void RemoveSelectionRecursive(IEnumerable<TreeViewNode> nodes)
+        private void RemoveSelectionRecursive(IEnumerable<TreeViewItem> nodes)
         {
-            foreach (var treeViewNode in nodes)
+            foreach (var treeViewItem in nodes)
             {
-                if (treeViewNode != SelectedItem)
+                if (treeViewItem != SelectedItem)
                 {
-                    treeViewNode.IsSelected = false;
+                    treeViewItem.IsSelected = false;
                 }
 
-                RemoveSelectionRecursive(treeViewNode.ChildTreeViewNodes);
+                RemoveSelectionRecursive(treeViewItem.ChildTreeViewItems);
             }
         }
         #endregion
@@ -57,23 +57,23 @@ namespace Adapt.Presentation.Controls.TreeView
         /// <summary>
         /// TODO: A bit stinky but better than bubbling an event up...
         /// </summary>
-        internal void ChildSelected(TreeViewNode child)
+        internal void ChildSelected(TreeViewItem child)
         {
             SelectedItem = child;
             child.IsSelected = true;
             child.SelectionBoxView.Color = SelectedBackgroundColour;
             child.SelectionBoxView.Opacity = SelectedBackgroundOpacity;
-            RemoveSelectionRecursive(_ChildTreeViewNodes);
+            RemoveSelectionRecursive(_ChildTreeViewItems);
         }
         #endregion
 
         #region Internal Static Methods
-        internal static void RenderNodes(ObservableCollection<TreeViewNode> childTreeViewNodes, StackLayout parent)
+        internal static void RenderNodes(ObservableCollection<TreeViewItem> childTreeViewItems, StackLayout parent)
         {
             //TODO: This shouldn't clear and re-add. It should only do that on a reset. This is a performance problem but leaving it as is until someone reports it as a problem
 
             parent.Children.Clear();
-            foreach (var childTreeNode in childTreeViewNodes)
+            foreach (var childTreeNode in childTreeViewItems)
             {
                 parent.Children.Add(childTreeNode);
             }
@@ -83,11 +83,11 @@ namespace Adapt.Presentation.Controls.TreeView
         #region Public Methods
         public void Dispose()
         {
-            _ChildTreeViewNodes.CollectionChanged -= ChildTreeViewNodes_CollectionChanged;
+            _ChildTreeViewItems.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
 
-            foreach (var TreeViewNode in _ChildTreeViewNodes)
+            foreach (var TreeViewItem in _ChildTreeViewItems)
             {
-                TreeViewNode.Dispose();
+                TreeViewItem.Dispose();
             }
 
             _StackLayout.Children.Clear();
