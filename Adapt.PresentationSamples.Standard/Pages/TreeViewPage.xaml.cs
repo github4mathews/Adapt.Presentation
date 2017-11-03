@@ -26,9 +26,9 @@ namespace Pages
             TheTreeView.SelectedItemChanged += TheTreeView_SelectedItemChanged;
 
             var aBindingContext1 = new Something { TestString = "Content 1" };
-            var aBindingContext2 = new Something { TestString = "Content 2" };
-            var aBindingContext3 = new Something { TestString = "Content 3" };
-            var aBindingContext4 = new Something { TestString = "Content 4" };
+            var aBindingContext2 = new Something2 { TestString = "Content 2" };
+            var aBindingContext3 = new Something3 { TestString = "Content 3" };
+            var aBindingContext4 = new Something4 { TestString = "Content 4" };
 
             aBindingContext2.Somethings.Add(aBindingContext3);
             aBindingContext1.Somethings.Add(aBindingContext2);
@@ -62,5 +62,17 @@ namespace Pages
     {
         public string TestString { get; set; }
         public ObservableCollection<Something> Somethings { get; } = new ObservableCollection<Something>();
+    }
+
+    public class Something2 : Something
+    {
+    }
+
+    public class Something3 : Something
+    {
+    }
+
+    public class Something4 : Something
+    {
     }
 }
