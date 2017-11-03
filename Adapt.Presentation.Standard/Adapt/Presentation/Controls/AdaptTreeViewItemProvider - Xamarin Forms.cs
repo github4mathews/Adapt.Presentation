@@ -28,7 +28,7 @@ namespace Adapt.Presentation.Controls
         private static void OnItemsTemplatesChanged(BindableObject bindable, object oldValue, object newValue)
         {
             var control = (AdaptTreeViewItemProvider)bindable;
-            if (newValue is INotifyCollectionChanged ItemsTemplates)
+            if (control.ItemsTemplates is INotifyCollectionChanged ItemsTemplates)
             {
                 ItemsTemplates.CollectionChanged += (s, e) =>
                 {
