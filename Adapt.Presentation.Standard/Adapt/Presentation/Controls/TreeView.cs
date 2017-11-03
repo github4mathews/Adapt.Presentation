@@ -17,6 +17,7 @@ namespace Adapt.Presentation.Controls
         #region Public Properties
 
         /// <summary>
+        /// The item that is selected in the tree
         /// TODO: Make this two way - and maybe eventually a bindable property
         /// </summary>
         public TreeViewItem SelectedItem
@@ -33,13 +34,27 @@ namespace Adapt.Presentation.Controls
             }
         }
 
+        /// <summary>
+        /// The colour of the selected item
+        /// TODO: Make this a bindable property for styling purposes
+        /// </summary>
         public Color SelectedBackgroundColour { get; } = Color.Blue;
+
+
+        /// <summary>
+        /// The opacity of the box that sits over the top of the selected item
+        /// TODO: Make this a bindable property for styling purposes
+        /// </summary>
         public double SelectedBackgroundOpacity { get; } = .5;
+
         public ObservableCollection<TreeViewItem> ChildTreeViewItems => _ChildTreeViewItems;
         #endregion
 
         #region Events
-        public EventHandler SelectedItemChanged;
+        /// <summary>
+        /// Occurs when the user selects a TreeViewItem
+        /// </summary>
+        public event EventHandler SelectedItemChanged;
         #endregion
 
         #region Constructor
@@ -100,8 +115,13 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Call this when you are finished with the control to make sure events are detached and memory resources are freed up
+        /// </summary>
         public void Dispose()
         {
+            SelectedItemChanged = null;
             _ChildTreeViewItems.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
 
             foreach (var TreeViewItem in _ChildTreeViewItems)
