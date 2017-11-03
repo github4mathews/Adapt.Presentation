@@ -105,7 +105,7 @@ namespace Adapt.Presentation.Controls
             //Clear these index
             //Recursively iterate through root nodes
             _TreeViewItems.Clear();
-            _TreeViewItems.Add(CreateTreeViewItem(children, RootNodeText));
+            _TreeViewItems.Add(CreateTreeViewItem(children, RootNodeText, null));
 
             FinishRefresh();
 
@@ -202,11 +202,11 @@ namespace Adapt.Presentation.Controls
             return retVal;
         }
 
-        private TreeViewItem CreateTreeViewItem(object child, string propertyName)
+        private TreeViewItem CreateTreeViewItem(object child, string propertyName, TreeViewItem parentTreeViewItem)
         {
             if (child == null)
             {
-                return new TreeViewItem();
+                return CreateTreeViewItem(parentTreeViewItem);
             }
 
             var enumerable = child as IEnumerable;
@@ -222,7 +222,7 @@ namespace Adapt.Presentation.Controls
             _FlattenedObjects.Add(child);
 
             //Create treeviewitem for child
-            var treeNode = new TreeViewItem();
+            var treeNode = CreateTreeViewItem(parentTreeViewItem);
 
             //should we have this check? Could stuff get left off like this?
             if (!_TreeViewItemsByDataContext.ContainsKey(child))
@@ -286,7 +286,7 @@ namespace Adapt.Presentation.Controls
                     continue;
                 }
 
-                var treeViewItem = CreateTreeViewItem(childValue, childProperty.Name);
+                var treeViewItem = CreateTreeViewItem(childValue, childProperty.Name, treeNode);
 
                 //Add the children to the current treeviewitem
                 nodes.Add(treeViewItem);
@@ -299,7 +299,7 @@ namespace Adapt.Presentation.Controls
                 //Iterate through list of children passed in 
                 foreach (var theChild in children)
                 {
-                    var childNode = CreateTreeViewItem(theChild, "Something went wrong");
+                    var childNode = CreateTreeViewItem(theChild, "Something went wrong", treeNode);
                     nodes.Add(childNode);
                 }
             }

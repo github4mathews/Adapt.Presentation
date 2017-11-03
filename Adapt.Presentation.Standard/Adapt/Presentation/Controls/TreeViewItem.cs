@@ -46,15 +46,6 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Properties
-        private TreeViewItem ParentTreeViewItem
-        {
-            get
-            {
-                var retVal = Parent?.Parent?.Parent as TreeViewItem;
-                return retVal;
-            }
-        }
-
         private TreeView ParentTreeView => Parent?.Parent as TreeView;
         private double IndentWidth => Depth * SpacerWidth;
         private int SpacerWidth { get; set; } = 30;
@@ -70,6 +61,8 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Public Properties
+        
+        public TreeViewItem ParentTreeViewItem { get; }
 
         public bool IsSelected
         {
@@ -125,8 +118,13 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Constructor
-        public TreeViewItem()
+        /// <summary>
+        /// Constructs a new TreeViewItem
+        /// TODO: Remove the parentTreeViewItem argument. This breaks XAML. It means we can't definite TreeViewItems in XAML. We should be able to get the ParentTreeViewNode by traversing up through the Visual Tree by 'Parent', but this not working for some reason.
+        /// </summary>
+        public TreeViewItem(TreeViewItem parentTreeViewItem)
         {
+            ParentTreeViewItem = parentTreeViewItem;
             _ExpandButton.Clicked += ExpandButton_Clicked;
 
             _ItemsSource.CollectionChanged += ChildTreeViewItems_CollectionChanged;

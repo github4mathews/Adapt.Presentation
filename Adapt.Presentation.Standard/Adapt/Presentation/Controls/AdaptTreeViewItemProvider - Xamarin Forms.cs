@@ -70,7 +70,10 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Static Methods
-
+        private static TreeViewItem CreateTreeViewItem(TreeViewItem parentTreeViewItem)
+        {
+            return new TreeViewItem(parentTreeViewItem);
+        }
 
         private static void CreateNoTemplateNode(object child, TreeViewItem treeNode)
         {
