@@ -192,13 +192,14 @@ namespace Adapt.Presentation.Controls
             var retVal = new CollectionChildInfo();
             var parentItem = GetParentTreeViewItem(selectedItem);
 
-            if (parentItem?.DataContext is CollectionInformation)
+            if (GetDataContext(parentItem) is CollectionInformation)
             {
-                retVal.Item = selectedItem.DataContext;
+                retVal.Item = GetDataContext(selectedItem);
                 retVal.TreeViewItem = GetTreeViewItemByDataContext(retVal.Item);
 
                 retVal.IsPartOfCollection = true;
-                var collection = ((CollectionInformation)parentItem.DataContext).Collection;
+                object dataContext = GetDataContext(parentItem);
+                var collection = ((CollectionInformation)dataContext).Collection;
                 var list = collection as IList;
                 if (list != null)
                 {
@@ -263,13 +264,13 @@ namespace Adapt.Presentation.Controls
                 {
 
                     treeNode.Header = LoadContent(ItemsTemplates[enumerable.GetType().FullName]);
-                    treeNode.DataContext = new CollectionInformation(propertyName, enumerable);
+                    SetDataContext(treeNode, new CollectionInformation(propertyName, enumerable));
                 }
                 else
                 {
                     //Set the header based on the template
                     treeNode.Header = LoadContent(ItemsTemplates[child.GetType().FullName]);
-                    treeNode.DataContext = child;
+                    SetDataContext(treeNode, child);
                 }
             }
             else
@@ -277,7 +278,7 @@ namespace Adapt.Presentation.Controls
                 if (enumerable != null && childAsString == null)
                 {
                     treeNode.Header = LoadContent(ItemsTemplates[DefaultCollectionTemplateKey]);
-                    treeNode.DataContext = new CollectionInformation(propertyName, enumerable);
+                    SetDataContext(treeNode, new CollectionInformation(propertyName, enumerable));
                 }
                 else
                 {

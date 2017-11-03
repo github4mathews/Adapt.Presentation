@@ -50,10 +50,22 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Static Methods
-
-        private BindableObject LoadContent(DataTemplate dataTemplate)
+        private static object GetDataContext(TreeViewItem parentItem)
         {
-            return (BindableObject)dataTemplate.CreateContent();
+            return parentItem?.BindingContext;
+        }
+
+        private static void SetDataContext(TreeViewItem parentItem, object bindingContext)
+        {
+            if (parentItem != null)
+            {
+                parentItem.BindingContext = bindingContext;
+            }
+        }
+
+        private View LoadContent(DataTemplate dataTemplate)
+        {
+            return (View)dataTemplate.CreateContent();
         }
         #endregion
     }

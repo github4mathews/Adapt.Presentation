@@ -82,6 +82,7 @@
     <Compile Include="Adapt\Presentation\Controls\AdaptListView.cs" />
     <Compile Include="Adapt\Presentation\Controls\AdaptTreeViewItemProvider - Xamarin Forms.cs" />
     <Compile Include="Adapt\Presentation\Controls\AdaptTreeViewItemProvider.cs" />
+    <Compile Include="Adapt\Presentation\Controls\CollectionInformation.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml.cs" />
     <Compile Include="Adapt\Presentation\Controls\ModalDateTimePickerButton.cs" />
