@@ -9,6 +9,7 @@ using TreeViewItem = System.Windows.Controls.TreeViewItem;
 using DataTemplate = System.Windows.DataTemplate;
 #else
 using DataTemplate = Xamarin.Forms.DataTemplate;
+using System.Reflection;
 #endif
 
 namespace Adapt.Presentation.Controls
@@ -329,7 +330,7 @@ namespace Adapt.Presentation.Controls
             }
 
             //Set the itemssource on the nodes
-            treeNode.ItemsSource = nodes;
+            SetItemsSourceNodes(treeNode, nodes);
 
             TreeViewItemBuilding?.Invoke(child, ref treeNode);
 

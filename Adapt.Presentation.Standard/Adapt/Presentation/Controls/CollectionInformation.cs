@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
+#if(!SILVERLIGHT)
+using System.Reflection;
+#endif
+
 namespace Adapt.Presentation.Controls
 {
     public class CollectionInformation : INotifyPropertyChanged

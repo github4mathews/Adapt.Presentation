@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using Xamarin.Forms;
 
@@ -50,6 +51,24 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Static Methods
+        private static void SetItemsSourceNodes(TreeViewItem treeNode, List<TreeViewItem> nodes)
+        {
+            treeNode.ItemsSource.Clear();
+            foreach (var node in nodes)
+            {
+                treeNode.ItemsSource.Add(node);
+            }
+        }
+
+        private static void CreateNoTemplateNode(object child, TreeViewItem treeNode)
+        {
+            //Note: Although there might not be a template for this type, the node's header might get created manually in the event called later.
+            treeNode.BindingContext = child;
+            var textBlock = new Label();
+            textBlock.Text = $"No Template ({child.GetType().FullName})";
+            treeNode.Header = textBlock;
+        }
+
         private static object GetDataContext(TreeViewItem parentItem)
         {
             return parentItem?.BindingContext;
