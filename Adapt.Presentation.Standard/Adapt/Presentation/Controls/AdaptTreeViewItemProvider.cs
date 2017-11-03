@@ -58,18 +58,8 @@ namespace Adapt.Presentation.Controls
             set
             {
                 SetValue(ItemsSourceProperty, value);
-
-                Refresh();
-
-                var notifyCollectionChanged = value as INotifyCollectionChanged;
-                if (notifyCollectionChanged != null)
-                {
-                    notifyCollectionChanged.CollectionChanged += (s, e) => Refresh();
-                }
             }
         }
-
-
 
         public string ProbingPaths
         {

@@ -23,8 +23,8 @@ namespace Pages
 
             var aBindingContext1 = new Something { TestString = "Content 1" };
             var aBindingContext2 = new Something2 { TestString = "Content 2" };
-            //var aBindingContext3 = new Something3 { TestString = "Content 3" };
-            //var aBindingContext4 = new Something4 { TestString = "Content 4" };
+            var aBindingContext3 = new Something3 { TestString = "Content 3" };
+            var aBindingContext4 = new Something4 { TestString = "Content 4" };
 
             //aBindingContext2.Somethings.Add(aBindingContext3);
             aBindingContext1.Somethings.Add(aBindingContext2);
@@ -32,7 +32,7 @@ namespace Pages
             var itemsSource = new ObservableCollection<Something>();
 
             itemsSource.Add(aBindingContext1);
-            //itemsSource.Add(aBindingContext4);
+            itemsSource.Add(aBindingContext4);
 
             TheAdaptTreeViewItemProvider.ItemsSource = itemsSource;
 
