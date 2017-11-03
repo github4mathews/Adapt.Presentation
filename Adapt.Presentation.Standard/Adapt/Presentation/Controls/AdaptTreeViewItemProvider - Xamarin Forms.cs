@@ -48,5 +48,13 @@ namespace Adapt.Presentation.Controls
         {
         }
         #endregion
+
+        #region Private Static Methods
+
+        private BindableObject LoadContent(DataTemplate dataTemplate)
+        {
+            return (BindableObject)dataTemplate.CreateContent();
+        }
+        #endregion
     }
 }

@@ -31,25 +31,25 @@ namespace Pages
 
             var node = new TreeViewItem();
             var label = new Label { BackgroundColor = Color.Purple, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
-            node.Content = label;
+            node.Header = label;
             label.SetBinding(Label.TextProperty, new Binding("TestString"));
             node.BindingContext = aBindingContext1;
 
             var node2 = new TreeViewItem();
             var label2 = new Label { BackgroundColor = Color.Green, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
-            node2.Content = label2;
+            node2.Header = label2;
             label2.SetBinding(Label.TextProperty, new Binding("TestString"));
             node2.BindingContext = aBindingContext2;
 
             var node3 = new TreeViewItem();
             var label3 = new Label { BackgroundColor = Color.Red, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
-            node3.Content = label3;
+            node3.Header = label3;
             label3.SetBinding(Label.TextProperty, new Binding("TestString"));
             node3.BindingContext = aBindingContext3;
 
             var node4 = new TreeViewItem();
             var label4 = new Label { BackgroundColor = Color.Pink, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
-            node4.Content = label4;
+            node4.Header = label4;
             label4.SetBinding(Label.TextProperty, new Binding("TestString"));
             node4.BindingContext = aBindingContext4;
 

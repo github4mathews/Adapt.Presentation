@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-#if(SILVERLIGHT)
+#if (SILVERLIGHT)
 using TreeViewItem = System.Windows.Controls.TreeViewItem;
 using DataTemplate = System.Windows.DataTemplate;
 #else
@@ -261,13 +261,14 @@ namespace Adapt.Presentation.Controls
             {
                 if (enumerable != null && childAsString == null)
                 {
-                    treeNode.Header = ItemsTemplates[enumerable.GetType().FullName].LoadContent();
+
+                    treeNode.Header = LoadContent(ItemsTemplates[enumerable.GetType().FullName]);
                     treeNode.DataContext = new CollectionInformation(propertyName, enumerable);
                 }
                 else
                 {
                     //Set the header based on the template
-                    treeNode.Header = ItemsTemplates[child.GetType().FullName].LoadContent();
+                    treeNode.Header = LoadContent(ItemsTemplates[child.GetType().FullName]);
                     treeNode.DataContext = child;
                 }
             }
@@ -275,7 +276,7 @@ namespace Adapt.Presentation.Controls
             {
                 if (enumerable != null && childAsString == null)
                 {
-                    treeNode.Header = ItemsTemplates[DefaultCollectionTemplateKey].LoadContent();
+                    treeNode.Header = LoadContent(ItemsTemplates[DefaultCollectionTemplateKey]);
                     treeNode.DataContext = new CollectionInformation(propertyName, enumerable);
                 }
                 else

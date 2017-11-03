@@ -26,7 +26,7 @@ namespace Adapt.Presentation.Controls
 
         private readonly StackLayout _ContentStackLayout = new StackLayout { Orientation = StackOrientation.Horizontal };
 
-        private readonly ContentView _ContentView = new ContentView
+        private readonly ContentView _HeaderView = new ContentView
         {
             HorizontalOptions = LayoutOptions.FillAndExpand,
         };
@@ -89,10 +89,10 @@ namespace Adapt.Presentation.Controls
             }
         }
 
-        public View Content
+        public View Header
         {
-            get { return _ContentView.Content; }
-            set { _ContentView.Content = value; }
+            get { return _HeaderView.Content; }
+            set { _HeaderView.Content = value; }
         }
 
         public ObservableCollection<TreeViewItem> ItemsSource
@@ -125,7 +125,7 @@ namespace Adapt.Presentation.Controls
 
             _ContentStackLayout.Children.Add(_SpacerBoxView);
             _ContentStackLayout.Children.Add(_ExpandButton);
-            _ContentStackLayout.Children.Add(_ContentView);
+            _ContentStackLayout.Children.Add(_HeaderView);
 
             _MainGrid.Children.Add(_ContentStackLayout);
             _MainGrid.Children.Add(_ChildrenStackLayout, 0, 1);
