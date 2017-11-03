@@ -264,6 +264,11 @@ namespace Adapt.Presentation.Controls
             {
                 if (enumerable != null && childAsString == null)
                 {
+                    if (string.IsNullOrEmpty(DefaultCollectionTemplateKey))
+                    {
+                        throw new Exception($"{nameof(DefaultCollectionTemplateKey)} must be specified.");
+                    }
+
                     treeNode.Header = LoadContent(ItemTemplatesDictionary[DefaultCollectionTemplateKey]);
                     SetDataContext(treeNode, new CollectionInformation(propertyName, enumerable));
                 }

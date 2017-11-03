@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using Xamarin.Forms;
 
@@ -9,7 +9,7 @@ namespace Adapt.Presentation.Controls
     public class TreeView : ScrollView, IDisposable
     {
         #region Fields
-        private readonly ObservableCollection<TreeViewItem> _ItemsSource = new ObservableCollection<TreeViewItem>();
+        //private readonly ObservableCollection<TreeViewItem> _ItemsSource = new ObservableCollection<TreeViewItem>();
         private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
         private TreeViewItem _SelectedItem;
         #endregion
@@ -47,7 +47,7 @@ namespace Adapt.Presentation.Controls
         /// </summary>
         public double SelectedBackgroundOpacity { get; } = .5;
 
-        public ObservableCollection<TreeViewItem> ItemsSource => _ItemsSource;
+        public IEnumerable<TreeViewItem> ItemsSource { get; set; }
         #endregion
 
         #region Events
@@ -61,14 +61,13 @@ namespace Adapt.Presentation.Controls
         public TreeView()
         {
             Content = _StackLayout;
-            _ItemsSource.CollectionChanged += ChildTreeViewItems_CollectionChanged;
         }
         #endregion
 
         #region Event Handlers
         private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RenderNodes(_ItemsSource, _StackLayout);
+            RenderNodes(ItemsSource, _StackLayout);
         }
         #endregion
 
@@ -97,17 +96,16 @@ namespace Adapt.Presentation.Controls
             child.IsSelected = true;
             child.SelectionBoxView.Color = SelectedBackgroundColour;
             child.SelectionBoxView.Opacity = SelectedBackgroundOpacity;
-            RemoveSelectionRecursive(_ItemsSource);
+            RemoveSelectionRecursive(ItemsSource);
         }
         #endregion
 
         #region Internal Static Methods
-        internal static void RenderNodes(ObservableCollection<TreeViewItem> childTreeViewItems, StackLayout parent)
+        internal static void RenderNodes(IEnumerable childTreeViewItems, StackLayout parent)
         {
             //TODO: This shouldn't clear and re-add. It should only do that on a reset. This is a performance problem but leaving it as is until someone reports it as a problem
-
             parent.Children.Clear();
-            foreach (var childTreeNode in childTreeViewItems)
+            foreach (TreeViewItem childTreeNode in childTreeViewItems)
             {
                 parent.Children.Add(childTreeNode);
             }
@@ -122,9 +120,9 @@ namespace Adapt.Presentation.Controls
         public void Dispose()
         {
             SelectedItemChanged = null;
-            _ItemsSource.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
+            //ItemsSource.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
 
-            foreach (var TreeViewItem in _ItemsSource)
+            foreach (TreeViewItem TreeViewItem in ItemsSource)
             {
                 TreeViewItem.Dispose();
             }
