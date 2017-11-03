@@ -11,16 +11,35 @@ namespace Adapt.Presentation.Controls
         #region Fields
         private readonly ObservableCollection<TreeViewItem> _ChildTreeViewItems = new ObservableCollection<TreeViewItem>();
         private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
+        private TreeViewItem _SelectedItem;
         #endregion
 
         #region Public Properties
+
         /// <summary>
         /// TODO: Make this two way - and maybe eventually a bindable property
         /// </summary>
-        public TreeViewItem SelectedItem { get; private set; }
+        public TreeViewItem SelectedItem
+        {
+            get
+            {
+                return _SelectedItem;
+            }
+
+            private set
+            {
+                _SelectedItem = value;
+                SelectedItemChanged?.Invoke(this, new EventArgs());
+            }
+        }
+
         public Color SelectedBackgroundColour { get; } = Color.Blue;
         public double SelectedBackgroundOpacity { get; } = .5;
         public ObservableCollection<TreeViewItem> ChildTreeViewItems => _ChildTreeViewItems;
+        #endregion
+
+        #region Events
+        public EventHandler SelectedItemChanged;
         #endregion
 
         #region Constructor
