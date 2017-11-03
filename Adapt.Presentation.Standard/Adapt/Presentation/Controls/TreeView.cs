@@ -9,8 +9,8 @@ namespace Adapt.Presentation.Controls
     public class TreeView : ScrollView, IDisposable
     {
         #region Fields
-        //private readonly ObservableCollection<TreeViewItem> _ItemsSource = new ObservableCollection<TreeViewItem>();
         private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
+        private IEnumerable<TreeViewItem> _ItemsSource;
         private TreeViewItem _SelectedItem;
         #endregion
 
@@ -47,7 +47,27 @@ namespace Adapt.Presentation.Controls
         /// </summary>
         public double SelectedBackgroundOpacity { get; } = .5;
 
-        public IEnumerable<TreeViewItem> ItemsSource { get; set; }
+        public IEnumerable<TreeViewItem> ItemsSource
+        {
+            get
+            {
+                return _ItemsSource;
+            }
+            set
+            {
+                _ItemsSource = value;
+
+                if (value is INotifyCollectionChanged notifyCollectionChanged)
+                {
+                    notifyCollectionChanged.CollectionChanged += (s, e) => 
+                    {
+                        RenderNodes(_ItemsSource, _StackLayout);
+                    };
+                }
+
+                RenderNodes(_ItemsSource, _StackLayout);
+            }
+        }
         #endregion
 
         #region Events
@@ -120,7 +140,6 @@ namespace Adapt.Presentation.Controls
         public void Dispose()
         {
             SelectedItemChanged = null;
-            //ItemsSource.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
 
             foreach (TreeViewItem TreeViewItem in ItemsSource)
             {
