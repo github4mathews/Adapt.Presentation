@@ -27,11 +27,11 @@ namespace Pages
             var aBindingContext4 = new Something4 { TestString = "Content 4" };
 
             aBindingContext1.Somethings.Add(aBindingContext2);
+            aBindingContext2.Somethings.Add(aBindingContext3);
 
             var itemsSource = new ObservableCollection<Something>();
 
             itemsSource.Add(aBindingContext1);
-            itemsSource.Add(aBindingContext3);
             itemsSource.Add(aBindingContext4);
 
             TheAdaptTreeViewItemProvider.ItemsSource = itemsSource;

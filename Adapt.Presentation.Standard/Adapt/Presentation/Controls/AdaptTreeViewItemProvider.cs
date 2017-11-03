@@ -128,37 +128,6 @@ namespace Adapt.Presentation.Controls
             return retVal;
         }
 
-        public TreeViewItem MoveItemUp(object item)
-        {
-            var itemInfo = GetParentListAndIndex(_TreeViewItemsByDataContext[item]);
-
-            if (!itemInfo.IsPartOfCollection || !itemInfo.IsOriginalCollectionList)
-            {
-                throw new NotImplementedException();
-            }
-
-            itemInfo.List.Remove(itemInfo.Item);
-            itemInfo.List.Insert(itemInfo.ItemIndex - 1, itemInfo.Item);
-            Refresh();
-
-            return _TreeViewItemsByDataContext[item];
-        }
-
-        public TreeViewItem MoveItemDown(object item)
-        {
-            var itemInfo = GetParentListAndIndex(_TreeViewItemsByDataContext[item]);
-
-            if (!itemInfo.IsPartOfCollection || !itemInfo.IsOriginalCollectionList)
-            {
-                throw new NotImplementedException();
-            }
-
-            itemInfo.List.Remove(itemInfo.Item);
-            itemInfo.List.Insert(itemInfo.ItemIndex + 1, itemInfo.Item);
-            Refresh();
-            return _TreeViewItemsByDataContext[item];
-        }
-
         public CollectionChildInfo GetParentListAndIndex(TreeViewItem selectedItem)
         {
             if (selectedItem == null)
