@@ -270,7 +270,7 @@ namespace Adapt.Presentation.Controls
 
 
             //Create a list for the child nodes
-            var nodes = new List<TreeViewItem>();
+            var nodes = new ObservableCollection<TreeViewItem>();
 
             //Iterate through all the child collections that could be on the item
             foreach (var childPropertyName in _ProbingPaths)
@@ -311,7 +311,7 @@ namespace Adapt.Presentation.Controls
             }
 
             //Set the itemssource on the nodes
-            SetItemsSourceNodes(treeNode, nodes);
+            treeNode.ItemsSource = nodes;
 
             TreeViewItemBuilding?.Invoke(child, ref treeNode);
 

@@ -70,14 +70,7 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Static Methods
-        private static void SetItemsSourceNodes(TreeViewItem treeNode, List<TreeViewItem> nodes)
-        {
-            treeNode.ItemsSource.Clear();
-            foreach (var node in nodes)
-            {
-                treeNode.ItemsSource.Add(node);
-            }
-        }
+
 
         private static void CreateNoTemplateNode(object child, TreeViewItem treeNode)
         {

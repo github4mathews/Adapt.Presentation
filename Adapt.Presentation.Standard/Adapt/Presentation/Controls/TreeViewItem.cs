@@ -37,7 +37,7 @@ namespace Adapt.Presentation.Controls
             Spacing = 0
         };
 
-        private readonly ObservableCollection<TreeViewItem> _ItemsSource = new ObservableCollection<TreeViewItem>();
+        private ObservableCollection<TreeViewItem> _ItemsSource = new ObservableCollection<TreeViewItem>();
         private readonly TapGestureRecognizer _TapGestureRecognizer = new TapGestureRecognizer();
         #endregion
 
@@ -46,7 +46,15 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Properties
-        private TreeViewItem ParentTreeViewItem => Parent?.Parent?.Parent as TreeViewItem;
+        private TreeViewItem ParentTreeViewItem
+        {
+            get
+            {
+                var retVal = Parent?.Parent?.Parent as TreeViewItem;
+                return retVal;
+            }
+        }
+
         private TreeView ParentTreeView => Parent?.Parent as TreeView;
         private double IndentWidth => Depth * SpacerWidth;
         private int SpacerWidth { get; set; } = 30;
@@ -56,8 +64,8 @@ namespace Adapt.Presentation.Controls
         #region Protected Overrides
         protected override void OnParentSet()
         {
-            Render();
             base.OnParentSet();
+            Render();
         }
         #endregion
 
@@ -101,7 +109,19 @@ namespace Adapt.Presentation.Controls
             {
                 return _ItemsSource;
             }
+            set
+            {
+                if (_ItemsSource != null)
+                {
+                    _ItemsSource.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
+                }
+
+                _ItemsSource = value;
+                _ItemsSource.CollectionChanged += ChildTreeViewItems_CollectionChanged;
+                TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            }
         }
+
         #endregion
 
         #region Constructor
@@ -119,7 +139,6 @@ namespace Adapt.Presentation.Controls
             _MainGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
 
             _MainGrid.Children.Add(SelectionBoxView);
 
