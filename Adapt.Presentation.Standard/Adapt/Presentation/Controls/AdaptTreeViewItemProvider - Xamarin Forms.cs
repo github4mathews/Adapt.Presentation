@@ -43,6 +43,10 @@ namespace Adapt.Presentation.Controls
         private void InitializeRefresh()
         {
         }
+
+        private void FinishRefresh()
+        {
+        }
         #endregion
     }
 }

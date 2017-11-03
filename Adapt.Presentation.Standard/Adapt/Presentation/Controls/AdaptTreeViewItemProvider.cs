@@ -101,11 +101,6 @@ namespace Adapt.Presentation.Controls
             }
         }
 
-        private void TreeViewItemProvider_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            RefreshChecking();
-        }
-
         #endregion
 
         #region Private Methods
@@ -117,6 +112,7 @@ namespace Adapt.Presentation.Controls
         private void Refresh()
         {
             InitializeRefresh();
+
             _TreeViewItems.Clear();
             _FlattenedObjects.Clear();
             _ParentChildLink.Clear();
@@ -134,10 +130,7 @@ namespace Adapt.Presentation.Controls
             _TreeViewItems.Clear();
             _TreeViewItems.Add(CreateTreeViewItem(children, RootNodeText));
 
-            GetCheckBoxes();
-
-            //check the relevent checkboxes
-            RefreshChecking();
+            FinishRefresh();
 
             //Tell the treeview we've updated the collection
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
