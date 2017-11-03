@@ -58,10 +58,15 @@ namespace Pages
         }
     }
 
+    public class SomethingList : ObservableCollection<Something>
+    {
+
+    }
+
     public class Something
     {
         public string TestString { get; set; }
-        public ObservableCollection<Something> Somethings { get; } = new ObservableCollection<Something>();
+        public SomethingList Somethings { get; } = new SomethingList();
     }
 
     public class Something2 : Something

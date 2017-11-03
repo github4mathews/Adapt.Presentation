@@ -49,6 +49,14 @@
                                 </adaptcontrols:ItemTemplateInfo.ItemTemplate>
                             </adaptcontrols:ItemTemplateInfo>
 
+                            <adaptcontrols:ItemTemplateInfo TypeName="Pages.SomethingList" >
+                                <adaptcontrols:ItemTemplateInfo.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Text="Folder" Margin="2,0,0,0"     />
+                                    </DataTemplate>
+                                </adaptcontrols:ItemTemplateInfo.ItemTemplate>
+                            </adaptcontrols:ItemTemplateInfo>
+
                         </adaptcontrols:AdaptTreeViewItemProvider.ItemsTemplates>
 
                     </adaptcontrols:AdaptTreeViewItemProvider>
