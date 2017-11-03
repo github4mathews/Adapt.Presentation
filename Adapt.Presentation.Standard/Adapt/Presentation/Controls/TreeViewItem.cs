@@ -153,7 +153,7 @@ namespace Adapt.Presentation.Controls
                 childTreeViewItem.Dispose();
             }
 
-            base.Children.Clear();
+            Children.Clear();
 
             _ChildTreeViewItems.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
             _TapGestureRecognizer.Tapped -= TapGestureRecognizer_Tapped;
