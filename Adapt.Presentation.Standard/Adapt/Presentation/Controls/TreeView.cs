@@ -9,7 +9,7 @@ namespace Adapt.Presentation.Controls
     public class TreeView : ScrollView, IDisposable
     {
         #region Fields
-        private readonly ObservableCollection<TreeViewItem> _ChildTreeViewItems = new ObservableCollection<TreeViewItem>();
+        private readonly ObservableCollection<TreeViewItem> _ItemsSource = new ObservableCollection<TreeViewItem>();
         private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
         private TreeViewItem _SelectedItem;
         #endregion
@@ -47,7 +47,7 @@ namespace Adapt.Presentation.Controls
         /// </summary>
         public double SelectedBackgroundOpacity { get; } = .5;
 
-        public ObservableCollection<TreeViewItem> ChildTreeViewItems => _ChildTreeViewItems;
+        public ObservableCollection<TreeViewItem> ItemsSource => _ItemsSource;
         #endregion
 
         #region Events
@@ -61,14 +61,14 @@ namespace Adapt.Presentation.Controls
         public TreeView()
         {
             Content = _StackLayout;
-            _ChildTreeViewItems.CollectionChanged += ChildTreeViewItems_CollectionChanged;
+            _ItemsSource.CollectionChanged += ChildTreeViewItems_CollectionChanged;
         }
         #endregion
 
         #region Event Handlers
         private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RenderNodes(_ChildTreeViewItems, _StackLayout);
+            RenderNodes(_ItemsSource, _StackLayout);
         }
         #endregion
 
@@ -82,7 +82,7 @@ namespace Adapt.Presentation.Controls
                     treeViewItem.IsSelected = false;
                 }
 
-                RemoveSelectionRecursive(treeViewItem.ChildTreeViewItems);
+                RemoveSelectionRecursive(treeViewItem.ItemsSource);
             }
         }
         #endregion
@@ -97,7 +97,7 @@ namespace Adapt.Presentation.Controls
             child.IsSelected = true;
             child.SelectionBoxView.Color = SelectedBackgroundColour;
             child.SelectionBoxView.Opacity = SelectedBackgroundOpacity;
-            RemoveSelectionRecursive(_ChildTreeViewItems);
+            RemoveSelectionRecursive(_ItemsSource);
         }
         #endregion
 
@@ -122,9 +122,9 @@ namespace Adapt.Presentation.Controls
         public void Dispose()
         {
             SelectedItemChanged = null;
-            _ChildTreeViewItems.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
+            _ItemsSource.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
 
-            foreach (var TreeViewItem in _ChildTreeViewItems)
+            foreach (var TreeViewItem in _ItemsSource)
             {
                 TreeViewItem.Dispose();
             }

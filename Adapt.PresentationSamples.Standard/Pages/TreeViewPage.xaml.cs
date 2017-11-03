@@ -53,10 +53,10 @@ namespace Pages
             label4.SetBinding(Label.TextProperty, new Binding("TestString"));
             node4.BindingContext = aBindingContext4;
 
-            node.ChildTreeViewItems.Add(node2);
-            node2.ChildTreeViewItems.Add(node3);
-            TheTreeView.ChildTreeViewItems.Add(node);
-            TheTreeView.ChildTreeViewItems.Add(node4);
+            node.ItemsSource.Add(node2);
+            node2.ItemsSource.Add(node3);
+            TheTreeView.ItemsSource.Add(node);
+            TheTreeView.ItemsSource.Add(node4);
 
             base.OnAppearing();
         }

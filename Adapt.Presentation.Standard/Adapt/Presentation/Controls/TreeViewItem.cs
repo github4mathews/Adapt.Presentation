@@ -37,7 +37,7 @@ namespace Adapt.Presentation.Controls
             Spacing = 0
         };
 
-        private readonly ObservableCollection<TreeViewItem> _ChildTreeViewItems = new ObservableCollection<TreeViewItem>();
+        private readonly ObservableCollection<TreeViewItem> _ItemsSource = new ObservableCollection<TreeViewItem>();
         private readonly TapGestureRecognizer _TapGestureRecognizer = new TapGestureRecognizer();
         #endregion
 
@@ -95,11 +95,11 @@ namespace Adapt.Presentation.Controls
             set { _ContentView.Content = value; }
         }
 
-        public ObservableCollection<TreeViewItem> ChildTreeViewItems
+        public ObservableCollection<TreeViewItem> ItemsSource
         {
             get
             {
-                return _ChildTreeViewItems;
+                return _ItemsSource;
             }
         }
         #endregion
@@ -109,7 +109,7 @@ namespace Adapt.Presentation.Controls
         {
             _ExpandButton.Clicked += ExpandButton_Clicked;
 
-            _ChildTreeViewItems.CollectionChanged += ChildTreeViewItems_CollectionChanged;
+            _ItemsSource.CollectionChanged += ChildTreeViewItems_CollectionChanged;
 
             IsExpanded = true;
 
@@ -148,14 +148,14 @@ namespace Adapt.Presentation.Controls
         #region Public Methods
         public void Dispose()
         {
-            foreach (var childTreeViewItem in _ChildTreeViewItems)
+            foreach (var childTreeViewItem in _ItemsSource)
             {
                 childTreeViewItem.Dispose();
             }
 
             Children.Clear();
 
-            _ChildTreeViewItems.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
+            _ItemsSource.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
             _TapGestureRecognizer.Tapped -= TapGestureRecognizer_Tapped;
             _ExpandButton.Clicked -= ExpandButton_Clicked;
             GestureRecognizers.Remove(_TapGestureRecognizer);
@@ -191,7 +191,7 @@ namespace Adapt.Presentation.Controls
 
         private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            TreeView.RenderNodes(_ChildTreeViewItems, _ChildrenStackLayout);
+            TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout);
         }
 
         #endregion
