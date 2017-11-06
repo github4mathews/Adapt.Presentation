@@ -126,7 +126,7 @@
     </ProjectReference>
     <ProjectReference Include="..\Adapt.PresentationSamples.Standard\Adapt.PresentationSamples.Standard.csproj">
       <Project>{9a1ed959-56be-48db-bd07-545b00242318}</Project>
-      <Name>StocksShared</Name>
+      <Name>Adapt.PresentationSamples.Standard</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

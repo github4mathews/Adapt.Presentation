@@ -85,8 +85,6 @@
     <Compile Include="Adapt\Presentation\Controls\CollectionInformation.cs" />
     <Compile Include="Adapt\Presentation\Controls\DateTimePicker.cs" />
     <Compile Include="Adapt\Presentation\Controls\ItemTemplateInfo.cs" />
-    <Compile Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml.cs" />
-    <Compile Include="Adapt\Presentation\Controls\ModalDateTimePickerButton.cs" />
     <Compile Include="Adapt\Presentation\Controls\TreeViewItem.cs" />
     <Compile Include="Adapt\Presentation\Controls\TreeView.cs" />
     <Compile Include="Adapt\Presentation\Controls\WrapLayout.cs" />
@@ -137,10 +135,13 @@
     <None Include="Adapt.Presentation.Standard.ruleset" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Adapt\Presentation\Controls\ModalDateTimePicker.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
+    <ProjectReference Include="..\..\Xamarin.Forms\Xamarin.Forms.Core\Xamarin.Forms.Core.csproj">
+      <Project>{57b8b73d-c3b5-4c42-869e-7b2f17d354ac}</Project>
+      <Name>Xamarin.Forms.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Xamarin.Forms\Xamarin.Forms.Xaml\Xamarin.Forms.Xaml.csproj">
+      <Project>{9db2f292-8034-4e06-89ad-98bbda4306b9}</Project>
+      <Name>Xamarin.Forms.Xaml</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
 </Project>

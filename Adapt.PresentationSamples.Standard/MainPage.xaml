@@ -102,8 +102,6 @@
         </Grid>
     </ContentPage>
 
-    <pages:ModalDateTimePickerPage Title="Modal DateTimePicker" />
-
     <ContentPage Title="DateTimePicker" x:Name="DateTimePickerTab" >
         <Grid>
             <Grid.RowDefinitions>
