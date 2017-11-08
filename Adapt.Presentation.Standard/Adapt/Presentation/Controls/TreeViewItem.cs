@@ -8,6 +8,9 @@ namespace Adapt.Presentation.Controls
     public partial class TreeViewItem : StackLayout, IDisposable
     {
         #region Fields
+
+        private TreeViewItem _ParentTreeViewItem;
+
         private DateTime _ExpandButtonClickedTime;
 
         private readonly BoxView _SpacerBoxView = new BoxView();
@@ -26,7 +29,7 @@ namespace Adapt.Presentation.Controls
 
         private readonly StackLayout _ContentStackLayout = new StackLayout { Orientation = StackOrientation.Horizontal };
 
-        private readonly ContentView _ContentView = new ContentView
+        private readonly ContentView _HeaderView = new ContentView
         {
             HorizontalOptions = LayoutOptions.FillAndExpand,
         };
@@ -37,7 +40,7 @@ namespace Adapt.Presentation.Controls
             Spacing = 0
         };
 
-        private readonly ObservableCollection<TreeViewItem> _ChildTreeViewItems = new ObservableCollection<TreeViewItem>();
+        private ObservableCollection<TreeViewItem> _ItemsSource = new ObservableCollection<TreeViewItem>();
         private readonly TapGestureRecognizer _TapGestureRecognizer = new TapGestureRecognizer();
         #endregion
 
@@ -46,7 +49,6 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Properties
-        private TreeViewItem ParentTreeViewItem => Parent?.Parent?.Parent as TreeViewItem;
         private TreeView ParentTreeView => Parent?.Parent as TreeView;
         private double IndentWidth => Depth * SpacerWidth;
         private int SpacerWidth { get; set; } = 30;
@@ -56,8 +58,26 @@ namespace Adapt.Presentation.Controls
         #region Protected Overrides
         protected override void OnParentSet()
         {
-            Render();
             base.OnParentSet();
+            Render();
+        }
+        #endregion
+
+        #region Internal Properties
+        /// <summary>
+        /// TODO: Remove this. We should be able to get the ParentTreeViewNode by traversing up through the Visual Tree by 'Parent', but this not working for some reason.
+        /// </summary>
+        internal TreeViewItem ParentTreeViewItem
+        {
+            get
+            {
+                return _ParentTreeViewItem;
+            }
+            set
+            {
+                _ParentTreeViewItem = value;
+                Render();
+            }
         }
         #endregion
 
@@ -89,27 +109,42 @@ namespace Adapt.Presentation.Controls
             }
         }
 
-        public View Content
+        public View Header
         {
-            get { return _ContentView.Content; }
-            set { _ContentView.Content = value; }
+            get { return _HeaderView.Content; }
+            set { _HeaderView.Content = value; }
         }
 
-        public ObservableCollection<TreeViewItem> ChildTreeViewItems
+        public ObservableCollection<TreeViewItem> ItemsSource
         {
             get
             {
-                return _ChildTreeViewItems;
+                return _ItemsSource;
+            }
+            set
+            {
+                if (_ItemsSource != null)
+                {
+                    _ItemsSource.CollectionChanged -= ItemsSource_CollectionChanged;
+                }
+
+                _ItemsSource = value;
+                _ItemsSource.CollectionChanged += ItemsSource_CollectionChanged;
+                TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset), this);
             }
         }
+
         #endregion
 
         #region Constructor
+        /// <summary>
+        /// Constructs a new TreeViewItem
+        /// </summary>
         public TreeViewItem()
         {
             _ExpandButton.Clicked += ExpandButton_Clicked;
 
-            _ChildTreeViewItems.CollectionChanged += ChildTreeViewItems_CollectionChanged;
+            _ItemsSource.CollectionChanged += ItemsSource_CollectionChanged;
 
             IsExpanded = true;
 
@@ -120,12 +155,11 @@ namespace Adapt.Presentation.Controls
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             _MainGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-
             _MainGrid.Children.Add(SelectionBoxView);
 
             _ContentStackLayout.Children.Add(_SpacerBoxView);
             _ContentStackLayout.Children.Add(_ExpandButton);
-            _ContentStackLayout.Children.Add(_ContentView);
+            _ContentStackLayout.Children.Add(_HeaderView);
 
             _MainGrid.Children.Add(_ContentStackLayout);
             _MainGrid.Children.Add(_ChildrenStackLayout, 0, 1);
@@ -138,24 +172,19 @@ namespace Adapt.Presentation.Controls
             Render();
         }
 
-        private void Render()
-        {
-            _SpacerBoxView.WidthRequest = IndentWidth;
-        }
-
         #endregion
 
         #region Public Methods
         public void Dispose()
         {
-            foreach (var childTreeViewItem in _ChildTreeViewItems)
+            foreach (var childTreeViewItem in _ItemsSource)
             {
                 childTreeViewItem.Dispose();
             }
 
             Children.Clear();
 
-            _ChildTreeViewItems.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
+            _ItemsSource.CollectionChanged -= ItemsSource_CollectionChanged;
             _TapGestureRecognizer.Tapped -= TapGestureRecognizer_Tapped;
             _ExpandButton.Clicked -= ExpandButton_Clicked;
             GestureRecognizers.Remove(_TapGestureRecognizer);
@@ -163,6 +192,19 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Internal Methods
+        internal void Render()
+        {
+            _SpacerBoxView.WidthRequest = IndentWidth;
+
+            if (ItemsSource != null)
+            {
+                foreach (var item in ItemsSource)
+                {
+                    item.Render();
+                }
+            }
+        }
+
         /// <summary>
         /// TODO: This is a little stinky...
         /// </summary>
@@ -189,9 +231,9 @@ namespace Adapt.Presentation.Controls
             }
         }
 
-        private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ItemsSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            TreeView.RenderNodes(_ChildTreeViewItems, _ChildrenStackLayout);
+            TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, e, this);
         }
 
         #endregion

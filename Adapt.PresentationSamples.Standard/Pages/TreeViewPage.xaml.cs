@@ -1,9 +1,8 @@
-﻿
-using Adapt.Presentation.Controls;
+﻿using Adapt.Presentation.Controls;
 using System;
+using System.Collections.ObjectModel;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-
 
 namespace Pages
 {
@@ -21,42 +20,37 @@ namespace Pages
 
             _IsLoaded = true;
 
-
             TheTreeView.SelectedItemChanged += TheTreeView_SelectedItemChanged;
 
-            var aBindingContext1 = new Something { TestString = "Content 1" };
-            var aBindingContext2 = new Something { TestString = "Content 2" };
-            var aBindingContext3 = new Something { TestString = "Content 3" };
-            var aBindingContext4 = new Something { TestString = "Content 4" };
+            var something = new Something { TestString = "Content 1" };
+            var something2 = new Something2 { TestString = "Content 2" };
+            something.Children.Add(something2);
+
+            var itemsSource = new ObservableCollection<Something>();
+
+            itemsSource.Add(something);
+
+            TheAdaptTreeViewItemProvider.ItemsSource = itemsSource;
+
 
             var node = new TreeViewItem();
-            var label = new Label { BackgroundColor = Color.Purple, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
-            node.Content = label;
-            label.SetBinding(Label.TextProperty, new Binding("TestString"));
-            node.BindingContext = aBindingContext1;
+            node.Header = new Label { BackgroundColor = Color.Purple, Text = "Content", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
 
             var node2 = new TreeViewItem();
-            var label2 = new Label { BackgroundColor = Color.Green, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
-            node2.Content = label2;
-            label2.SetBinding(Label.TextProperty, new Binding("TestString"));
-            node2.BindingContext = aBindingContext2;
+            node2.Header = new Label { BackgroundColor = Color.Green, Text = "Content 2", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
 
             var node3 = new TreeViewItem();
-            var label3 = new Label { BackgroundColor = Color.Red, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
-            node3.Content = label3;
-            label3.SetBinding(Label.TextProperty, new Binding("TestString"));
-            node3.BindingContext = aBindingContext3;
+            node3.Header = new Label { BackgroundColor = Color.Red, Text = "Content 3", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
 
             var node4 = new TreeViewItem();
-            var label4 = new Label { BackgroundColor = Color.Pink, VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
-            node4.Content = label4;
-            label4.SetBinding(Label.TextProperty, new Binding("TestString"));
-            node4.BindingContext = aBindingContext4;
+            node4.Header = new Label { BackgroundColor = Color.Pink, Text = "Content 4", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
 
-            node.ChildTreeViewItems.Add(node2);
-            node2.ChildTreeViewItems.Add(node3);
-            TheTreeView.ChildTreeViewItems.Add(node);
-            TheTreeView.ChildTreeViewItems.Add(node4);
+            node.ItemsSource.Add(node2);
+            node2.ItemsSource.Add(node3);
+
+            var nodes = new ObservableCollection<TreeViewItem> { node, node4 };
+
+            TheTreeView2.ItemsSource = nodes;
 
             base.OnAppearing();
         }
@@ -76,8 +70,26 @@ namespace Pages
         }
     }
 
+    public class SomethingList : ObservableCollection<Something>
+    {
+
+    }
+
     public class Something
     {
         public string TestString { get; set; }
+        public SomethingList Children { get; } = new SomethingList();
+    }
+
+    public class Something2 : Something
+    {
+    }
+
+    public class Something3 : Something
+    {
+    }
+
+    public class Something4 : Something
+    {
     }
 }
