@@ -6,7 +6,7 @@ using Xamarin.Forms.Xaml;
 
 namespace Pages
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
+    //[XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TreeViewPage : ContentPage
     {
         private bool _IsLoaded;
@@ -48,8 +48,9 @@ namespace Pages
             node.Children.Add(node2);
             node2.Children.Add(node3);
 
-            TheTreeView2.ItemsSource.Add(node);
-            TheTreeView2.ItemsSource.Add(node4);
+            var nodes = new ObservableCollection<TreeViewItem> { node, node2, node4 };
+
+            TheTreeView2.ItemsSource = nodes;
 
             base.OnAppearing();
         }
