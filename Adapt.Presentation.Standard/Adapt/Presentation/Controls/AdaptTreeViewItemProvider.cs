@@ -99,7 +99,7 @@ namespace Adapt.Presentation.Controls
             //Clear these index
             //Recursively iterate through root nodes
             _TreeViewItems.Clear();
-            _TreeViewItems.Add(CreateTreeViewItem(children, RootNodeText, null));
+            _TreeViewItems.Add(CreateTreeViewItem(children, RootNodeText));
 
             FinishRefresh();
 
@@ -107,7 +107,7 @@ namespace Adapt.Presentation.Controls
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
-        private TreeViewItem CreateTreeViewItem(object child, string propertyName, TreeViewItem parentTreeViewItem)
+        private TreeViewItem CreateTreeViewItem(object child, string propertyName)
         {
             if (child == null)
             {
@@ -191,7 +191,7 @@ namespace Adapt.Presentation.Controls
                     continue;
                 }
 
-                var treeViewItem = CreateTreeViewItem(childValue, childProperty.Name, treeNode);
+                var treeViewItem = CreateTreeViewItem(childValue, childProperty.Name);
 
                 //Add the children to the current treeviewitem
                 nodes.Add(treeViewItem);
@@ -204,7 +204,7 @@ namespace Adapt.Presentation.Controls
                 //Iterate through list of children passed in 
                 foreach (var theChild in children)
                 {
-                    var childNode = CreateTreeViewItem(theChild, "Something went wrong", treeNode);
+                    var childNode = CreateTreeViewItem(theChild, "Something went wrong");
                     nodes.Add(childNode);
                 }
             }
