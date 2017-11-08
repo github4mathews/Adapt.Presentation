@@ -14,7 +14,7 @@
                 <RowDefinition Height="50*" />
             </Grid.RowDefinitions>
 
-            <Label Text="AdaptTreeViewItemProvider Sample (More MVVM Like)" VerticalOptions="Center" HorizontalOptions="Center" />
+            <Label Text="AdaptTreeViewItemProvider Sample (More MVVM Like) - Try Clicking on a 'Content' label" VerticalOptions="Center" HorizontalOptions="Center" />
 
             <adaptcontrols:TreeView x:Name="TheTreeView" Margin="10" Grid.Row="1" BackgroundColor="#EEEEEE" >
 

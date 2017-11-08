@@ -138,7 +138,6 @@ namespace Adapt.Presentation.Controls
         {
             System.Diagnostics.Debug.WriteLine($"Render Nodes {e.Action}");
 
-            //TODO: This shouldn't clear and re-add. It should only do that on a reset. This is a performance problem but leaving it as is until someone reports it as a problem
             if (e.Action != NotifyCollectionChangedAction.Add)
             {
                 parent.Children.Clear();

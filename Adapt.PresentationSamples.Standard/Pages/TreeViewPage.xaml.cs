@@ -45,8 +45,8 @@ namespace Pages
             var node4 = new TreeViewItem();
             node4.Header = new Label { BackgroundColor = Color.Pink, Text = "Content 4", VerticalOptions = LayoutOptions.Center, HorizontalOptions = LayoutOptions.Start };
 
-            node.Children.Add(node2);
-            node2.Children.Add(node3);
+            node.ItemsSource.Add(node2);
+            node2.ItemsSource.Add(node3);
 
             var nodes = new ObservableCollection<TreeViewItem> { node, node4 };
 
