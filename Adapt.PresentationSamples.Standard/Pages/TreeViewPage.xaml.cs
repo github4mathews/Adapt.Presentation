@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Xamarin.Forms;
-
+using Xamarin.Forms.Xaml;
 
 namespace Pages
 {
-    //[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TreeViewPage : ContentPage
     {
         private bool _IsLoaded;
@@ -21,18 +21,13 @@ namespace Pages
 
             TheTreeView.SelectedItemChanged += TheTreeView_SelectedItemChanged;
 
-            var aBindingContext1 = new Something { TestString = "Content 1" };
-            var aBindingContext2 = new Something2 { TestString = "Content 2" };
-            var aBindingContext3 = new Something3 { TestString = "Content 3" };
-            var aBindingContext4 = new Something4 { TestString = "Content 4" };
-
-            aBindingContext1.Somethings.Add(aBindingContext2);
-            aBindingContext2.Somethings.Add(aBindingContext3);
+            var something = new Something { TestString = "Content 1" };
+            var something2 = new Something2 { TestString = "Content 2" };
+            something.Children.Add(something2);
 
             var itemsSource = new ObservableCollection<Something>();
 
-            itemsSource.Add(aBindingContext1);
-            itemsSource.Add(aBindingContext4);
+            itemsSource.Add(something);
 
             TheAdaptTreeViewItemProvider.ItemsSource = itemsSource;
 
@@ -62,7 +57,7 @@ namespace Pages
     public class Something
     {
         public string TestString { get; set; }
-        public SomethingList Somethings { get; } = new SomethingList();
+        public SomethingList Children { get; } = new SomethingList();
     }
 
     public class Something2 : Something
