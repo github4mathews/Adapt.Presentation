@@ -63,8 +63,10 @@ namespace Adapt.Presentation.Controls
         }
         #endregion
 
-        #region Public Properties
-
+        #region Internal Properties
+        /// <summary>
+        /// TODO: Remove this. We should be able to get the ParentTreeViewNode by traversing up through the Visual Tree by 'Parent', but this not working for some reason.
+        /// </summary>
         internal TreeViewItem ParentTreeViewItem
         {
             get
@@ -77,6 +79,9 @@ namespace Adapt.Presentation.Controls
                 Render();
             }
         }
+        #endregion
+
+        #region Public Properties
 
         public bool IsSelected
         {
@@ -120,11 +125,11 @@ namespace Adapt.Presentation.Controls
             {
                 if (_ItemsSource != null)
                 {
-                    _ItemsSource.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
+                    _ItemsSource.CollectionChanged -= ItemsSource_CollectionChanged;
                 }
 
                 _ItemsSource = value;
-                _ItemsSource.CollectionChanged += ChildTreeViewItems_CollectionChanged;
+                _ItemsSource.CollectionChanged += ItemsSource_CollectionChanged;
                 TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset), this);
             }
         }
@@ -134,13 +139,12 @@ namespace Adapt.Presentation.Controls
         #region Constructor
         /// <summary>
         /// Constructs a new TreeViewItem
-        /// TODO: Remove the parentTreeViewItem argument. This breaks XAML. It means we can't definite TreeViewItems in XAML. We should be able to get the ParentTreeViewNode by traversing up through the Visual Tree by 'Parent', but this not working for some reason.
         /// </summary>
         public TreeViewItem()
         {
             _ExpandButton.Clicked += ExpandButton_Clicked;
 
-            _ItemsSource.CollectionChanged += ChildTreeViewItems_CollectionChanged;
+            _ItemsSource.CollectionChanged += ItemsSource_CollectionChanged;
 
             IsExpanded = true;
 
@@ -180,7 +184,7 @@ namespace Adapt.Presentation.Controls
 
             Children.Clear();
 
-            _ItemsSource.CollectionChanged -= ChildTreeViewItems_CollectionChanged;
+            _ItemsSource.CollectionChanged -= ItemsSource_CollectionChanged;
             _TapGestureRecognizer.Tapped -= TapGestureRecognizer_Tapped;
             _ExpandButton.Clicked -= ExpandButton_Clicked;
             GestureRecognizers.Remove(_TapGestureRecognizer);
@@ -227,7 +231,7 @@ namespace Adapt.Presentation.Controls
             }
         }
 
-        private void ChildTreeViewItems_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void ItemsSource_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             TreeView.RenderNodes(_ItemsSource, _ChildrenStackLayout, e, this);
         }
