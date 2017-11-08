@@ -10,7 +10,7 @@ namespace Adapt.Presentation.Controls
     {
         #region Fields
         private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
-        private IList<TreeViewItem> _ItemsSource;
+        private IEnumerable<TreeViewItem> _ItemsSource;
         private TreeViewItem _SelectedItem;
         #endregion
 
@@ -47,7 +47,7 @@ namespace Adapt.Presentation.Controls
         /// </summary>
         public double SelectedBackgroundOpacity { get; } = .5;
 
-        public IList<TreeViewItem> ItemsSource
+        public IEnumerable<TreeViewItem> ItemsSource
         {
             get
             {
