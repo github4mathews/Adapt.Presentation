@@ -16,7 +16,7 @@
 
             <Label Text="AdaptTreeViewItemProvider Sample (More MVVM Like)" VerticalOptions="Center" HorizontalOptions="Center" />
 
-            <adaptcontrols:TreeView x:Name="TheTreeView" Margin="10" Grid.Row="1" >
+            <adaptcontrols:TreeView x:Name="TheTreeView" Margin="10" Grid.Row="1" BackgroundColor="#EEEEEE" >
 
                 <adaptcontrols:TreeView.ItemsSource>
 
@@ -73,6 +73,14 @@
                 </adaptcontrols:TreeView.ItemsSource>
 
             </adaptcontrols:TreeView>
+
+            <Label Text="Normal Tree View Sample (Hard Coded Nodes)" Grid.Row="2" HorizontalOptions="Center" VerticalOptions="Center"  />
+
+            <adaptcontrols:TreeView x:Name="TheTreeView2" Margin="10" Grid.Row="3" BackgroundColor="#EEEEEE" />
+
+
+
+
 
         </Grid>
 

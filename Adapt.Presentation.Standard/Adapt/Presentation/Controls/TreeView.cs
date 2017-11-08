@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using Xamarin.Forms;
@@ -10,7 +9,7 @@ namespace Adapt.Presentation.Controls
     {
         #region Fields
         private readonly StackLayout _StackLayout = new StackLayout { Orientation = StackOrientation.Vertical };
-        private IEnumerable<TreeViewItem> _ItemsSource;
+        private IList<TreeViewItem> _ItemsSource;
         private TreeViewItem _SelectedItem;
         #endregion
 
@@ -47,7 +46,7 @@ namespace Adapt.Presentation.Controls
         /// </summary>
         public double SelectedBackgroundOpacity { get; } = .5;
 
-        public IEnumerable<TreeViewItem> ItemsSource
+        public IList<TreeViewItem> ItemsSource
         {
             get
             {
