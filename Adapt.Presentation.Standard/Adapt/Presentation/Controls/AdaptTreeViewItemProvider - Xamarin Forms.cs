@@ -70,6 +70,15 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Static Methods
+        private static void RegisterParents(TreeViewItem treeNode, ObservableCollection<TreeViewItem> nodes)
+        {
+            //Silverlight only
+        }
+
+        private static TreeViewItem GetParentTreeViewItem(TreeViewItem selectedItem)
+        {
+            return selectedItem.ParentTreeViewItem;
+        }
 
         private static void CreateNoTemplateNode(object child, TreeViewItem treeNode)
         {

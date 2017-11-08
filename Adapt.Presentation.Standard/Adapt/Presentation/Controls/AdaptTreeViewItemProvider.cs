@@ -34,7 +34,6 @@ namespace Adapt.Presentation.Controls
         private readonly List<string> _ProbingPaths = new List<string>();
         private readonly List<TreeViewItem> _TreeViewItems = new List<TreeViewItem>();
         private readonly List<object> _FlattenedObjects = new List<object>();
-        private readonly Dictionary<TreeViewItem, TreeViewItem> _ParentChildLink = new Dictionary<TreeViewItem, TreeViewItem>();
         #endregion
 
         #region Protected Fields
@@ -81,10 +80,6 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Private Methods
-        private TreeViewItem GetParentTreeViewItem(TreeViewItem treeViewItem)
-        {
-            return _ParentChildLink[treeViewItem];
-        }
 
         private void Refresh()
         {
@@ -92,7 +87,6 @@ namespace Adapt.Presentation.Controls
 
             _TreeViewItems.Clear();
             _FlattenedObjects.Clear();
-            _ParentChildLink.Clear();
             _TreeViewItemsByDataContext.Clear();
 
             if (ItemsTemplates == null || ItemsTemplates.Count <= 0 || ItemsSource == null)
@@ -111,64 +105,6 @@ namespace Adapt.Presentation.Controls
 
             //Tell the treeview we've updated the collection
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-        }
-
-        private IEnumerable<TreeViewItem> GetItemsChildren(TreeViewItem theItem)
-        {
-            var retVal = new List<TreeViewItem>();
-
-            foreach (var theLinkedChild in _ParentChildLink)
-            {
-                if (theLinkedChild.Value == theItem)
-                {
-                    retVal.Add(theLinkedChild.Key);
-                }
-            }
-
-            return retVal;
-        }
-
-        public CollectionChildInfo GetParentListAndIndex(TreeViewItem selectedItem)
-        {
-            if (selectedItem == null)
-            {
-                return null;
-            }
-
-            var retVal = new CollectionChildInfo();
-            var parentItem = GetParentTreeViewItem(selectedItem);
-
-            if (GetDataContext(parentItem) is CollectionInformation)
-            {
-                retVal.Item = GetDataContext(selectedItem);
-                retVal.TreeViewItem = GetTreeViewItemByDataContext(retVal.Item);
-
-                retVal.IsPartOfCollection = true;
-                object dataContext = GetDataContext(parentItem);
-                var collection = ((CollectionInformation)dataContext).Collection;
-                var list = collection as IList;
-                if (list != null)
-                {
-                    retVal.IsOriginalCollectionList = true;
-                    retVal.List = list;
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-
-                retVal.ItemIndex = retVal.List.IndexOf(retVal.Item);
-            }
-
-            else
-            {
-                retVal.ItemIndex = -1;
-                retVal.IsOriginalCollectionList = false;
-                retVal.IsPartOfCollection = false;
-                retVal.List = null;
-            }
-
-            return retVal;
         }
 
         private TreeViewItem CreateTreeViewItem(object child, string propertyName, TreeViewItem parentTreeViewItem)
@@ -274,10 +210,7 @@ namespace Adapt.Presentation.Controls
             }
 
             // Register the link between children and parent nodes
-            foreach (var theChild in nodes)
-            {
-                _ParentChildLink.Add(theChild, treeNode);
-            }
+            RegisterParents(treeNode, nodes);
 
             //Set the itemssource on the nodes
             treeNode.ItemsSource = nodes;
@@ -290,6 +223,49 @@ namespace Adapt.Presentation.Controls
         #endregion
 
         #region Public Methods
+        public CollectionChildInfo GetParentListAndIndex(TreeViewItem selectedItem)
+        {
+            if (selectedItem == null)
+            {
+                return null;
+            }
+
+            var retVal = new CollectionChildInfo();
+            var parentItem = GetParentTreeViewItem(selectedItem);
+
+            if (GetDataContext(parentItem) is CollectionInformation)
+            {
+                retVal.Item = GetDataContext(selectedItem);
+                retVal.TreeViewItem = GetTreeViewItemByDataContext(retVal.Item);
+
+                retVal.IsPartOfCollection = true;
+                object dataContext = GetDataContext(parentItem);
+                var collection = ((CollectionInformation)dataContext).Collection;
+                var list = collection as IList;
+                if (list != null)
+                {
+                    retVal.IsOriginalCollectionList = true;
+                    retVal.List = list;
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+
+                retVal.ItemIndex = retVal.List.IndexOf(retVal.Item);
+            }
+
+            else
+            {
+                retVal.ItemIndex = -1;
+                retVal.IsOriginalCollectionList = false;
+                retVal.IsPartOfCollection = false;
+                retVal.List = null;
+            }
+
+            return retVal;
+        }
+
         public TreeViewItem GetTreeViewItemByDataContext(object dataContext)
         {
             return _TreeViewItemsByDataContext[dataContext];
