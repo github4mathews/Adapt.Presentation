@@ -3,6 +3,8 @@ A library of common Xamarin Forms controls and code that the Xamarin Forms team 
 
 ## Includes
 
+-TreeView
+
 -ListView (Multi Select, Async Ready - AdaptListView)
 
 -Permissions Management
